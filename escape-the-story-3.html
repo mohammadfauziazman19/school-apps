@@ -1,0 +1,1126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Escape the Story — Sec 2 English</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
+  :root {
+    --ink: #1a1410;
+    --ink-muted: #6b5f52;
+    --ink-faint: #b0a498;
+    --paper: #f5f0e8;
+    --paper-warm: #ede7d9;
+    --paper-dark: #d9d0c0;
+    --accent: #8b2e12;
+    --accent-light: #c4441a;
+    --gold: #b8860b;
+    --gold-light: #d4a017;
+    --teal: #1a5c4e;
+    --teal-light: #e8f5f1;
+    --danger: #8b1a1a;
+    --danger-bg: #fdf0f0;
+    --success: #1a4a2e;
+    --success-bg: #eef7f2;
+    --font-display: 'Playfair Display', Georgia, serif;
+    --font-body: 'DM Sans', sans-serif;
+    --radius: 8px;
+    --radius-lg: 14px;
+    --shadow: 0 2px 12px rgba(26,20,16,0.10);
+    --shadow-lg: 0 8px 32px rgba(26,20,16,0.15);
+  }
+
+  body {
+    font-family: var(--font-body);
+    background: var(--paper);
+    color: var(--ink);
+    min-height: 100vh;
+    position: relative;
+    overflow-x: hidden;
+  }
+
+  /* Subtle paper texture via repeating pattern */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: repeating-linear-gradient(
+      0deg, transparent, transparent 24px,
+      rgba(26,20,16,0.018) 24px, rgba(26,20,16,0.018) 25px
+    );
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .app {
+    position: relative;
+    z-index: 1;
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 0 20px 80px;
+  }
+
+  /* ── SCREENS ── */
+  .screen { display: none; }
+  .screen.active { display: block; }
+
+  /* ── LANDING ── */
+  .landing {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 40px 20px;
+  }
+
+  .landing-badge {
+    font-family: var(--font-body);
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 2.5px;
+    text-transform: uppercase;
+    color: var(--accent);
+    border: 1px solid var(--accent);
+    padding: 5px 16px;
+    border-radius: 20px;
+    margin-bottom: 28px;
+    display: inline-block;
+  }
+
+  .landing-title {
+    font-family: var(--font-display);
+    font-size: clamp(42px, 8vw, 68px);
+    font-weight: 600;
+    color: var(--ink);
+    line-height: 1.1;
+    margin-bottom: 10px;
+  }
+
+  .landing-title em {
+    font-style: italic;
+    color: var(--accent);
+  }
+
+  .landing-subtitle {
+    font-family: var(--font-display);
+    font-size: clamp(16px, 3vw, 22px);
+    font-style: italic;
+    color: var(--ink-muted);
+    margin-bottom: 36px;
+  }
+
+  .landing-desc {
+    font-size: 15px;
+    color: var(--ink-muted);
+    line-height: 1.7;
+    max-width: 440px;
+    margin: 0 auto 40px;
+  }
+
+  .landing-desc strong { color: var(--ink); font-weight: 500; }
+
+  .stages-preview {
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+    margin-bottom: 40px;
+    flex-wrap: wrap;
+  }
+
+  .stage-pip {
+    background: var(--paper-warm);
+    border: 1px solid var(--paper-dark);
+    border-radius: var(--radius);
+    padding: 8px 14px;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--ink-muted);
+  }
+
+  .stage-pip span {
+    display: block;
+    font-size: 10px;
+    color: var(--ink-faint);
+    font-weight: 400;
+    margin-top: 2px;
+  }
+
+  .btn-primary {
+    background: var(--accent);
+    color: #fff;
+    border: none;
+    padding: 15px 40px;
+    font-family: var(--font-body);
+    font-size: 15px;
+    font-weight: 500;
+    border-radius: var(--radius);
+    cursor: pointer;
+    transition: background 0.2s, transform 0.1s;
+    letter-spacing: 0.3px;
+  }
+  .btn-primary:hover { background: var(--accent-light); }
+  .btn-primary:active { transform: scale(0.98); }
+
+  .group-setup {
+    margin-top: 24px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .group-setup label {
+    font-size: 13px;
+    color: var(--ink-muted);
+  }
+
+  .group-setup input {
+    font-family: var(--font-body);
+    font-size: 14px;
+    padding: 8px 14px;
+    border: 1px solid var(--paper-dark);
+    border-radius: var(--radius);
+    background: white;
+    color: var(--ink);
+    width: 180px;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+
+  .group-setup input:focus { border-color: var(--accent); }
+
+  /* ── TOP BAR ── */
+  .topbar {
+    position: -webkit-sticky;
+    position: sticky;
+    top: 0;
+    background: var(--paper);
+    border-bottom: 1px solid var(--paper-dark);
+    padding: 14px 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .topbar-title {
+    font-family: var(--font-display);
+    font-size: 18px;
+    font-style: italic;
+    color: var(--ink);
+  }
+
+  .topbar-group {
+    font-size: 12px;
+    color: var(--ink-muted);
+    font-weight: 500;
+  }
+
+  /* ── PROGRESS ── */
+  .progress-wrap {
+    padding: 20px 0 0;
+  }
+
+  .progress-stages {
+    display: flex;
+    gap: 6px;
+    margin-bottom: 6px;
+  }
+
+  .prog-seg {
+    flex: 1;
+    height: 4px;
+    background: var(--paper-dark);
+    border-radius: 2px;
+    transition: background 0.4s;
+  }
+  .prog-seg.done { background: var(--teal); }
+  .prog-seg.active { background: var(--gold); }
+
+  .progress-label {
+    font-size: 11px;
+    color: var(--ink-faint);
+    letter-spacing: 0.5px;
+  }
+
+  /* ── STAGE CARD ── */
+  .stage-header {
+    margin: 28px 0 20px;
+  }
+
+  .stage-tag {
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 6px;
+  }
+
+  .stage-name {
+    font-family: var(--font-display);
+    font-size: 28px;
+    font-weight: 600;
+    color: var(--ink);
+    margin-bottom: 4px;
+  }
+
+  .skill-tags {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    margin-top: 10px;
+  }
+
+  .skill-tag {
+    font-size: 11px;
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-weight: 500;
+    letter-spacing: 0.3px;
+  }
+
+  .tag-purple { background: #ede8f7; color: #4a2d8c; }
+  .tag-teal   { background: var(--teal-light); color: var(--teal); }
+  .tag-amber  { background: #fef3e2; color: #7a4f0a; }
+
+  /* ── PASSAGE ── */
+  .passage-card {
+    background: white;
+    border: 1px solid var(--paper-dark);
+    border-radius: var(--radius-lg);
+    padding: 28px 28px 24px;
+    margin-bottom: 28px;
+    position: relative;
+    box-shadow: var(--shadow);
+  }
+
+  .passage-card::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 20px; bottom: 20px;
+    width: 4px;
+    background: var(--accent);
+    border-radius: 0 2px 2px 0;
+  }
+
+  .passage-label {
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    margin-bottom: 14px;
+  }
+
+  .passage-text {
+    font-family: var(--font-display);
+    font-size: 15px;
+    line-height: 1.85;
+    color: var(--ink);
+  }
+
+  .passage-text p + p { margin-top: 14px; }
+
+  /* ── QUESTIONS ── */
+  .question-block {
+    margin-bottom: 28px;
+  }
+
+  .q-number {
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 8px;
+  }
+
+  .q-text {
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--ink);
+    line-height: 1.6;
+    margin-bottom: 14px;
+  }
+
+  .options { display: flex; flex-direction: column; gap: 8px; }
+
+  .opt {
+    background: white;
+    border: 1px solid var(--paper-dark);
+    border-radius: var(--radius);
+    padding: 12px 16px;
+    font-size: 14px;
+    color: var(--ink);
+    cursor: pointer;
+    text-align: left;
+    line-height: 1.5;
+    transition: border-color 0.15s, background 0.15s, transform 0.1s;
+    font-family: var(--font-body);
+    width: 100%;
+  }
+  .opt:hover:not(:disabled) {
+    border-color: var(--accent);
+    background: var(--paper-warm);
+  }
+  .opt:active:not(:disabled) { transform: scale(0.99); }
+  .btn-primary, .btn-unlock, .btn-next-stage, .opt {
+    -webkit-appearance: none;
+    touch-action: manipulation;
+  }
+  .opt.correct {
+    background: var(--success-bg);
+    border-color: var(--teal);
+    color: var(--success);
+    font-weight: 500;
+  }
+  .opt.wrong {
+    background: var(--danger-bg);
+    border-color: var(--danger);
+    color: var(--danger);
+  }
+  .opt:disabled { cursor: default; }
+
+  /* ── FEEDBACK ── */
+  .feedback {
+    margin-top: 12px;
+    padding: 12px 16px;
+    border-radius: var(--radius);
+    font-size: 13px;
+    line-height: 1.65;
+    display: none;
+    animation: fadeIn 0.3s ease;
+  }
+  .feedback.show { display: block; }
+  .feedback.correct-fb { background: var(--success-bg); color: var(--success); border-left: 3px solid var(--teal); }
+  .feedback.wrong-fb   { background: var(--danger-bg);  color: var(--danger);  border-left: 3px solid var(--danger); }
+
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
+
+  /* ── LOCKED NEXT Q ── */
+  .locked-q {
+    opacity: 0.35;
+    pointer-events: none;
+    -webkit-user-select: none;
+    user-select: none;
+    transition: opacity 0.5s;
+  }
+  .locked-q.unlocked {
+    opacity: 1;
+    pointer-events: auto;
+    -webkit-user-select: auto;
+    user-select: auto;
+  }
+
+  /* ── PASSWORD GATE ── */
+  .pw-gate {
+    background: var(--paper-warm);
+    border: 1px solid var(--paper-dark);
+    border-radius: var(--radius-lg);
+    padding: 24px;
+    text-align: center;
+    margin-top: 28px;
+    display: none;
+  }
+  .pw-gate.show { display: block; animation: fadeIn 0.4s ease; }
+
+  .pw-lock-icon {
+    font-size: 28px;
+    margin-bottom: 10px;
+  }
+
+  .pw-gate h3 {
+    font-family: var(--font-display);
+    font-size: 18px;
+    color: var(--ink);
+    margin-bottom: 6px;
+  }
+
+  .pw-gate p {
+    font-size: 13px;
+    color: var(--ink-muted);
+    margin-bottom: 16px;
+    line-height: 1.6;
+  }
+
+  .pw-input-row {
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+    max-width: 340px;
+    margin: 0 auto;
+  }
+
+  .pw-input {
+    flex: 1;
+    font-family: var(--font-body);
+    font-size: 15px;
+    font-weight: 500;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 10px 14px;
+    border: 1px solid var(--paper-dark);
+    border-radius: var(--radius);
+    background: white;
+    color: var(--ink);
+    text-align: center;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  .pw-input:focus { border-color: var(--accent); }
+  .pw-input.pw-wrong { border-color: var(--danger); background: var(--danger-bg); animation: shake 0.3s; }
+  @keyframes shake {
+    0%,100% { transform: translateX(0); }
+    25% { transform: translateX(-6px); }
+    75% { transform: translateX(6px); }
+  }
+
+  .btn-unlock {
+    background: var(--ink);
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: var(--radius);
+    font-family: var(--font-body);
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.15s;
+    white-space: nowrap;
+  }
+  .btn-unlock:hover { background: var(--accent); }
+
+  .pw-hint { font-size: 12px; color: var(--ink-faint); margin-top: 10px; }
+
+  /* ── UNLOCK CELEBRATION ── */
+  .unlock-celebrate {
+    display: none;
+    text-align: center;
+    padding: 20px;
+    animation: fadeIn 0.5s ease;
+  }
+  .unlock-celebrate.show { display: block; }
+  .unlock-word-display {
+    font-family: var(--font-display);
+    font-size: 36px;
+    font-weight: 600;
+    color: var(--accent);
+    letter-spacing: 6px;
+    margin: 8px 0;
+  }
+  .unlock-note { font-size: 13px; color: var(--ink-muted); }
+
+  .btn-next-stage {
+    margin-top: 16px;
+    background: var(--teal);
+    color: white;
+    border: none;
+    padding: 13px 32px;
+    border-radius: var(--radius);
+    font-family: var(--font-body);
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.15s;
+  }
+  .btn-next-stage:hover { background: #0f4a3a; }
+
+
+
+  /* ── FINAL SCREEN ── */
+  .final-screen {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 60px 20px;
+  }
+
+  .final-badge {
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 2.5px;
+    text-transform: uppercase;
+    color: var(--teal);
+    border: 1px solid var(--teal);
+    padding: 5px 16px;
+    border-radius: 20px;
+    margin-bottom: 24px;
+    display: inline-block;
+  }
+
+  .final-title {
+    font-family: var(--font-display);
+    font-size: clamp(32px, 6vw, 52px);
+    font-weight: 600;
+    color: var(--ink);
+    line-height: 1.15;
+    margin-bottom: 8px;
+  }
+
+  .final-title em { color: var(--accent); font-style: italic; }
+
+  .final-sub {
+    font-family: var(--font-display);
+    font-size: 17px;
+    font-style: italic;
+    color: var(--ink-muted);
+    margin-bottom: 40px;
+  }
+
+  .passphrase-grid {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-bottom: 36px;
+  }
+
+  .pp-word {
+    background: white;
+    border: 1px solid var(--paper-dark);
+    border-radius: var(--radius);
+    padding: 14px 20px;
+    font-family: var(--font-display);
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--ink);
+    letter-spacing: 3px;
+    box-shadow: var(--shadow);
+  }
+
+  .pp-arrow {
+    font-size: 18px;
+    color: var(--ink-faint);
+    display: flex;
+    align-items: center;
+  }
+
+  .final-question {
+    background: var(--paper-warm);
+    border-radius: var(--radius-lg);
+    padding: 24px 28px;
+    max-width: 500px;
+    margin: 0 auto 32px;
+  }
+
+  .final-question p {
+    font-family: var(--font-display);
+    font-size: 17px;
+    font-style: italic;
+    color: var(--ink);
+    line-height: 1.65;
+  }
+
+  .exit-ticket-label {
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 16px;
+  }
+
+  .exit-textarea {
+    width: 100%;
+    max-width: 500px;
+    font-family: var(--font-display);
+    font-size: 14px;
+    font-style: italic;
+    padding: 14px;
+    border: 1px solid var(--paper-dark);
+    border-radius: var(--radius);
+    background: white;
+    color: var(--ink);
+    line-height: 1.7;
+    resize: vertical;
+    min-height: 90px;
+    outline: none;
+    transition: border-color 0.2s;
+    margin-bottom: 12px;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  .exit-textarea:focus { border-color: var(--accent); }
+
+  .score-summary {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+    margin-bottom: 36px;
+    flex-wrap: wrap;
+  }
+
+  .score-card {
+    text-align: center;
+    background: white;
+    border: 1px solid var(--paper-dark);
+    border-radius: var(--radius);
+    padding: 14px 20px;
+    min-width: 100px;
+  }
+
+  .score-num {
+    font-family: var(--font-display);
+    font-size: 32px;
+    font-weight: 600;
+    color: var(--accent);
+  }
+
+  .score-label {
+    font-size: 11px;
+    color: var(--ink-muted);
+    margin-top: 2px;
+  }
+
+  /* ── DIVIDER ── */
+  .divider {
+    border: none;
+    border-top: 1px solid var(--paper-dark);
+    margin: 24px 0;
+  }
+
+</style>
+</head>
+<body>
+
+<div class="app">
+
+  <!-- ════════ LANDING SCREEN ════════ -->
+  <div class="screen active" id="screen-landing">
+    <div class="landing">
+      <div class="landing-badge">Sec 2 Express · English</div>
+      <h1 class="landing-title">Escape<br><em>the Story</em></h1>
+      <p class="landing-subtitle">The narrative has glitched. Can you fix it?</p>
+      <p class="landing-desc">
+        You are now <strong>trapped inside a broken story</strong>. Four scenes have lost their meaning.
+        Read carefully, infer what the characters are really feeling and doing —
+        and unlock each stage to escape.
+      </p>
+      <div class="stages-preview">
+        <div class="stage-pip">Stage 1<span>The Glitch Begins</span></div>
+        <div class="stage-pip">Stage 2<span>The Atmosphere Shifts</span></div>
+        <div class="stage-pip">Stage 3<span>The Turning Point</span></div>
+        <div class="stage-pip">Stage 4<span>The Resolution</span></div>
+      </div>
+      <button class="btn-primary" onclick="startGame()">Enter the Story</button>
+      <div class="group-setup">
+        <label for="group-name">Group name:</label>
+        <input type="text" id="group-name" placeholder="e.g. The Detectives" maxlength="30">
+      </div>
+    </div>
+  </div>
+
+  <!-- ════════ GAME SCREEN ════════ -->
+  <div class="screen" id="screen-game">
+    <div class="topbar">
+      <div class="topbar-title">Escape the Story</div>
+      <div class="topbar-group" id="group-display"></div>
+    </div>
+
+    <div class="progress-wrap">
+      <div class="progress-stages">
+        <div class="prog-seg active" id="seg0"></div>
+        <div class="prog-seg" id="seg1"></div>
+        <div class="prog-seg" id="seg2"></div>
+        <div class="prog-seg" id="seg3"></div>
+      </div>
+      <div class="progress-label" id="prog-label">Stage 1 of 4</div>
+    </div>
+
+    <div id="stage-content"></div>
+  </div>
+
+  <!-- ════════ FINAL SCREEN ════════ -->
+  <div class="screen" id="screen-final">
+    <div class="final-screen">
+      <div class="final-badge">Story Restored</div>
+      <h1 class="final-title">You have<br><em>escaped</em>.</h1>
+      <p class="final-sub" id="final-group-name"></p>
+
+      <div class="score-summary" id="score-summary"></div>
+
+      <p style="font-size:13px;color:var(--ink-muted);margin-bottom:20px;letter-spacing:0.5px;">Your four passwords form a hidden story arc:</p>
+
+      <div class="passphrase-grid">
+        <div class="pp-word">SILENCE</div>
+        <div class="pp-arrow">→</div>
+        <div class="pp-word">AVOIDANCE</div>
+        <div class="pp-arrow">→</div>
+        <div class="pp-word">DECISION</div>
+        <div class="pp-arrow">→</div>
+        <div class="pp-word">TRUTH</div>
+      </div>
+
+      <div class="final-question">
+        <p>"What story do these four words tell, taken together? Have you ever experienced this journey yourself?"</p>
+      </div>
+
+      <div class="exit-ticket-label">Exit Ticket</div>
+      <textarea class="exit-textarea" placeholder="Write one sentence: What did you infer about any character in the story, and what clue helped you?"></textarea>
+      <button class="btn-primary" style="margin-top:4px" onclick="submitExit()">Submit &amp; Finish</button>
+    </div>
+  </div>
+
+</div>
+
+<script>
+const STAGES = [
+  {
+    id: 0,
+    tag: "Stage 1 of 4",
+    name: "The Glitch Begins",
+    skills: [
+      { label: "Character emotion", cls: "tag-purple" },
+      { label: "Figurative language", cls: "tag-teal" }
+    ],
+    password: "SILENCE",
+    passage: `<p>Mr Tan had not eaten since morning, but he waved away the plate of rice his daughter slid across the table. His eyes remained fixed on the photograph — the one taken at the void deck years ago, when things were still simple. Outside, the HDB corridor hummed with the sound of a neighbour's television. He had rehearsed the words a hundred times, but each time they rose to his throat, he swallowed them back down.</p>
+    <p>"Ba?" His daughter's voice was soft, careful, like someone testing ice. She reached across and placed her hand over his. He did not pull away. He simply closed his eyes.</p>`,
+    questions: [
+      {
+        text: "What does Mr Tan's refusal to eat most likely suggest about him?",
+        options: [
+          "He is not hungry because he ate a large breakfast earlier.",
+          "He is emotionally distressed and preoccupied with something.",
+          "He dislikes the food his daughter has cooked for him.",
+          "He is testing his daughter's patience deliberately."
+        ],
+        correct: 1,
+        feedbackRight: "Well inferred! His refusal to eat, fixation on the photograph, and the words he cannot say all point to deep emotional turmoil — not physical hunger. This is reading <em>indirect characterisation</em>.",
+        feedbackWrong: "Look again at all the details together: the photograph, the rehearsed words he keeps swallowing. What emotional state do these suggest?"
+      },
+      {
+        text: "The phrase \"like someone testing ice\" tells us the daughter is most likely feeling...",
+        options: [
+          "Cold and indifferent towards her father.",
+          "Excited to finally speak to her father about something.",
+          "Cautious and worried about upsetting him.",
+          "Angry that her father refuses to eat."
+        ],
+        correct: 2,
+        feedbackRight: "Exactly! The simile suggests fragility — she moves carefully, afraid something might break. This reveals her emotional state through <em>figurative language inference</em>.",
+        feedbackWrong: "Think about what \"testing ice\" physically implies — moving cautiously because something might crack or give way. What emotion does that action suggest?"
+      }
+    ],
+    teacherNote: "Password = SILENCE (the dominant motif — Mr Tan swallows his words; the daughter speaks softly). Discussion: What do you think he has been rehearsing saying? Why can he not say it?"
+  },
+  {
+    id: 1,
+    tag: "Stage 2 of 4",
+    name: "The Atmosphere Shifts",
+    skills: [
+      { label: "Mood & atmosphere", cls: "tag-teal" },
+      { label: "Character motivation", cls: "tag-purple" }
+    ],
+    password: "AVOIDANCE",
+    passage: `<p>The rain had been falling since noon, turning the drains into small, rushing rivers. Priya stood at the bus stop, umbrella in hand but not open, letting the water soak into her school uniform. Around her, office workers huddled under their umbrellas and shot her curious glances. She did not notice. In her bag, the envelope sat unopened — the one with the school crest stamped in red on the front. She had been carrying it for three days.</p>
+    <p>When the bus finally arrived, she let it go. Then the next one. She stood there until the sky began to darken, and only then did she finally turn and walk — not home, but in the opposite direction.</p>`,
+    questions: [
+      {
+        text: "What mood is most effectively created in this passage?",
+        options: [
+          "Joyful and hopeful — Priya enjoys being out in the rain.",
+          "Tense and unsettled — Priya is clearly avoiding a difficult reality.",
+          "Peaceful and calm — the rain brings Priya a sense of comfort.",
+          "Confused and chaotic — Priya does not know where she is going."
+        ],
+        correct: 1,
+        feedbackRight: "Well read! The rain soaking her, the unopened envelope, the missed buses, walking in the wrong direction — all these details construct a mood of internal conflict and deliberate avoidance.",
+        feedbackWrong: "Look at Priya's actions one by one: umbrella not opened, two buses missed, walking away from home. What do these choices, together, tell us about how she is feeling?"
+      },
+      {
+        text: "Why has Priya most likely not opened the envelope for three days?",
+        options: [
+          "She genuinely forgot the envelope was in her bag.",
+          "She is afraid of what the letter might contain.",
+          "She is saving it as a surprise to open with her parents.",
+          "She does not recognise the school crest on the front."
+        ],
+        correct: 1,
+        feedbackRight: "Correct! The three-day delay combined with all her avoidance behaviour — missed buses, walking away from home, standing in the rain — strongly implies she fears the contents.",
+        feedbackWrong: "Ask yourself: does someone who simply \"forgot\" also miss two buses and walk away from home? What consistent pattern do you see in all of Priya's actions?"
+      }
+    ],
+    teacherNote: "Password = AVOIDANCE. Great real-world discussion: 'Have you ever avoided something difficult? What happened when you finally faced it?' This connects inferencing to personal experience."
+  },
+  {
+    id: 2,
+    tag: "Stage 3 of 4",
+    name: "The Turning Point",
+    skills: [
+      { label: "Predicting outcomes", cls: "tag-amber" },
+      { label: "Character motivation", cls: "tag-purple" }
+    ],
+    password: "DECISION",
+    passage: `<p>Marcus slammed his locker shut and spun around to face the corridor — empty now, the last of his classmates having filed out after the bell. He exhaled slowly. The captain's armband was still in his hand. He had found it in his bag that morning with no note, no explanation.</p>
+    <p>Coach Ramlan had not looked at him once during training. Not when Marcus fumbled the pass. Not when he ran the wrong drill. Not even when Marcus had caught his eye — or tried to.</p>
+    <p>He turned the armband over in his fingers. There was a decision to be made, and he knew it. He had two options: return it, and say nothing. Or wear it on Friday, and see what happened.</p>`,
+    questions: [
+      {
+        text: "What can we most reasonably infer about Coach Ramlan's behaviour during training?",
+        options: [
+          "He is pleased with Marcus and giving him space to find his confidence.",
+          "He is deliberately testing Marcus by ignoring his mistakes.",
+          "He is uncomfortable or conflicted about his decision to give Marcus the armband.",
+          "He has simply forgotten that he placed the armband in Marcus's bag."
+        ],
+        correct: 2,
+        feedbackRight: "Excellent inference! The deliberate avoidance — even when Marcus made errors, even when eye contact was attempted — suggests the coach is uneasy, not uncaring. There is an unspoken tension he is not ready to address.",
+        feedbackWrong: "Notice: Coach Ramlan avoids Marcus even after mistakes — a coach would normally correct errors. What does this unusual behaviour, combined with the no-note armband, suggest?"
+      },
+      {
+        text: "Predict: if Marcus chooses to <em>wear the armband on Friday</em>, what outcome does the text evidence most strongly support?",
+        options: [
+          "His teammates will immediately and fully accept him as the new captain.",
+          "There will be a confrontation or difficult conversation with Coach Ramlan.",
+          "Nothing will happen, as the armband was placed in his bag by mistake.",
+          "Marcus will be permanently removed from the team for disobeying."
+        ],
+        correct: 1,
+        feedbackRight: "Strong prediction! The unresolved tension between Marcus and the coach has been building. Wearing the armband in public without a direct conversation will force the issue — a confrontation is the most evidence-supported outcome.",
+        feedbackWrong: "Think about unresolved tension: the coach gave no explanation and has been avoiding Marcus. What tends to happen when tension like this has nowhere left to go?"
+      }
+    ],
+    teacherNote: "Password = DECISION. Discussion: 'What would you do in Marcus's position, and why?' This connects prediction to personal values and links inference to real-world moral reasoning."
+  },
+  {
+    id: 3,
+    tag: "Stage 4 of 4 — Final Stage",
+    name: "The Resolution",
+    skills: [
+      { label: "Nuanced emotion", cls: "tag-purple" },
+      { label: "Mood & atmosphere", cls: "tag-teal" },
+      { label: "Predicting outcomes", cls: "tag-amber" }
+    ],
+    password: "TRUTH",
+    passage: `<p>The hawker centre was nearly empty at this hour — just the two of them, a plate of half-eaten char kway teow between them, and the sound of a distant wok hissing. Siti had not spoken in ten minutes. Across the table, her mother stirred her teh tarik slowly, even though it had long gone cold.</p>
+    <p>"You always do this," Siti said finally. Her voice was flat, not angry. Which, somehow, was worse.</p>
+    <p>Her mother set down the spoon. For a moment, something crossed her face — not quite guilt, not quite relief — before it settled into the careful blankness Siti had grown up reading like a second language.</p>
+    <p>"I know," her mother said. Just that. Two words, after months of silence.</p>`,
+    questions: [
+      {
+        text: "What does \"her voice was flat, not angry — which, somehow, was worse\" tell us about Siti's emotional state?",
+        options: [
+          "Siti is simply too tired to feel anything anymore.",
+          "Siti's calm conceals a deeper, more complex pain that lies beyond simple anger.",
+          "Siti has forgiven her mother and is beginning to move forward.",
+          "Siti is deliberately performing calm to make her mother feel guiltier."
+        ],
+        correct: 1,
+        feedbackRight: "Beautifully inferred! Flatness beyond anger suggests Siti has moved past outrage into something heavier — disappointment, grief, exhaustion. The narrator's aside tells us the reader should feel the weight of this. It is one of the most complex emotional states to read in narrative.",
+        feedbackWrong: "The narrator signals that flatness is 'worse' than anger. Why might the absence of emotion feel more serious, more final, than its presence?"
+      },
+      {
+        text: "Why does the mother say only \"I know\" — just two words — after months of silence?",
+        options: [
+          "She has nothing to say because she is genuinely unaware of what she has done wrong.",
+          "She is acknowledging her guilt but finds a fuller explanation too difficult or painful.",
+          "She is dismissing Siti's feelings with a short, careless response.",
+          "She has already apologised privately and does not need to say more now."
+        ],
+        correct: 1,
+        feedbackRight: "Well done! The detail 'something crossed her face — not quite guilt, not quite relief' reveals internal conflict. 'I know' is not dismissal — it is the only honest thing she can manage. Two words carrying the weight of everything left unsaid.",
+        feedbackWrong: "Look at the expression on the mother's face before she speaks. Does someone who is being careless show that kind of conflicted, complex expression?"
+      }
+    ],
+    teacherNote: "Password = TRUTH. Final debrief: 'What is the full passphrase as a sequence? SILENCE → AVOIDANCE → DECISION → TRUTH. What story arc does this map onto?' This mirrors an emotional journey toward confronting difficult realities."
+  }
+];
+
+let currentStage = 0;
+let scores = [0, 0, 0, 0];
+let attempts = [[0,0],[0,0],[0,0],[0,0]];
+let groupName = "";
+
+function startGame() {
+  groupName = document.getElementById('group-name').value.trim() || "Your Group";
+  document.getElementById('group-display').textContent = groupName;
+  showScreen('screen-game');
+  renderStage(0);
+}
+
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  window.scrollTo(0, 0);
+}
+
+function renderStage(idx) {
+  currentStage = idx;
+  const s = STAGES[idx];
+  updateProgress(idx);
+
+  const html = `
+    <div class="stage-header">
+      <div class="stage-tag">${s.tag}</div>
+      <div class="stage-name">${s.name}</div>
+      <div class="skill-tags">
+        ${s.skills.map(sk => `<span class="skill-tag ${sk.cls}">${sk.label}</span>`).join('')}
+      </div>
+    </div>
+
+    <div class="passage-card">
+      <div class="passage-label">Read carefully</div>
+      <div class="passage-text">${s.passage}</div>
+    </div>
+
+    ${renderQuestion(idx, 0)}
+
+    <div id="q1-wrap" class="locked-q" style="margin-top:0">
+      ${renderQuestion(idx, 1, true)}
+    </div>
+
+    <div class="pw-gate" id="pw-gate">
+      <div class="pw-lock-icon">🔒</div>
+      <h3>Stage unlocked — enter the password</h3>
+      <p>You have earned the password for this stage.<br>Type it below to confirm and reveal your reward.</p>
+      <div class="pw-input-row">
+        <input class="pw-input" id="pw-input" type="text" maxlength="12" placeholder="PASSWORD" autocomplete="off" onkeydown="if(event.key==='Enter')checkPassword()">
+        <button class="btn-unlock" onclick="checkPassword()">Unlock</button>
+      </div>
+      <div class="pw-hint" id="pw-hint">Hint: the single most important word in this passage</div>
+    </div>
+
+    <div class="unlock-celebrate" id="unlock-celebrate">
+      <p style="font-size:12px;letter-spacing:1.5px;text-transform:uppercase;color:var(--ink-faint);margin-bottom:4px">Password confirmed</p>
+      <div class="unlock-word-display">${s.password}</div>
+      <p class="unlock-note">Write this down. You will need all four passwords at the end.</p>
+      ${idx < 3
+        ? `<button class="btn-next-stage" onclick="nextStage()">Continue to Stage ${idx + 2} →</button>`
+        : `<button class="btn-next-stage" style="background:var(--accent)" onclick="goFinal()">Complete the Escape →</button>`
+      }
+    </div>
+
+    <div style="height:40px"></div>
+  `;
+
+  document.getElementById('stage-content').innerHTML = html;
+}
+
+function renderQuestion(stageIdx, qIdx, second=false) {
+  const q = STAGES[stageIdx].questions[qIdx];
+  const num = stageIdx * 2 + qIdx + 1;
+  return `
+    <div class="question-block" id="qblock-${qIdx}">
+      <div class="q-number">Question ${num}</div>
+      <div class="q-text">${q.text}</div>
+      <div class="options" id="opts-${qIdx}">
+        ${q.options.map((opt, i) => `
+          <button class="opt" onclick="selectAnswer(${stageIdx},${qIdx},${i})">${opt}</button>
+        `).join('')}
+      </div>
+      <div class="feedback" id="fb-${qIdx}"></div>
+    </div>
+  `;
+}
+
+function selectAnswer(stageIdx, qIdx, chosen) {
+  const q = STAGES[stageIdx].questions[qIdx];
+  const opts = document.querySelectorAll(`#opts-${qIdx} .opt`);
+  attempts[stageIdx][qIdx]++;
+
+  if (chosen === q.correct) {
+    opts.forEach(o => o.disabled = true);
+    opts[chosen].classList.add('correct');
+    const fb = document.getElementById(`fb-${qIdx}`);
+    fb.innerHTML = q.feedbackRight;
+    fb.className = 'feedback correct-fb show';
+
+    scores[stageIdx] = Math.max(scores[stageIdx], qIdx + 1);
+
+    if (qIdx === 0) {
+      setTimeout(() => {
+        const q1wrap = document.getElementById('q1-wrap');
+        if (q1wrap) {
+          q1wrap.classList.add('unlocked');
+          void q1wrap.offsetHeight; // force reflow for Safari
+        }
+      }, 700);
+    } else {
+      setTimeout(() => {
+        const gate = document.getElementById('pw-gate');
+        if (gate) gate.classList.add('show');
+      }, 700);
+    }
+  } else {
+    opts[chosen].classList.add('wrong');
+    const fb = document.getElementById(`fb-${qIdx}`);
+    fb.innerHTML = q.feedbackWrong;
+    fb.className = 'feedback wrong-fb show';
+    setTimeout(() => {
+      opts[chosen].classList.remove('wrong');
+      opts[chosen].disabled = false;
+      fb.className = 'feedback';
+    }, 2400);
+  }
+}
+
+function checkPassword() {
+  const input = document.getElementById('pw-input');
+  const val = input.value.trim().toUpperCase();
+  const correct = STAGES[currentStage].password;
+  if (val === correct) {
+    document.getElementById('pw-gate').style.display = 'none';
+    document.getElementById('unlock-celebrate').classList.add('show');
+    updateProgress(currentStage, true);
+  } else {
+    input.classList.add('pw-wrong');
+    document.getElementById('pw-hint').textContent = "Not quite — check your spelling and try again.";
+    setTimeout(() => {
+      input.classList.remove('pw-wrong');
+      input.value = '';
+    }, 800);
+  }
+}
+
+function nextStage() {
+  renderStage(currentStage + 1);
+  window.scrollTo(0, 0);
+}
+
+function goFinal() {
+  const fn = document.getElementById('final-group-name');
+  fn.textContent = groupName + " — well done!";
+  const sc = document.getElementById('score-summary');
+  const totalAttempts = attempts.flat().reduce((a,b) => a + b, 0);
+  const retries = Math.max(0, totalAttempts - 8);
+  sc.innerHTML = `
+    <div class="score-card"><div class="score-num">8</div><div class="score-label">Questions correct</div></div>
+    <div class="score-card"><div class="score-num">4</div><div class="score-label">Stages completed</div></div>
+    <div class="score-card"><div class="score-num">${retries}</div><div class="score-label">Retries needed</div></div>
+  `;
+  showScreen('screen-final');
+}
+
+function updateProgress(idx, done=false) {
+  for (let i = 0; i < 4; i++) {
+    const seg = document.getElementById(`seg${i}`);
+    if (!seg) continue;
+    if (i < idx) seg.className = 'prog-seg done';
+    else if (i === idx) seg.className = done ? 'prog-seg done' : 'prog-seg active';
+    else seg.className = 'prog-seg';
+  }
+  const lbl = document.getElementById('prog-label');
+  if (lbl) lbl.textContent = `Stage ${idx + 1} of 4`;
+}
+
+
+
+function submitExit() {
+  alert("Exit ticket submitted! Well done — the story has been restored.");
+}
+</script>
+
+</body>
+</html>
