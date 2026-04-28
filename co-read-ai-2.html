@@ -1,0 +1,874 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Co-Read AI</title>
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;1,400&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0f1117;
+    --surface: #181d2a;
+    --surface2: #1e2535;
+    --border: #2a3248;
+    --accent: #4f8ef7;
+    --accent2: #7c6af5;
+    --gold: #e8b84b;
+    --green: #3ecf8e;
+    --red: #f87171;
+    --text: #e8eaf0;
+    --muted: #6b7394;
+    --lock: #f97316;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* HEADER */
+  header {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 14px 28px;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    position: sticky; top: 0; z-index: 100;
+  }
+  .logo { display: flex; align-items: center; gap: 10px; }
+  .logo-icon {
+    width: 34px; height: 34px; border-radius: 8px;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px;
+  }
+  .logo-text { font-size: 17px; font-weight: 600; letter-spacing: -0.3px; }
+  .logo-text span { color: var(--accent); }
+  .header-meta { display: flex; align-items: center; gap: 14px; font-size: 13px; color: var(--muted); }
+  .badge {
+    padding: 3px 10px; border-radius: 20px; font-size: 11px; font-weight: 500;
+    background: rgba(79,142,247,0.15); color: var(--accent); border: 1px solid rgba(79,142,247,0.3);
+  }
+
+  /* LAYOUT */
+  .app-body {
+    display: grid;
+    grid-template-columns: 1fr 340px;
+    gap: 0;
+    flex: 1;
+    height: calc(100vh - 61px);
+    overflow: hidden;
+  }
+
+  /* MAIN READING PANEL */
+  .reading-panel {
+    display: flex; flex-direction: column;
+    border-right: 1px solid var(--border);
+    overflow: hidden;
+  }
+  .panel-header {
+    padding: 14px 24px;
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: space-between;
+    background: var(--surface);
+  }
+  .panel-title { font-size: 13px; font-weight: 500; color: var(--muted); text-transform: uppercase; letter-spacing: 0.8px; }
+  .progress-bar-wrap { display: flex; align-items: center; gap: 10px; }
+  .progress-bar { width: 160px; height: 4px; background: var(--border); border-radius: 4px; overflow: hidden; }
+  .progress-fill { height: 100%; background: linear-gradient(90deg, var(--accent), var(--accent2)); border-radius: 4px; transition: width 0.5s ease; }
+  .progress-label { font-size: 12px; color: var(--muted); font-family: 'DM Mono', monospace; }
+
+  .text-scroll {
+    flex: 1;
+    overflow-y: auto;
+    padding: 32px 40px;
+    position: relative;
+  }
+  .text-scroll::-webkit-scrollbar { width: 6px; }
+  .text-scroll::-webkit-scrollbar-track { background: transparent; }
+  .text-scroll::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+  .story-title {
+    font-family: 'Lora', serif;
+    font-size: 26px; font-weight: 600;
+    margin-bottom: 6px; color: var(--text);
+    line-height: 1.3;
+  }
+  .story-subtitle {
+    font-size: 13px; color: var(--muted);
+    margin-bottom: 32px;
+    font-style: italic;
+  }
+
+  .paragraph-block {
+    margin-bottom: 28px;
+    position: relative;
+    transition: all 0.3s;
+  }
+  .paragraph-block.locked {
+    opacity: 0.3;
+    pointer-events: none;
+    filter: blur(2px);
+    user-select: none;
+  }
+  .paragraph-block.active {
+    opacity: 1; filter: none; pointer-events: all;
+  }
+  .paragraph-block.completed {
+    opacity: 0.8; filter: none; pointer-events: all;
+  }
+
+  .para-label {
+    font-size: 10px; font-weight: 600; letter-spacing: 1.2px;
+    color: var(--muted); text-transform: uppercase;
+    margin-bottom: 8px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .para-label .check {
+    width: 16px; height: 16px; border-radius: 50%;
+    background: var(--green); display: flex; align-items: center; justify-content: center;
+    font-size: 9px;
+  }
+  .para-label .lock-icon {
+    width: 16px; height: 16px; border-radius: 50%;
+    background: var(--border);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 9px; color: var(--muted);
+  }
+
+  .para-text {
+    font-family: 'Lora', serif;
+    font-size: 16.5px;
+    line-height: 1.85;
+    color: #d0d4e0;
+  }
+  .para-text .highlight {
+    background: rgba(79,142,247,0.2);
+    border-bottom: 2px solid var(--accent);
+    cursor: pointer;
+    border-radius: 2px;
+    padding: 0 1px;
+    transition: background 0.2s;
+  }
+  .para-text .highlight:hover { background: rgba(79,142,247,0.35); }
+
+  /* LOCK OVERLAY */
+  .lock-banner {
+    display: flex; align-items: center; gap: 10px;
+    background: rgba(249,115,22,0.1);
+    border: 1px solid rgba(249,115,22,0.3);
+    border-radius: 8px;
+    padding: 10px 16px;
+    margin-top: 10px;
+    font-size: 13px; color: var(--lock);
+  }
+
+  /* ANNOTATION PANEL */
+  .annotation-panel { padding: 12px 24px; border-top: 1px solid var(--border); background: var(--surface); }
+  .annotation-label { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 8px; }
+  .annotation-row { display: flex; gap: 8px; }
+  .annotation-input {
+    flex: 1; background: var(--bg); border: 1px solid var(--border);
+    border-radius: 8px; padding: 10px 14px;
+    color: var(--text); font-size: 14px; font-family: 'DM Sans', sans-serif;
+    resize: none; outline: none; transition: border 0.2s;
+    min-height: 60px;
+  }
+  .annotation-input:focus { border-color: var(--accent); }
+  .annotation-input::placeholder { color: var(--muted); }
+  .submit-btn {
+    padding: 10px 18px; border-radius: 8px;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    color: white; border: none; cursor: pointer;
+    font-size: 13px; font-weight: 600;
+    transition: opacity 0.2s, transform 0.1s;
+    align-self: flex-end;
+    white-space: nowrap;
+  }
+  .submit-btn:hover { opacity: 0.9; transform: translateY(-1px); }
+  .submit-btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
+
+  /* SIDEBAR */
+  .sidebar {
+    display: flex; flex-direction: column;
+    overflow: hidden;
+    background: var(--surface);
+  }
+  .sidebar-tabs {
+    display: flex; border-bottom: 1px solid var(--border);
+  }
+  .tab-btn {
+    flex: 1; padding: 12px 8px; font-size: 12px; font-weight: 500;
+    background: none; border: none; cursor: pointer;
+    color: var(--muted); text-transform: uppercase; letter-spacing: 0.6px;
+    border-bottom: 2px solid transparent; transition: all 0.2s;
+    font-family: 'DM Sans', sans-serif;
+  }
+  .tab-btn.active { color: var(--accent); border-bottom-color: var(--accent); }
+
+  .tab-content { flex: 1; overflow-y: auto; padding: 16px; }
+  .tab-content::-webkit-scrollbar { width: 4px; }
+  .tab-content::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+  /* ANNOTATION CARDS */
+  .ann-card {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 12px 14px;
+    margin-bottom: 10px;
+    transition: border-color 0.2s;
+    animation: slideIn 0.3s ease;
+  }
+  @keyframes slideIn { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:translateY(0); } }
+  .ann-card:hover { border-color: rgba(79,142,247,0.4); }
+  .ann-card-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 7px; }
+  .ann-author { display: flex; align-items: center; gap: 8px; }
+  .avatar {
+    width: 24px; height: 24px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11px; font-weight: 600; color: white;
+  }
+  .ann-name { font-size: 12px; font-weight: 600; }
+  .ann-type {
+    font-size: 10px; padding: 2px 7px; border-radius: 10px;
+    font-weight: 500; font-family: 'DM Mono', monospace;
+  }
+  .ann-type.inferential { background: rgba(62,207,142,0.15); color: var(--green); border: 1px solid rgba(62,207,142,0.3); }
+  .ann-type.literal { background: rgba(248,113,113,0.15); color: var(--red); border: 1px solid rgba(248,113,113,0.3); }
+  .ann-text { font-size: 13px; line-height: 1.55; color: #b0b7cc; }
+  .ann-para { font-size: 10px; color: var(--muted); margin-top: 6px; }
+
+  /* AI PROMPT CARD */
+  .ai-prompt-card {
+    background: linear-gradient(135deg, rgba(79,142,247,0.08), rgba(124,106,245,0.12));
+    border: 1px solid rgba(79,142,247,0.35);
+    border-radius: 12px;
+    padding: 16px;
+    margin-bottom: 12px;
+    position: relative;
+    overflow: hidden;
+    animation: slideIn 0.4s ease;
+  }
+  .ai-prompt-card::before {
+    content: '';
+    position: absolute; top: 0; left: 0; right: 0; height: 2px;
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+  }
+  .ai-prompt-header { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; }
+  .ai-chip {
+    padding: 2px 8px; border-radius: 6px;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    font-size: 10px; font-weight: 600; color: white;
+    letter-spacing: 0.5px;
+  }
+  .ai-prompt-label { font-size: 11px; color: var(--muted); }
+  .ai-prompt-text {
+    font-size: 13.5px; line-height: 1.6;
+    color: #c8d0e8;
+    font-style: italic;
+  }
+  .ai-thinking {
+    display: flex; align-items: center; gap: 8px;
+    font-size: 12px; color: var(--accent);
+    padding: 10px 0;
+  }
+  .dot-anim { display: flex; gap: 4px; }
+  .dot-anim span {
+    width: 5px; height: 5px; background: var(--accent); border-radius: 50%;
+    animation: bounce 1s infinite;
+  }
+  .dot-anim span:nth-child(2) { animation-delay: 0.2s; }
+  .dot-anim span:nth-child(3) { animation-delay: 0.4s; }
+  @keyframes bounce { 0%,80%,100%{transform:scale(0.7);opacity:0.5} 40%{transform:scale(1);opacity:1} }
+
+  /* CLASS STATUS */
+  .class-status { margin-bottom: 14px; }
+  .status-title { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 10px; }
+  .student-row {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 7px 0; border-bottom: 1px solid var(--border);
+  }
+  .student-info { display: flex; align-items: center; gap: 8px; font-size: 13px; }
+  .student-status { font-size: 11px; color: var(--muted); }
+  .status-dot {
+    width: 7px; height: 7px; border-radius: 50%;
+    display: inline-block; margin-right: 4px;
+  }
+  .status-dot.done { background: var(--green); }
+  .status-dot.pending { background: var(--gold); }
+  .status-dot.waiting { background: var(--border); }
+
+  /* SSRL SCORE */
+  .ssrl-card {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 14px;
+    margin-bottom: 10px;
+  }
+  .ssrl-label { font-size: 11px; color: var(--muted); margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.7px; }
+  .ssrl-row { display: flex; justify-content: space-between; margin-bottom: 10px; }
+  .ssrl-stat { text-align: center; }
+  .ssrl-num { font-size: 22px; font-weight: 600; font-family: 'DM Mono', monospace; color: var(--accent); }
+  .ssrl-sublabel { font-size: 11px; color: var(--muted); }
+  .infer-bar { height: 6px; background: var(--border); border-radius: 6px; overflow: hidden; }
+  .infer-fill { height: 100%; background: linear-gradient(90deg, var(--green), #20c986); border-radius: 6px; transition: width 0.6s ease; }
+
+  /* EMPTY STATE */
+  .empty-state { text-align: center; padding: 40px 20px; color: var(--muted); }
+  .empty-state .icon { font-size: 32px; margin-bottom: 12px; }
+  .empty-state p { font-size: 13px; line-height: 1.6; }
+
+  /* TOAST */
+  .toast {
+    position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%);
+    background: var(--surface2); border: 1px solid var(--border);
+    padding: 10px 20px; border-radius: 8px; font-size: 13px;
+    z-index: 999; animation: fadeInUp 0.3s ease;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+  }
+  @keyframes fadeInUp { from{opacity:0;transform:translate(-50%,10px)} to{opacity:1;transform:translate(-50%,0)} }
+
+  /* LOADING */
+  .loading-overlay {
+    position: fixed; inset: 0;
+    background: rgba(15,17,23,0.85);
+    display: flex; align-items: center; justify-content: center;
+    z-index: 200; backdrop-filter: blur(4px);
+  }
+  .loading-box {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 16px; padding: 32px 40px; text-align: center;
+  }
+  .loading-box .spinner {
+    width: 40px; height: 40px;
+    border: 3px solid var(--border);
+    border-top-color: var(--accent);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+    margin: 0 auto 16px;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .loading-box p { font-size: 14px; color: var(--muted); }
+  .loading-box strong { display: block; font-size: 16px; color: var(--text); margin-bottom: 8px; }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">
+    <div class="logo-icon">📖</div>
+    <div class="logo-text"><span>Co</span>-Read AI</div>
+  </div>
+  <div class="header-meta">
+    <span>Sec 3 English — Narrative Comprehension</span>
+    <span class="badge">DBR Iteration 1</span>
+    <span id="class-count" style="font-size:13px;">👥 <span id="active-count">3</span>/61 active</span>
+  </div>
+</header>
+
+<div class="app-body">
+  <!-- READING PANEL -->
+  <div class="reading-panel">
+    <div class="panel-header">
+      <span class="panel-title">Reading Passage</span>
+      <div class="progress-bar-wrap">
+        <div class="progress-bar"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
+        <span class="progress-label" id="progress-label">0 / 5</span>
+      </div>
+    </div>
+
+    <div class="text-scroll" id="text-scroll">
+      <div class="story-title">The Sound of Silence</div>
+      <div class="story-subtitle">A narrative by Priya Nair · Adapted for classroom use</div>
+
+      <!-- PARAGRAPH 1 -->
+      <div class="paragraph-block active" id="para-0">
+        <div class="para-label">
+          <span class="lock-icon" id="lock-0">1</span>
+          Paragraph 1 — <span id="status-0">Annotate to unlock next paragraph</span>
+        </div>
+        <div class="para-text">
+          Maya stood at the edge of the <span class="highlight" title="Click to annotate">crumbling pier</span>, her fingers tracing the grooves left by decades of salt and neglect. The harbour below was <span class="highlight">deathly still</span>, as if holding its breath—waiting for something she could not name. Behind her, the town hummed with the indifferent noise of morning routines: the clatter of shutters, the low groan of delivery trucks, laughter that belonged to someone else's story. She had returned after seven years, and yet nothing about this place seemed to remember her at all.
+        </div>
+        <div id="lock-banner-0" class="lock-banner" style="display:none">
+          🔒 Complete your annotation below to unlock the next paragraph.
+        </div>
+      </div>
+
+      <!-- PARAGRAPH 2 -->
+      <div class="paragraph-block locked" id="para-1">
+        <div class="para-label">
+          <span class="lock-icon" id="lock-1">🔒</span>
+          Paragraph 2 — Locked
+        </div>
+        <div class="para-text">
+          She had told herself the visit was practical—her mother's house needed to be sold, papers signed, a life neatly packaged and handed over to strangers. But standing here, she understood it was something else. The pier was <span class="highlight">the last place she had felt real</span>, before ambition had made her <span class="highlight">hollow and efficient</span>. Her therapist called it dissociation. Maya called it survival.
+        </div>
+      </div>
+
+      <!-- PARAGRAPH 3 -->
+      <div class="paragraph-block locked" id="para-2">
+        <div class="para-label">
+          <span class="lock-icon" id="lock-2">🔒</span>
+          Paragraph 3 — Locked
+        </div>
+        <div class="para-text">
+          A boy, no older than ten, appeared beside her without warning. He did not look at her, only at the water. "You're standing on the <span class="highlight">soft part</span>," he said. "Everyone does. They think it's the edge that matters." Maya blinked. She moved instinctively, and the boy finally looked up—his expression <span class="highlight">neither curious nor kind</span>, simply observant, the way old things watch the world.
+        </div>
+      </div>
+
+      <!-- PARAGRAPH 4 -->
+      <div class="paragraph-block locked" id="para-3">
+        <div class="para-label">
+          <span class="lock-icon" id="lock-3">🔒</span>
+          Paragraph 4 — Locked
+        </div>
+        <div class="para-text">
+          "Did you grow up here?" she asked, because she did not know what else to say to a child who spoke like a <span class="highlight">tide chart</span>. He shrugged. "My grandfather did. I just visit." He picked up a stone—smooth, grey, <span class="highlight">unremarkable</span>—and held it out to her. "He said the sea gives back what it's ready to." Maya took the stone. It was <span class="highlight">heavier than it looked</span>.
+        </div>
+      </div>
+
+      <!-- PARAGRAPH 5 -->
+      <div class="paragraph-block locked" id="para-4">
+        <div class="para-label">
+          <span class="lock-icon" id="lock-4">🔒</span>
+          Paragraph 5 — Locked
+        </div>
+        <div class="para-text">
+          She watched him walk away, his footsteps confident on the rotting boards. In her palm, the stone felt like a <span class="highlight">decision she hadn't made yet</span>. The harbour hadn't changed. The town hadn't changed. Perhaps, she thought, she was the one who had been waiting—not for this place to remember her, but to remember herself. She placed the stone in her pocket and turned, for the first time, toward the town.
+        </div>
+      </div>
+
+      <div style="height:40px"></div>
+    </div>
+
+    <!-- ANNOTATION INPUT -->
+    <div class="annotation-panel">
+      <div class="annotation-label">Your Annotation — Paragraph <span id="current-para-label">1</span></div>
+      <div class="annotation-row">
+        <textarea class="annotation-input" id="annotation-input"
+          placeholder="What does this paragraph suggest beyond what is literally stated? What can you infer about Maya's emotions or the author's intent?"></textarea>
+        <button class="submit-btn" id="submit-btn" onclick="submitAnnotation()">Submit →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- SIDEBAR -->
+  <div class="sidebar">
+    <div class="sidebar-tabs">
+      <button class="tab-btn active" onclick="switchTab('annotations', this)">Annotations</button>
+      <button class="tab-btn" onclick="switchTab('ai', this)">AI Prompts</button>
+      <button class="tab-btn" onclick="switchTab('class', this)">Class</button>
+    </div>
+
+    <div class="tab-content" id="tab-annotations">
+      <div id="annotations-list">
+        <div class="empty-state">
+          <div class="icon">✍️</div>
+          <p>Annotations from your group will appear here as you read. Your contributions are visible to everyone.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="tab-content" id="tab-ai" style="display:none">
+      <div id="ai-prompts-list">
+        <div class="empty-state">
+          <div class="icon">🤖</div>
+          <p>Co-Read AI will generate Socratic prompts here when it detects surface-level or literal reading patterns.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="tab-content" id="tab-class" style="display:none">
+      <div class="ssrl-card">
+        <div class="ssrl-label">Class Analytics (Live)</div>
+        <div class="ssrl-row">
+          <div class="ssrl-stat">
+            <div class="ssrl-num" id="stat-total">0</div>
+            <div class="ssrl-sublabel">Annotations</div>
+          </div>
+          <div class="ssrl-stat">
+            <div class="ssrl-num" id="stat-infer" style="color:var(--green)">0%</div>
+            <div class="ssrl-sublabel">Inferential</div>
+          </div>
+          <div class="ssrl-stat">
+            <div class="ssrl-num" id="stat-para" style="color:var(--gold)">1</div>
+            <div class="ssrl-sublabel">Paragraph</div>
+          </div>
+        </div>
+        <div class="ssrl-sublabel" style="margin-bottom:6px">Inferential Rate</div>
+        <div class="infer-bar"><div class="infer-fill" id="infer-fill" style="width:0%"></div></div>
+      </div>
+
+      <div class="class-status">
+        <div class="status-title">Student Progress</div>
+        <div id="student-list"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- LOADING OVERLAY -->
+<div class="loading-overlay" id="loading" style="display:none">
+  <div class="loading-box">
+    <div class="spinner"></div>
+    <strong>Co-Read AI is thinking...</strong>
+    <p id="loading-msg">Analysing your annotation for inferential depth</p>
+  </div>
+</div>
+
+<script>
+// ===== STATE =====
+let currentPara = 0;
+let totalParas = 5;
+let annotations = [];
+let aiPrompts = [];
+let totalAnnotations = 0;
+let inferentialCount = 0;
+
+const STUDENTS = [
+  { name: "Ahmad R.", color: "#4f8ef7" },
+  { name: "Siti N.", color: "#7c6af5" },
+  { name: "Rajan K.", color: "#3ecf8e" },
+  { name: "Farah A.", color: "#e8b84b" },
+  { name: "You", color: "#f87171" },
+];
+
+let studentProgress = STUDENTS.map(() => ({ para: 0, done: false }));
+
+// Simulate classmate activity
+setTimeout(() => simulateClassmate(0, 0, "Ahmad R.", "The pier being 'deathly still' suggests Maya's emotional numbness — the setting mirrors her internal state of feeling frozen after years away."), 3000);
+setTimeout(() => simulateClassmate(1, 0, "Siti N.", "She scans keywords but copies: 'crumbling pier' and 'deathly still'"), 5000);
+setTimeout(() => simulateClassmate(2, 0, "Rajan K.", "I think the author uses the harbour's stillness to contrast with the 'noise' behind Maya — showing she's between two worlds: her past and present."), 8000);
+
+function simulateClassmate(studentIdx, paraIdx, name, text) {
+  const isLiteral = text.includes("copies") || text.length < 60;
+  const type = isLiteral ? 'literal' : 'inferential';
+  addAnnotationCard(name, STUDENTS[studentIdx].color, text, paraIdx, type);
+  studentProgress[studentIdx].done = true;
+  totalAnnotations++;
+  if (type === 'inferential') inferentialCount++;
+  updateClassStats();
+  updateStudentList();
+}
+
+// ===== LOCAL AI CLASSIFIER (no API needed — works in any browser) =====
+function classifyAnnotation(text, paraIdx) {
+  const t = text.toLowerCase();
+
+  // Signals of LITERAL / surface reading
+  const literalSignals = [
+    /\b(says?|states?|mentions?|writes?|tells?)\b/,
+    /\b(the text says|it says|according to|the author says)\b/,
+    /\b(crumbling|deathly still|hollow|efficient|unremarkable|heavier)\b/, // direct keyword lifts
+    /^.{0,60}$/, // very short
+  ];
+
+  // Signals of INFERENTIAL / deep reading
+  const inferentialSignals = [
+    /\b(suggest|impl[yi]|symbol|represent|metaphor|contrast|juxtapos|convey|reveal|reflect|signif|theme|motif|irony|tone)\b/,
+    /\b(feel|emotion|inner|psycholog|identity|guilt|longing|loss|grief|isolat|numb|disconn)\b/,
+    /\b(author|reader|effect|purpose|why|because|therefore|which shows|this means|this implies)\b/,
+    /\b(deeper|beneath|beyond|underl|beneath the surface|not just)\b/,
+  ];
+
+  const literalHits = literalSignals.filter(r => r.test(t)).length;
+  const inferentialHits = inferentialSignals.filter(r => r.test(t)).length;
+
+  const isInferential = inferentialHits >= 2 || (inferentialHits >= 1 && text.length > 80);
+
+  // Socratic prompts bank — keyed by paragraph
+  const socraticPrompts = [
+    // Para 1
+    {
+      literal: "You've identified some key phrases — but what might they tell us about Maya's emotional state? Why do you think the author chose the harbour to be 'deathly still' rather than, say, stormy or busy? What effect does this create in contrast to the noise behind her?",
+      inferential: "Excellent connection! Now consider: if the town represents Maya's past and the harbour her inner world, what does it mean that the harbour 'holds its breath'? What might it be waiting for?"
+    },
+    // Para 2
+    {
+      literal: "You've noted what Maya is doing — but why does she say she 'called it survival'? What does this word choice reveal about how she sees herself? How is her therapist's word 'dissociation' different from her own word 'survival', and why does that difference matter?",
+      inferential: "Sharp observation! Push further — why does the author place the word 'hollow' next to 'efficient'? What does this pairing suggest about what Maya has sacrificed, and for whom?"
+    },
+    // Para 3
+    {
+      literal: "You've described what happened — but who might this boy represent? Why does the author make him speak so unusually for a child? What is the effect of his expression being 'neither curious nor kind'?",
+      inferential: "Great inferential leap! Now think about this: the boy says 'everyone stands on the soft part' — could this apply beyond Maya, to a wider human experience? What might the author be suggesting about how people approach difficult truths?"
+    },
+    // Para 4
+    {
+      literal: "You've identified the stone — but why might it be described as 'unremarkable' yet feel 'heavier than it looked'? What could the stone represent beyond a physical object? How does the grandfather's saying connect to Maya's situation?",
+      inferential: "Perceptive! Extend this further — the grandfather says 'the sea gives back what it's ready to.' What has the sea been holding that Maya might need returned? And why is it the boy, not Maya herself, who delivers this message?"
+    },
+    // Para 5
+    {
+      literal: "You've described the ending — but what is the significance of Maya turning *toward* the town rather than away? Why does the author end on this action rather than words or thoughts? What has changed in Maya by this final paragraph?",
+      inferential: "Excellent reading! One final push — the stone is described as 'a decision she hadn't made yet.' By the end, has she made it? What is the decision, and how does the author show it without stating it directly?"
+    }
+  ];
+
+  const prompts = socraticPrompts[paraIdx] || socraticPrompts[0];
+
+  if (isInferential) {
+    return {
+      type: "inferential",
+      feedback: "Strong inferential thinking — you're going beyond the surface of the text.",
+      socratic: prompts.inferential
+    };
+  } else {
+    return {
+      type: "literal",
+      feedback: prompts.literal,
+      socratic: ""
+    };
+  }
+}
+
+// ===== SUBMIT ANNOTATION =====
+async function submitAnnotation() {
+  const input = document.getElementById('annotation-input');
+  const text = input.value.trim();
+  if (!text) { showToast("Please write an annotation before submitting."); return; }
+
+  const btn = document.getElementById('submit-btn');
+  btn.disabled = true;
+  showLoading("Analysing your annotation for inferential depth...");
+
+  // Simulate brief processing time (1.2s) then run local classifier
+  await new Promise(resolve => setTimeout(resolve, 1200));
+
+  const parsed = classifyAnnotation(text, currentPara);
+
+  hideLoading();
+
+  // Add student annotation
+  addAnnotationCard("You", "#f87171", text, currentPara, parsed.type);
+  totalAnnotations++;
+  if (parsed.type === 'inferential') inferentialCount++;
+  studentProgress[4].done = true;
+  updateClassStats();
+  updateStudentList();
+
+  // Show AI prompt
+  addAIPrompt(parsed.type, parsed.feedback, parsed.socratic, currentPara);
+
+  // Unlock next paragraph
+  unlockNext();
+  input.value = "";
+  showToast(parsed.type === 'inferential'
+    ? "✅ Inferential annotation — unlocking next paragraph!"
+    : "💡 Co-Read AI has a Socratic prompt — check the AI tab!");
+
+  btn.disabled = false;
+}
+
+function unlockNext() {
+  // Mark current paragraph as completed
+  const curBlock = document.getElementById('para-' + currentPara);
+  curBlock.classList.remove('active');
+  curBlock.classList.add('completed');
+
+  // Update lock icon to checkmark
+  const lockEl = document.getElementById('lock-' + currentPara);
+  if (lockEl) { lockEl.innerHTML = '✓'; lockEl.className = 'check'; }
+
+  // Update status label safely (only exists if previously added)
+  const statusEl = document.getElementById('status-' + currentPara);
+  if (statusEl) statusEl.textContent = 'Completed';
+
+  // Hide lock banner
+  const banner = document.getElementById('lock-banner-' + currentPara);
+  if (banner) banner.style.display = 'none';
+
+  currentPara++;
+  updateProgress();
+
+  if (currentPara < totalParas) {
+    const nextBlock = document.getElementById('para-' + currentPara);
+
+    // Unlock next paragraph
+    nextBlock.classList.remove('locked');
+    nextBlock.classList.add('active');
+
+    // Update lock icon to show paragraph number
+    const nextLock = document.getElementById('lock-' + currentPara);
+    if (nextLock) { nextLock.textContent = String(currentPara + 1); nextLock.className = 'lock-icon'; }
+
+    // Replace "Locked" text in para-label with active status
+    const paraLabel = nextBlock.querySelector('.para-label');
+    if (paraLabel) {
+      // Clear existing text nodes
+      Array.from(paraLabel.childNodes).forEach(n => { if (n.nodeType === 3) n.textContent = ' '; });
+      // Add status span if not already there
+      if (!document.getElementById('status-' + currentPara)) {
+        const statusSpan = document.createElement('span');
+        statusSpan.id = 'status-' + currentPara;
+        statusSpan.textContent = 'Annotate to unlock next paragraph';
+        paraLabel.appendChild(statusSpan);
+      }
+    }
+
+    // Update annotation input label
+    document.getElementById('current-para-label').textContent = currentPara + 1;
+
+    // Add lock banner (only if not last paragraph, avoid duplicates)
+    if (currentPara < totalParas - 1 && !document.getElementById('lock-banner-' + currentPara)) {
+      const newBanner = document.createElement('div');
+      newBanner.id = 'lock-banner-' + currentPara;
+      newBanner.className = 'lock-banner';
+      newBanner.textContent = '🔒 Complete your annotation below to unlock the next paragraph.';
+      nextBlock.appendChild(newBanner);
+    }
+
+    // Scroll to next paragraph
+    setTimeout(function() { nextBlock.scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 300);
+
+    // Simulate classmates annotating this paragraph
+    scheduleClassmateForPara(currentPara);
+
+  } else {
+    document.querySelector('.annotation-panel').innerHTML =
+      '<div style="text-align:center; padding:20px; color:var(--green); font-size:15px; font-weight:600;">🎉 All paragraphs completed! Great deep-circuit reading session.</div>';
+  }
+}
+
+function scheduleClassmateForPara(paraIdx) {
+  const comments = [
+    ["The word 'hollow and efficient' is a juxtaposition — efficiency is usually positive but here it implies she sacrificed her inner life for external success.", "The phrase 'last place she felt real' suggests identity loss over time, not just physical absence."],
+    ["The boy 'neither curious nor kind' — this means he sees her truly, without social pretense. He's a truth-teller figure.", "He speaks in metaphors like 'soft part' which suggests wisdom beyond his age — perhaps symbolising Maya's younger self."],
+    ["'Heavier than it looked' is definitely symbolic — the stone represents her emotional burden or unresolved past.", "The tide chart simile is interesting — the boy speaks with natural, cyclical truth that Maya has lost touch with."],
+    ["The stone as 'a decision she hadn't made yet' shows she's at a turning point — it's the moment of change.", "The ending shift toward town is significant — she moves toward connection, not away."],
+  ];
+
+  if (paraIdx < comments.length) {
+    const delay1 = 4000 + Math.random() * 2000;
+    const delay2 = 9000 + Math.random() * 3000;
+    const names = ["Ahmad R.", "Rajan K.", "Farah A."];
+    const colors = ["#4f8ef7", "#3ecf8e", "#e8b84b"];
+    const pick = paraIdx % 3;
+
+    setTimeout(() => {
+      simulateClassmate(pick, paraIdx, names[pick], comments[paraIdx][0]);
+    }, delay1);
+    setTimeout(() => {
+      simulateClassmate((pick+1)%3, paraIdx, names[(pick+1)%3], comments[paraIdx][1]);
+    }, delay2);
+  }
+}
+
+// ===== ANNOTATION CARD =====
+function addAnnotationCard(name, color, text, paraIdx, type) {
+  const list = document.getElementById('annotations-list');
+  // Clear empty state
+  const empty = list.querySelector('.empty-state');
+  if (empty) empty.remove();
+
+  const card = document.createElement('div');
+  card.className = 'ann-card';
+  const initials = name.split(' ').map(w=>w[0]).join('').slice(0,2);
+  card.innerHTML = `
+    <div class="ann-card-header">
+      <div class="ann-author">
+        <div class="avatar" style="background:${color}">${initials}</div>
+        <span class="ann-name">${name}</span>
+      </div>
+      <span class="ann-type ${type}">${type}</span>
+    </div>
+    <div class="ann-text">${text}</div>
+    <div class="ann-para">Para ${paraIdx + 1}</div>
+  `;
+  list.prepend(card);
+}
+
+// ===== AI PROMPT =====
+function addAIPrompt(type, feedback, socratic, paraIdx) {
+  const list = document.getElementById('ai-prompts-list');
+  const empty = list.querySelector('.empty-state');
+  if (empty) empty.remove();
+
+  const card = document.createElement('div');
+  card.className = 'ai-prompt-card';
+  const icon = type === 'inferential' ? '✨' : '🔍';
+  const label = type === 'inferential' ? 'Extending your thinking' : 'Socratic Prompt';
+  card.innerHTML = `
+    <div class="ai-prompt-header">
+      <span class="ai-chip">Co-Read AI</span>
+      <span class="ai-prompt-label">${icon} ${label} · Para ${paraIdx + 1}</span>
+    </div>
+    <div class="ai-prompt-text">${feedback}</div>
+    ${socratic ? `<div class="ai-prompt-text" style="margin-top:10px; color:var(--accent); font-style:normal; font-size:12.5px;">↩ ${socratic}</div>` : ''}
+  `;
+  list.prepend(card);
+}
+
+// ===== CLASS STATS =====
+function updateClassStats() {
+  const rate = totalAnnotations > 0 ? Math.round((inferentialCount / totalAnnotations) * 100) : 0;
+  document.getElementById('stat-total').textContent = totalAnnotations;
+  document.getElementById('stat-infer').textContent = rate + '%';
+  document.getElementById('stat-para').textContent = currentPara + 1;
+  document.getElementById('infer-fill').style.width = rate + '%';
+}
+
+function updateStudentList() {
+  const list = document.getElementById('student-list');
+  list.innerHTML = STUDENTS.map((s, i) => {
+    const p = studentProgress[i];
+    const statusClass = p.done ? 'done' : (i < 3 ? 'pending' : 'waiting');
+    const statusText = p.done ? `Annotated P${currentPara + 1}` : (i < 3 ? 'Reading...' : 'Waiting');
+    return `<div class="student-row">
+      <div class="student-info">
+        <div class="avatar" style="background:${s.color};width:22px;height:22px;font-size:10px">${s.name.split(' ').map(w=>w[0]).join('').slice(0,2)}</div>
+        ${s.name}
+      </div>
+      <div class="student-status"><span class="status-dot ${statusClass}"></span>${statusText}</div>
+    </div>`;
+  }).join('');
+}
+
+function updateProgress() {
+  const pct = (currentPara / totalParas) * 100;
+  document.getElementById('progress-fill').style.width = pct + '%';
+  document.getElementById('progress-label').textContent = `${currentPara} / ${totalParas}`;
+}
+
+// ===== TABS =====
+function switchTab(name, btn) {
+  document.querySelectorAll('.tab-content').forEach(t => t.style.display = 'none');
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById(`tab-${name}`).style.display = 'block';
+  btn.classList.add('active');
+}
+
+// ===== TOAST =====
+function showToast(msg) {
+  const t = document.createElement('div');
+  t.className = 'toast'; t.textContent = msg;
+  document.body.appendChild(t);
+  setTimeout(() => t.remove(), 3500);
+}
+
+function showLoading(msg) {
+  document.getElementById('loading-msg').textContent = msg;
+  document.getElementById('loading').style.display = 'flex';
+}
+function hideLoading() {
+  document.getElementById('loading').style.display = 'none';
+}
+
+// ===== INIT =====
+updateStudentList();
+updateProgress();
+// Show lock banner on first para
+const banner = document.createElement('div');
+banner.id = 'lock-banner-0';
+banner.className = 'lock-banner';
+banner.textContent = '🔒 Complete your annotation below to unlock the next paragraph.';
+document.getElementById('para-0').appendChild(banner);
+</script>
+</body>
+</html>
