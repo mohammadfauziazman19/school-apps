@@ -1,0 +1,871 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>Sentence Surgery — Sec 2 English</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Lora:ital,wght@0,400;0,500;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after {
+  box-sizing: border-box; margin: 0; padding: 0;
+  -webkit-tap-highlight-color: transparent;
+}
+
+:root {
+  --bg:      #F7F6F3;
+  --surface: #FFFFFF;
+  --surface2:#F0EEE9;
+  --border:  #E2DED6;
+  --border2: #CCC8BF;
+  --text:    #1C1C1E;
+  --muted:   #6B6865;
+  --faint:   #A8A49E;
+
+  --teal:        #0A7EA4;
+  --teal-bg:     #EAF5FA;
+  --teal-border: #B3DCF0;
+
+  --red:         #D94F3D;
+  --red-bg:      #FAEAE8;
+  --red-border:  #F0B8B2;
+
+  --purple:        #6B48C8;
+  --purple-bg:     #F0ECFB;
+  --purple-border: #C9BAF0;
+
+  --amber:        #C07A00;
+  --amber-bg:     #FBF3E0;
+  --amber-border: #EDD08A;
+
+  --success:    #1A6B3C;
+  --success-bg: #E8F7EF;
+  --error:      #C0392B;
+  --error-bg:   #FDECEA;
+
+  --font-display: 'Syne', sans-serif;
+  --font-body:    'Lora', serif;
+  --font-mono:    'JetBrains Mono', monospace;
+  --radius:    8px;
+  --radius-lg: 14px;
+  --shadow:    0 2px 12px rgba(0,0,0,0.07);
+  --shadow-lg: 0 6px 24px rgba(0,0,0,0.10);
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: var(--font-body);
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+}
+
+.app { max-width: 680px; margin: 0 auto; padding: 0 20px 80px; }
+
+/* ── SCREENS ── */
+.screen { display: none; }
+.screen.active { display: block; }
+
+/* ── LANDING ── */
+.landing {
+  min-height: 100vh;
+  display: flex; flex-direction: column;
+  align-items: flex-start; justify-content: center;
+  padding: 60px 0 40px;
+}
+.landing-eyebrow {
+  font-family: var(--font-mono);
+  font-size: 11px; letter-spacing: 2px; text-transform: uppercase;
+  color: var(--faint); margin-bottom: 20px;
+  display: flex; align-items: center; gap: 10px;
+}
+.landing-eyebrow::before { content:''; width:24px; height:1px; background:var(--faint); }
+.landing-title {
+  font-family: var(--font-display);
+  font-size: clamp(44px, 9vw, 72px);
+  font-weight: 800; line-height: 0.95;
+  color: var(--text); margin-bottom: 18px;
+  letter-spacing: -2px;
+}
+.landing-title .accent { color: var(--teal); }
+.landing-desc {
+  font-size: 15px; line-height: 1.75;
+  color: var(--muted); max-width: 460px; margin-bottom: 36px;
+}
+.type-pills { display:flex; gap:8px; flex-wrap:wrap; margin-bottom:40px; }
+.pill {
+  font-family: var(--font-mono); font-size: 11px; font-weight:500;
+  letter-spacing:1px; text-transform:uppercase;
+  padding:5px 13px; border-radius:20px; border:1px solid;
+}
+.pill-s  { color:var(--teal);   background:var(--teal-bg);   border-color:var(--teal-border); }
+.pill-cd { color:var(--red);    background:var(--red-bg);    border-color:var(--red-border); }
+.pill-cx { color:var(--purple); background:var(--purple-bg); border-color:var(--purple-border); }
+.pill-cc { color:var(--amber);  background:var(--amber-bg);  border-color:var(--amber-border); }
+
+.btn-start {
+  font-family: var(--font-display); font-size:15px; font-weight:700;
+  background: var(--text); color: #fff;
+  border:none; padding:15px 36px; border-radius:var(--radius);
+  cursor:pointer; letter-spacing:0.3px;
+  -webkit-appearance:none; touch-action:manipulation;
+  transition: background 0.15s, transform 0.1s;
+}
+.btn-start:hover { background: var(--teal); }
+.btn-start:active { transform:scale(0.97); }
+
+.group-row {
+  margin-top:18px; display:flex; align-items:center; gap:12px;
+}
+.group-row label {
+  font-family:var(--font-mono); font-size:11px;
+  color:var(--faint); letter-spacing:1px; text-transform:uppercase;
+}
+.group-row input {
+  font-family:var(--font-body); font-size:14px;
+  padding:9px 14px; border-radius:var(--radius);
+  border:1px solid var(--border2);
+  background:var(--surface); color:var(--text);
+  outline:none; width:200px;
+  transition:border-color 0.2s;
+}
+.group-row input:focus { border-color:var(--teal); }
+
+/* ── TOP BAR ── */
+.topbar {
+  position:-webkit-sticky; position:sticky; top:0;
+  background:rgba(247,246,243,0.94);
+  backdrop-filter:blur(10px); -webkit-backdrop-filter:blur(10px);
+  border-bottom:1px solid var(--border);
+  padding:13px 0; z-index:100;
+  display:flex; align-items:center; justify-content:space-between;
+}
+.topbar-title {
+  font-family:var(--font-display); font-size:16px;
+  font-weight:700; color:var(--text);
+}
+.topbar-group {
+  font-family:var(--font-mono); font-size:11px;
+  color:var(--faint); letter-spacing:1px;
+}
+
+/* ── PROGRESS ── */
+.progress-wrap { padding:18px 0 4px; }
+.prog-segs { display:flex; gap:5px; margin-bottom:6px; }
+.prog-seg {
+  flex:1; height:3px; border-radius:2px;
+  background:var(--border2); transition:background 0.4s;
+}
+.prog-seg.done   { background:var(--teal); }
+.prog-seg.active { background:var(--muted); }
+.prog-label {
+  font-family:var(--font-mono); font-size:10px;
+  color:var(--faint); letter-spacing:1px;
+}
+
+/* ── SECTION HEADER ── */
+.sec-header { margin:26px 0 18px; }
+.sec-tag {
+  font-family:var(--font-mono); font-size:10px;
+  letter-spacing:2px; text-transform:uppercase; margin-bottom:6px;
+}
+.sec-title {
+  font-family:var(--font-display); font-size:24px;
+  font-weight:800; line-height:1.1; color:var(--text);
+  letter-spacing:-0.5px;
+}
+.sec-sub { font-size:13px; color:var(--muted); margin-top:6px; line-height:1.6; }
+
+/* ── CHEAT SHEET ── */
+.cheat-toggle {
+  font-family:var(--font-mono); font-size:11px;
+  color:var(--faint); cursor:pointer;
+  display:inline-flex; align-items:center; gap:6px;
+  margin-bottom:18px; letter-spacing:1px; text-transform:uppercase;
+  border:none; background:none; padding:0;
+  -webkit-appearance:none; touch-action:manipulation;
+  transition:color 0.15s;
+}
+.cheat-toggle:hover { color:var(--muted); }
+.cheat-panel {
+  background:var(--surface); border:1px solid var(--border);
+  border-radius:var(--radius); padding:16px;
+  margin-bottom:18px; display:none;
+  box-shadow:var(--shadow);
+}
+.cheat-panel.open { display:block; animation:fadeUp 0.2s ease; }
+.cheat-grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+.cheat-item h4 {
+  font-family:var(--font-mono); font-size:10px;
+  letter-spacing:1.5px; text-transform:uppercase; margin-bottom:5px;
+}
+.cheat-item.s  h4 { color:var(--teal); }
+.cheat-item.cd h4 { color:var(--red); }
+.cheat-item.cx h4 { color:var(--purple); }
+.cheat-item.cc h4 { color:var(--amber); }
+.cheat-item p {
+  font-family:var(--font-mono); font-size:11px;
+  color:var(--muted); line-height:1.65;
+}
+
+/* ── QUESTIONS ── */
+.q-block { margin-bottom:24px; }
+.q-tag {
+  font-family:var(--font-mono); font-size:10px;
+  letter-spacing:2px; text-transform:uppercase;
+  color:var(--faint); margin-bottom:7px;
+}
+.q-text { font-size:15px; font-weight:500; color:var(--text); line-height:1.6; margin-bottom:4px; }
+.q-sentence {
+  font-family:var(--font-mono); font-size:13px;
+  color:var(--muted); line-height:1.7;
+  background:var(--surface2); border-radius:var(--radius);
+  padding:12px 14px; margin:10px 0 14px;
+  border-left:3px solid var(--border2);
+}
+
+.opts { display:flex; flex-direction:column; gap:8px; }
+.opt {
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:var(--radius);
+  padding:12px 16px;
+  font-family:var(--font-mono); font-size:12px;
+  color:var(--muted); cursor:pointer;
+  text-align:left; letter-spacing:0.3px; line-height:1.5;
+  -webkit-appearance:none; touch-action:manipulation;
+  transition:border-color 0.15s, background 0.15s, color 0.15s;
+  box-shadow:var(--shadow);
+}
+.opt:hover:not(:disabled) {
+  border-color:var(--teal); background:var(--teal-bg); color:var(--text);
+}
+.opt:disabled { cursor:default; }
+.opt.correct {
+  background:var(--success-bg); border-color:var(--success);
+  color:var(--success); font-weight:500;
+}
+.opt.wrong {
+  background:var(--error-bg); border-color:var(--error);
+  color:var(--error); animation:shake 0.3s;
+}
+
+@keyframes shake {
+  0%,100% { transform:translateX(0); }
+  25%      { transform:translateX(-5px); }
+  75%      { transform:translateX(5px); }
+}
+@keyframes fadeUp {
+  from { opacity:0; transform:translateY(4px); }
+  to   { opacity:1; transform:none; }
+}
+
+/* ── FEEDBACK ── */
+.feedback {
+  margin-top:10px; padding:12px 14px;
+  border-radius:var(--radius); font-size:12px;
+  line-height:1.65; display:none;
+  font-family:var(--font-mono);
+}
+.feedback.show    { display:block; animation:fadeUp 0.25s ease; }
+.feedback.fb-ok   { background:var(--success-bg); border-left:3px solid var(--success); color:var(--success); }
+.feedback.fb-err  { background:var(--error-bg);   border-left:3px solid var(--error);   color:var(--error); }
+
+/* ── STAGE NAV BUTTON ── */
+.btn-next-stage {
+  display:inline-block; margin-top:20px;
+  font-family:var(--font-display); font-size:14px; font-weight:700;
+  background:var(--teal); color:#fff;
+  border:none; padding:13px 30px; border-radius:var(--radius);
+  cursor:pointer; letter-spacing:0.3px;
+  -webkit-appearance:none; touch-action:manipulation;
+  transition:background 0.15s, transform 0.1s;
+  box-shadow:var(--shadow);
+}
+.btn-next-stage:hover { background:#0968893; }
+.btn-next-stage:active { transform:scale(0.97); }
+.btn-next-stage.final { background:var(--amber); }
+
+/* ── SURGERY / CONSTRUCT CARDS ── */
+.construct-card {
+  background:var(--surface); border:1px solid var(--border);
+  border-radius:var(--radius-lg); padding:20px; margin-bottom:14px;
+  box-shadow:var(--shadow);
+}
+.construct-label {
+  font-family:var(--font-mono); font-size:10px;
+  letter-spacing:2px; text-transform:uppercase; margin-bottom:9px;
+}
+.construct-label.s  { color:var(--teal); }
+.construct-label.cd { color:var(--red); }
+.construct-label.cx { color:var(--purple); }
+.construct-label.cc { color:var(--amber); }
+
+.construct-prompt {
+  font-size:14px; color:var(--muted); line-height:1.65; margin-bottom:12px;
+}
+.construct-frame {
+  font-family:var(--font-mono); font-size:12px; color:var(--faint);
+  padding:9px 13px; background:var(--surface2);
+  border-radius:var(--radius); margin-bottom:12px; line-height:1.6;
+  border-left:2px solid var(--border2);
+}
+.construct-input {
+  width:100%; font-family:var(--font-body); font-size:14px;
+  padding:11px 13px; border-radius:var(--radius);
+  border:1px solid var(--border2);
+  background:var(--surface2); color:var(--text);
+  resize:vertical; min-height:64px; outline:none; line-height:1.6;
+  transition:border-color 0.2s;
+}
+.construct-input:focus { border-color:var(--teal); }
+
+.btn-check {
+  margin-top:12px;
+  font-family:var(--font-mono); font-size:11px; font-weight:500;
+  letter-spacing:1px; text-transform:uppercase;
+  background:var(--surface2); color:var(--muted);
+  border:1px solid var(--border2);
+  padding:9px 18px; border-radius:var(--radius);
+  cursor:pointer; -webkit-appearance:none; touch-action:manipulation;
+  transition:border-color 0.15s, color 0.15s;
+}
+.btn-check:hover { border-color:var(--teal); color:var(--teal); }
+
+/* surgery rows */
+.surgery-original {
+  font-family:var(--font-mono); font-size:12px; color:var(--muted);
+  line-height:1.8; background:var(--surface2); border-radius:var(--radius);
+  padding:14px; margin:12px 0; border-left:3px solid var(--red-border);
+}
+.surgery-row { display:flex; align-items:flex-start; gap:10px; margin-bottom:10px; }
+.surgery-type-badge {
+  font-family:var(--font-mono); font-size:10px; font-weight:500;
+  letter-spacing:1px; text-transform:uppercase;
+  padding:6px 10px; border-radius:var(--radius);
+  white-space:nowrap; min-width:58px; text-align:center; margin-top:2px;
+}
+.stl-s  { color:var(--teal);   background:var(--teal-bg); }
+.stl-cd { color:var(--red);    background:var(--red-bg); }
+.stl-cx { color:var(--purple); background:var(--purple-bg); }
+.stl-cc { color:var(--amber);  background:var(--amber-bg); }
+
+/* ── DIVIDER ── */
+.divider { border:none; border-top:1px solid var(--border); margin:20px 0; }
+
+/* ── FINAL SCREEN ── */
+.final-screen {
+  min-height:100vh; display:flex; flex-direction:column;
+  align-items:flex-start; justify-content:center;
+  padding:60px 0;
+}
+.final-eyebrow {
+  font-family:var(--font-mono); font-size:11px; letter-spacing:2px;
+  color:var(--teal); text-transform:uppercase;
+  margin-bottom:18px; display:flex; align-items:center; gap:10px;
+}
+.final-eyebrow::before { content:''; width:24px; height:1px; background:var(--teal); }
+.final-title {
+  font-family:var(--font-display);
+  font-size:clamp(36px, 7vw, 58px);
+  font-weight:800; color:var(--text); line-height:1.05;
+  letter-spacing:-1.5px; margin-bottom:10px;
+}
+.final-title .accent { color:var(--teal); }
+.final-sub { font-size:15px; color:var(--muted); line-height:1.7; max-width:460px; margin-bottom:32px; }
+.score-row { display:flex; gap:12px; flex-wrap:wrap; margin-bottom:32px; }
+.score-card {
+  background:var(--surface); border:1px solid var(--border);
+  border-radius:var(--radius); padding:14px 20px; text-align:center;
+  min-width:88px; box-shadow:var(--shadow);
+}
+.score-num {
+  font-family:var(--font-display); font-size:32px;
+  font-weight:800; color:var(--teal); line-height:1;
+}
+.score-label { font-family:var(--font-mono); font-size:10px; color:var(--faint); margin-top:3px; letter-spacing:1px; }
+
+/* exit ticket */
+.exit-section { width:100%; max-width:560px; }
+.exit-title {
+  font-family:var(--font-mono); font-size:11px; letter-spacing:2px;
+  text-transform:uppercase; color:var(--faint); margin-bottom:14px;
+}
+.exit-prompt {
+  background:var(--surface); border:1px solid var(--border);
+  border-radius:var(--radius); padding:14px 16px; margin-bottom:10px;
+  box-shadow:var(--shadow);
+}
+.exit-prompt-q {
+  font-family:var(--font-mono); font-size:11px; color:var(--faint);
+  letter-spacing:1px; text-transform:uppercase; margin-bottom:8px;
+}
+.exit-ta {
+  width:100%; font-family:var(--font-body); font-size:13px;
+  padding:10px 12px; border-radius:var(--radius);
+  border:1px solid var(--border2); background:var(--surface2);
+  color:var(--text); resize:vertical; min-height:58px;
+  outline:none; line-height:1.6; transition:border-color 0.2s;
+}
+.exit-ta:focus { border-color:var(--teal); }
+.btn-submit {
+  margin-top:16px;
+  font-family:var(--font-display); font-size:14px; font-weight:700;
+  background:var(--teal); color:#fff;
+  border:none; padding:14px 32px; border-radius:var(--radius);
+  cursor:pointer; letter-spacing:0.3px;
+  -webkit-appearance:none; touch-action:manipulation;
+  transition:background 0.15s;
+  box-shadow:var(--shadow);
+}
+.btn-submit:hover { background:#096889; }
+
+/* stage complete banner */
+.stage-complete {
+  background:var(--success-bg); border:1px solid var(--success);
+  border-radius:var(--radius-lg); padding:18px 20px;
+  margin-top:20px; display:none; animation:fadeUp 0.3s ease;
+}
+.stage-complete.show { display:block; }
+.stage-complete p {
+  font-family:var(--font-mono); font-size:12px;
+  color:var(--success); line-height:1.6; margin-bottom:12px;
+}
+</style>
+</head>
+<body>
+<div class="app">
+
+<!-- ══ LANDING ══════════════════════════════════ -->
+<div class="screen active" id="screen-landing">
+  <div class="landing">
+    <div class="landing-eyebrow">Sec 2 Express · English Language</div>
+    <h1 class="landing-title">Sentence<br><span class="accent">Surgery</span></h1>
+    <p class="landing-desc">Every sentence you write is a choice. Learn to build all four sentence structures — then use them to rewrite and create with real control.</p>
+    <div class="type-pills">
+      <span class="pill pill-s">Simple</span>
+      <span class="pill pill-cd">Compound</span>
+      <span class="pill pill-cx">Complex</span>
+      <span class="pill pill-cc">Compound-Complex</span>
+    </div>
+    <button class="btn-start" onclick="startGame()">Begin Activity</button>
+    <div class="group-row">
+      <label>Name</label>
+      <input type="text" id="group-name" placeholder="Enter your name" maxlength="30">
+    </div>
+  </div>
+</div>
+
+<!-- ══ GAME SCREEN ═══════════════════════════════ -->
+<div class="screen" id="screen-game">
+  <div class="topbar">
+    <div class="topbar-title">Sentence Surgery</div>
+    <div class="topbar-group" id="group-display"></div>
+  </div>
+  <div class="progress-wrap">
+    <div class="prog-segs">
+      <div class="prog-seg active" id="seg0"></div>
+      <div class="prog-seg" id="seg1"></div>
+      <div class="prog-seg" id="seg2"></div>
+      <div class="prog-seg" id="seg3"></div>
+    </div>
+    <div class="prog-label" id="prog-label">Part 1 of 4</div>
+  </div>
+  <div id="stage-content"></div>
+</div>
+
+<!-- ══ FINAL SCREEN ══════════════════════════════ -->
+<div class="screen" id="screen-final">
+  <div class="final-screen">
+    <div class="final-eyebrow">Activity Complete</div>
+    <h1 class="final-title">Well done,<br><span class="accent" id="final-group-name"></span></h1>
+    <p class="final-sub">You have worked through all four sentence structures. Now complete your individual exit ticket below.</p>
+    <div class="score-row" id="score-row"></div>
+    <div class="exit-section">
+      <div class="exit-title">Exit Ticket — My Digital Moment</div>
+      <p style="font-size:13px;color:var(--muted);line-height:1.6;margin-bottom:14px;">Write one sentence of <strong style="color:var(--text)">each type</strong> about a real or imagined social media moment.</p>
+      <div class="exit-prompt">
+        <div class="exit-prompt-q">Simple sentence [S]</div>
+        <textarea class="exit-ta" placeholder="e.g. I posted a photo."></textarea>
+      </div>
+      <div class="exit-prompt">
+        <div class="exit-prompt-q">Compound sentence [Cd]</div>
+        <textarea class="exit-ta" placeholder="e.g. I posted a photo, but nobody liked it."></textarea>
+      </div>
+      <div class="exit-prompt">
+        <div class="exit-prompt-q">Complex sentence [Cx]</div>
+        <textarea class="exit-ta" placeholder="e.g. Although I had edited the photo carefully, nobody liked it."></textarea>
+      </div>
+      <div class="exit-prompt">
+        <div class="exit-prompt-q">Compound-Complex sentence [Cd-Cx]</div>
+        <textarea class="exit-ta" placeholder="e.g. I had spent an hour editing the photo, and I felt proud, even though nobody liked it."></textarea>
+      </div>
+      <button class="btn-submit" onclick="submitExit()">Submit Exit Ticket</button>
+    </div>
+  </div>
+</div>
+
+</div><!-- end .app -->
+
+<script>
+// ═══════════════════════════════════════
+// DATA
+// ═══════════════════════════════════════
+const STAGES = [
+  {
+    type: "identify",
+    tag: "Part 1 of 4",
+    title: "Spot the Structure",
+    tagColor: "var(--teal)",
+    sub: "Read each social media post carefully. Identify the sentence type.",
+    questions: [
+      {
+        sentence: "Rafi scrolled through his feed for two hours.",
+        q: "What type of sentence is this?",
+        opts: ["Simple","Compound","Complex","Compound-Complex"],
+        correct: 0,
+        fb_ok: "Correct! One subject (Rafi), one verb (scrolled), no conjunctions — a Simple sentence.",
+        fb_err: "Look for conjunctions. There are none, and there is only one clause. What does that make it?"
+      },
+      {
+        sentence: "Mei Ling posted a photo, but she deleted it before anyone could see it.",
+        q: "What type of sentence is this?",
+        opts: ["Simple","Compound","Complex","Compound-Complex"],
+        correct: 1,
+        fb_ok: "Correct! Two independent clauses joined by 'but' — a FANBOYS coordinating conjunction. Compound sentence.",
+        fb_err: "Spot the word 'but'. It joins two complete ideas. What type of conjunction is 'but'?"
+      },
+      {
+        sentence: "Although the video had one million views, Zara did not think it was funny.",
+        q: "What type of sentence is this?",
+        opts: ["Simple","Compound","Complex","Compound-Complex"],
+        correct: 2,
+        fb_ok: "Correct! 'Although' is a subordinating conjunction. One dependent clause + one independent clause = Complex sentence.",
+        fb_err: "Spot 'Although' — a subordinating conjunction. The clause it starts cannot stand alone. What type is it?"
+      },
+      {
+        sentence: "Haziq had been studying all night, yet he still checked his notifications, because he was waiting for a reply.",
+        q: "What type of sentence is this?",
+        opts: ["Simple","Compound","Complex","Compound-Complex"],
+        correct: 3,
+        fb_ok: "Correct! 'yet' joins two ICs (Compound) and 'because' introduces a DC (Complex). Together: Compound-Complex.",
+        fb_err: "Find both 'yet' (coordinating) and 'because' (subordinating). A sentence with both types of conjunction is...?"
+      }
+    ]
+  },
+  {
+    type: "sort",
+    tag: "Part 2 of 4",
+    title: "Sort the Feed",
+    tagColor: "var(--red)",
+    sub: "Read each post. Identify the sentence type. Look carefully at the conjunctions.",
+    questions: [
+      {
+        sentence: "The influencer lost ten thousand followers overnight.",
+        q: "Which sentence type is this?",
+        opts: ["Simple","Compound","Complex","Compound-Complex"],
+        correct: 0,
+        fb_ok: "Correct! One independent clause, no conjunctions — Simple sentence.",
+        fb_err: "No coordinating or subordinating conjunctions here, and only one idea. That is a Simple sentence."
+      },
+      {
+        sentence: "She posted an apology, and her followers slowly returned.",
+        q: "Which sentence type is this?",
+        opts: ["Simple","Compound","Complex","Compound-Complex"],
+        correct: 1,
+        fb_ok: "Correct! 'and' joins two independent clauses — Compound sentence.",
+        fb_err: "'and' is a coordinating conjunction (FANBOYS) joining two independent clauses — that is Compound."
+      },
+      {
+        sentence: "Because the post went viral, Ryan's phone would not stop buzzing.",
+        q: "Which sentence type is this?",
+        opts: ["Simple","Compound","Complex","Compound-Complex"],
+        correct: 2,
+        fb_ok: "Correct! 'Because' is a subordinating conjunction introducing a dependent clause — Complex sentence.",
+        fb_err: "'Because' starts a clause that cannot stand alone. Dependent clause + independent clause = Complex."
+      },
+      {
+        sentence: "Priya had filmed the video three times, but she posted the first take, even though it was imperfect.",
+        q: "Which sentence type is this?",
+        opts: ["Simple","Compound","Complex","Compound-Complex"],
+        correct: 3,
+        fb_ok: "Correct! 'but' joins two ICs and 'even though' introduces a DC — Compound-Complex sentence.",
+        fb_err: "Find 'but' (coordinating) and 'even though' (subordinating). Both types of conjunction = Compound-Complex."
+      }
+    ]
+  },
+  {
+    type: "surgery",
+    tag: "Part 3 of 4",
+    title: "Sentence Surgery",
+    tagColor: "var(--purple)",
+    sub: "This post was written using only simple sentences. Rewrite it using all four sentence types — at least one of each.",
+    original: "Amir opened Instagram. He saw a video. It had a million likes. He watched it five times. He shared it. His friends replied. They loved it too.",
+    frames: [
+      { type:"S",      cls:"stl-s",  label:"simple",   hint:"Write one statement about Amir. (e.g. Amir / He / His friends...)" },
+      { type:"Cd",     cls:"stl-cd", label:"compound",  hint:"Use: for / and / nor / but / or / yet / so — join two ideas." },
+      { type:"Cx",     cls:"stl-cx", label:"complex",   hint:"Use: although / because / since / when / while / even though..." },
+      { type:"Cd-Cx",  cls:"stl-cc", label:"comp-cx",   hint:"Combine a Compound AND a Complex structure in one sentence." },
+    ]
+  },
+  {
+    type: "construct",
+    tag: "Part 4 of 4",
+    title: "Write Your Post",
+    tagColor: "var(--amber)",
+    sub: "Now write your own sentences about a social media moment of your choice. Use the prompts and frames below.",
+    constructs: [
+      { type:"Simple",           cls:"s",  prompt:"Write a simple sentence about someone posting, scrolling, or going viral.", frame:"" },
+      { type:"Compound",         cls:"cd", prompt:"Write a compound sentence about a reaction to a post or comment.", frame:"_________, [for/and/nor/but/or/yet/so] _________." },
+      { type:"Complex",          cls:"cx", prompt:"Write a complex sentence about why someone posted or deleted something.", frame:"Although / Because / When / Since _________, _________." },
+      { type:"Compound-Complex", cls:"cc", prompt:"Write a compound-complex sentence combining two ideas and a reason.", frame:"_________, and _________, even though / because _________." },
+    ]
+  }
+];
+
+// ═══════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════
+let currentStage = 0;
+let groupName = "";
+let attempts  = [[0,0,0,0],[0,0,0,0],[0],[0]];
+let correct   = [0,0,0,0];
+const LABELS  = ["Simple","Compound","Complex","Compound-Complex"];
+
+// ═══════════════════════════════════════
+// SCREENS
+// ═══════════════════════════════════════
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  window.scrollTo(0,0);
+}
+
+function startGame() {
+  groupName = document.getElementById('group-name').value.trim() || "Student";
+  document.getElementById('group-display').textContent = groupName;
+  showScreen('screen-game');
+  renderStage(0);
+}
+
+// ═══════════════════════════════════════
+// PROGRESS BAR
+// ═══════════════════════════════════════
+function updateProgress(idx, done=false) {
+  for (let i=0; i<4; i++) {
+    const seg = document.getElementById('seg'+i);
+    if (!seg) continue;
+    seg.className = 'prog-seg' + (i<idx ? ' done' : i===idx ? (done?' done':' active') : '');
+  }
+  const lbl = document.getElementById('prog-label');
+  if (lbl) lbl.textContent = 'Part '+(idx+1)+' of 4';
+}
+
+// ═══════════════════════════════════════
+// RENDER STAGE
+// ═══════════════════════════════════════
+function renderStage(idx) {
+  currentStage = idx;
+  updateProgress(idx);
+  const s = STAGES[idx];
+  let html = '';
+
+  // Header
+  html += `<div class="sec-header">
+    <div class="sec-tag" style="color:${s.tagColor}">${s.tag}</div>
+    <div class="sec-title">${s.title}</div>
+    <div class="sec-sub">${s.sub}</div>
+  </div>`;
+
+  // Cheat sheet (all stages)
+  html += `<button class="cheat-toggle" onclick="toggleCheat()">▸ <span id="cheat-lbl">Show Reference Sheet</span></button>
+  <div class="cheat-panel" id="cheat-panel">
+    <div class="cheat-grid">
+      <div class="cheat-item s"><h4>Simple</h4><p>One independent clause. No conjunctions.<br><br><em>e.g. "Aisha posted a photo."</em></p></div>
+      <div class="cheat-item cd"><h4>Compound</h4><p>IC + FANBOYS + IC.<br>(for, and, nor, but, or, yet, so)<br><br><em>e.g. "She posted it, but deleted it."</em></p></div>
+      <div class="cheat-item cx"><h4>Complex</h4><p>IC + subordinating conj + DC.<br>(although, because, when, since...)<br><br><em>e.g. "Although it flopped, she tried."</em></p></div>
+      <div class="cheat-item cc"><h4>Compound-Complex</h4><p>IC + FANBOYS + IC + sub conj + DC.<br><br><em>e.g. "She tried, and she won, even though she was nervous."</em></p></div>
+    </div>
+  </div>`;
+
+  if (s.type === "identify" || s.type === "sort") {
+    html += renderMCQ(idx, s);
+  } else if (s.type === "surgery") {
+    html += renderSurgery(idx, s);
+  } else if (s.type === "construct") {
+    html += renderConstruct(idx, s);
+  }
+
+  // Stage complete banner (hidden until triggered)
+  const isLast = idx === 3;
+  html += `<div class="stage-complete" id="stage-complete">
+    <p>${isLast ? 'All four parts complete! Head to the exit ticket to finish.' : 'Great work — you have completed this part. Move on to the next one!'}</p>
+    ${isLast
+      ? `<button class="btn-next-stage final" onclick="goFinal()">Go to Exit Ticket →</button>`
+      : `<button class="btn-next-stage" onclick="nextStage()">Continue to Part ${idx+2} →</button>`
+    }
+  </div>
+  <div style="height:40px"></div>`;
+
+  document.getElementById('stage-content').innerHTML = html;
+}
+
+// ── MCQ (identify + sort) ───────────────────────
+function renderMCQ(idx, s) {
+  let html = '';
+  s.questions.forEach((q, qi) => {
+    html += `<div class="q-block" id="qb-${qi}">
+      <div class="q-tag">Question ${qi+1} of ${s.questions.length}</div>
+      <div class="q-text">${q.q}</div>
+      <div class="q-sentence">"${q.sentence}"</div>
+      <div class="opts" id="opts-${qi}">
+        ${(s.type==="sort" ? LABELS : q.opts).map((o,oi) =>
+          `<button class="opt" onclick="answerMCQ(${idx},${qi},${oi})">${o}</button>`
+        ).join('')}
+      </div>
+      <div class="feedback" id="fb-${qi}"></div>
+    </div>`;
+  });
+  return html;
+}
+
+function answerMCQ(stageIdx, qi, chosen) {
+  const s = STAGES[stageIdx];
+  const q = s.questions[qi];
+  const opts = document.querySelectorAll(`#opts-${qi} .opt`);
+  attempts[stageIdx][qi] = (attempts[stageIdx][qi]||0) + 1;
+  opts.forEach(o => o.disabled = true);
+
+  const isCorrect = chosen === q.correct;
+  if (isCorrect) {
+    opts[chosen].classList.add('correct');
+    showFb(qi, true, q.fb_ok);
+    correct[stageIdx]++;
+    checkAllMCQDone(stageIdx, s);
+  } else {
+    opts[chosen].classList.add('wrong');
+    showFb(qi, false, q.fb_err);
+    setTimeout(() => {
+      opts[chosen].classList.remove('wrong');
+      opts.forEach(o => { o.disabled = false; });
+      document.getElementById(`fb-${qi}`).className = 'feedback';
+    }, 2400);
+  }
+}
+
+function checkAllMCQDone(stageIdx, s) {
+  // All questions answered correctly when correct count matches question count
+  if (correct[stageIdx] === s.questions.length) {
+    updateProgress(stageIdx, true);
+    setTimeout(() => showStageComplete(), 400);
+  }
+}
+
+// ── SURGERY ─────────────────────────────────────
+function renderSurgery(idx, s) {
+  return `<div class="construct-card">
+    <div class="q-tag">Original — Simple Sentences Only</div>
+    <div class="surgery-original">${s.original}</div>
+    <div class="q-text" style="margin-bottom:12px">Rewrite using all four sentence types. Use each at least once.</div>
+    <div id="surg-rows">
+      ${s.frames.map((f,i) => `
+        <div class="surgery-row">
+          <div class="surgery-type-badge ${f.cls}">${f.type}</div>
+          <div style="flex:1">
+            <textarea class="construct-input" id="surg-${i}" placeholder="${f.hint}" style="min-height:54px"></textarea>
+          </div>
+        </div>
+      `).join('')}
+    </div>
+    <button class="btn-check" onclick="checkSurgery(${idx})">Check my rewrite →</button>
+    <div class="feedback" id="surg-fb"></div>
+  </div>`;
+}
+
+function checkSurgery(stageIdx) {
+  const inputs = [0,1,2,3].map(i => document.getElementById(`surg-${i}`).value.trim());
+  const blank = inputs.filter(v => !v).length;
+  const fb = document.getElementById('surg-fb');
+  if (blank > 0) {
+    fb.innerHTML = `Please write a sentence for all four types first. You have ${blank} blank(s) remaining.`;
+    fb.className = 'feedback fb-err show'; return;
+  }
+  fb.innerHTML = "Nice work! Read your rewrite aloud — does it flow better than the original?";
+  fb.className = 'feedback fb-ok show';
+  correct[stageIdx] = 4;
+  updateProgress(stageIdx, true);
+  setTimeout(() => showStageComplete(), 500);
+}
+
+// ── CONSTRUCT ────────────────────────────────────
+function renderConstruct(idx, s) {
+  return s.constructs.map((c,i) => `
+    <div class="construct-card">
+      <div class="construct-label ${c.cls}">${c.type}</div>
+      <div class="construct-prompt">${c.prompt}</div>
+      ${c.frame ? `<div class="construct-frame">${c.frame}</div>` : ''}
+      <textarea class="construct-input" id="con-${i}" placeholder="Write your ${c.type.toLowerCase()} sentence here..."></textarea>
+    </div>
+  `).join('') +
+  `<button class="btn-check" onclick="checkConstruct(${idx})">Submit my sentences →</button>
+   <div class="feedback" id="con-fb"></div>`;
+}
+
+function checkConstruct(stageIdx) {
+  const inputs = [0,1,2,3].map(i => document.getElementById(`con-${i}`).value.trim());
+  const blank = inputs.filter(v => !v).length;
+  const fb = document.getElementById('con-fb');
+  if (blank > 0) {
+    fb.innerHTML = `You have ${blank} empty sentence(s). Fill in all four before submitting.`;
+    fb.className = 'feedback fb-err show'; return;
+  }
+  fb.innerHTML = "All four sentences submitted! Your teacher will review these.";
+  fb.className = 'feedback fb-ok show';
+  correct[stageIdx] = 4;
+  updateProgress(stageIdx, true);
+  setTimeout(() => showStageComplete(), 500);
+}
+
+// ── HELPERS ──────────────────────────────────────
+function showFb(qi, ok, text) {
+  const fb = document.getElementById(`fb-${qi}`);
+  fb.innerHTML = text;
+  fb.className = `feedback ${ok ? 'fb-ok' : 'fb-err'} show`;
+}
+
+function showStageComplete() {
+  const el = document.getElementById('stage-complete');
+  if (el) el.classList.add('show');
+  window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+}
+
+function toggleCheat() {
+  const p = document.getElementById('cheat-panel');
+  const l = document.getElementById('cheat-lbl');
+  p.classList.toggle('open');
+  l.textContent = p.classList.contains('open') ? 'Hide Reference Sheet' : 'Show Reference Sheet';
+}
+
+function nextStage() {
+  renderStage(currentStage + 1);
+  window.scrollTo(0,0);
+}
+
+function goFinal() {
+  document.getElementById('final-group-name').textContent = groupName;
+  const totalAttempts = attempts.flat().reduce((a,b)=>a+b,0);
+  const totalCorrect  = correct.reduce((a,b)=>a+b,0);
+  const retries = Math.max(0, totalAttempts - 8);
+  document.getElementById('score-row').innerHTML = `
+    <div class="score-card"><div class="score-num">${totalCorrect}</div><div class="score-label">Correct answers</div></div>
+    <div class="score-card"><div class="score-num">4</div><div class="score-label">Parts completed</div></div>
+    <div class="score-card"><div class="score-num">${retries}</div><div class="score-label">Retries</div></div>`;
+  showScreen('screen-final');
+}
+
+function submitExit() {
+  alert("Exit ticket submitted! Well done — your teacher will review your sentences.");
+}
+</script>
+</body>
+</html>
