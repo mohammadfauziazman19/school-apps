@@ -1,0 +1,905 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Latihan Lisan Melayu — Madrasah Aljunied Al-Islamiah</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+<style>
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+  :root{
+    --teal:#1D9E75;--teal-light:#E1F5EE;--teal-mid:#5DCAA5;--teal-dark:#0F6E56;--teal-deep:#085041;
+    --amber:#EF9F27;--amber-light:#FAEEDA;--amber-dark:#854F0B;
+    --coral:#D85A30;--coral-light:#FAECE7;--coral-dark:#993C1D;
+    --blue:#378ADD;--blue-light:#E6F1FB;--blue-dark:#185FA5;
+    --purple:#7F77DD;--purple-light:#EEEDFE;--purple-dark:#3C3489;
+    --red:#E24B4A;--red-light:#FCEBEB;--red-dark:#A32D2D;
+    --bg:#f9f8f5;--surface:#ffffff;--surface2:#f2f0eb;
+    --border:rgba(0,0,0,0.1);--border-strong:rgba(0,0,0,0.18);
+    --text:#1a1a18;--text-muted:#6b6a65;--text-faint:#9e9d98;
+    --radius:12px;--radius-sm:8px;--radius-pill:99px;
+    --shadow-sm:0 1px 3px rgba(0,0,0,0.08),0 1px 2px rgba(0,0,0,0.05);
+    --shadow:0 4px 12px rgba(0,0,0,0.08),0 2px 4px rgba(0,0,0,0.05);
+  }
+  html{scroll-behavior:smooth;}
+  body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;line-height:1.6;}
+  .screen{display:none;animation:fadeIn 0.3s ease;}
+  .screen.active{display:block;}
+  #screen-done.active{display:flex;}
+  @keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+  @keyframes slideDown{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:translateY(0)}}
+  .page-wrap{max-width:680px;margin:0 auto;padding:0 1rem;}
+
+  /* WELCOME */
+  #screen-welcome{min-height:100vh;}
+  .welcome-nav{padding:1.5rem 0 0;display:flex;align-items:flex-start;justify-content:space-between;gap:12px;}
+  .app-logo{font-family:'DM Serif Display',serif;font-size:15px;color:var(--teal);letter-spacing:-0.01em;white-space:nowrap;padding-top:4px;}
+  .class-tag{font-size:10px;background:var(--teal-light);color:var(--teal-dark);padding:5px 10px;border-radius:var(--radius-sm);font-weight:500;text-align:right;line-height:1.5;max-width:210px;}
+  .welcome-hero{padding:3rem 0 2rem;text-align:center;}
+  .hero-eyebrow{font-size:11px;font-weight:500;letter-spacing:0.1em;text-transform:uppercase;color:var(--teal);margin-bottom:12px;}
+  .hero-title{font-family:'DM Serif Display',serif;font-size:clamp(36px,8vw,52px);line-height:1.1;color:var(--text);margin-bottom:16px;}
+  .hero-title em{font-style:italic;color:var(--teal);}
+  .hero-sub{font-size:15px;color:var(--text-muted);max-width:400px;margin:0 auto;line-height:1.6;}
+  .how-it-works{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin:1.5rem 0 2rem;}
+  .how-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:14px 12px;text-align:center;}
+  .how-icon{font-size:20px;margin-bottom:6px;}
+  .how-title{font-size:12px;font-weight:500;color:var(--text);margin-bottom:3px;}
+  .how-desc{font-size:11px;color:var(--text-faint);line-height:1.4;}
+  .section-label{font-size:11px;font-weight:500;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-faint);margin-bottom:10px;margin-top:2rem;}
+  .topic-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px;margin-bottom:1rem;}
+  .topic-tile{border:1.5px solid var(--border);border-radius:var(--radius);padding:14px 12px;cursor:pointer;background:var(--surface);transition:all 0.18s;user-select:none;position:relative;overflow:hidden;}
+  .topic-tile::after{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--teal);transform:scaleX(0);transform-origin:left;transition:transform 0.2s ease;}
+  .topic-tile:hover{border-color:var(--teal-mid);background:var(--teal-light);transform:translateY(-1px);box-shadow:var(--shadow-sm);}
+  .topic-tile.selected{border-color:var(--teal);background:var(--teal-light);box-shadow:var(--shadow-sm);}
+  .topic-tile.selected::after{transform:scaleX(1);}
+  .tile-check{position:absolute;top:10px;right:10px;width:18px;height:18px;border-radius:50%;border:1.5px solid var(--border);background:var(--surface);display:flex;align-items:center;justify-content:center;transition:all 0.15s;font-size:10px;color:transparent;}
+  .topic-tile.selected .tile-check{background:var(--teal);border-color:var(--teal);color:white;}
+  .tile-num{font-size:10px;font-weight:500;color:var(--teal);margin-bottom:5px;text-transform:uppercase;letter-spacing:0.05em;}
+  .tile-name{font-size:12px;color:var(--text);line-height:1.4;font-weight:500;margin-bottom:3px;padding-right:16px;}
+  .tile-theme{font-size:11px;color:var(--text-faint);}
+  .selection-status{font-size:13px;color:var(--text-muted);text-align:center;padding:10px;min-height:40px;display:flex;align-items:center;justify-content:center;}
+  .selection-status strong{color:var(--teal);font-weight:500;}
+  .select-actions{display:flex;gap:8px;margin-bottom:10px;align-items:center;}
+  .ghost-btn{font-size:12px;padding:5px 12px;border-radius:var(--radius-pill);border:1px solid var(--border-strong);background:var(--surface);color:var(--text-muted);cursor:pointer;font-family:'DM Sans',sans-serif;transition:all 0.15s;}
+  .ghost-btn:hover{background:var(--surface2);color:var(--text);}
+  .randomiser-row{display:flex;align-items:flex-start;gap:12px;background:var(--surface);border:1.5px dashed var(--border-strong);border-radius:var(--radius);padding:14px 16px;margin-bottom:4px;cursor:pointer;transition:all 0.18s;user-select:none;}
+  .randomiser-row:hover{border-color:var(--teal-mid);background:var(--teal-light);}
+  .randomiser-row.active{border-color:var(--teal);background:var(--teal-light);}
+  .rand-checkbox{width:18px;height:18px;border-radius:5px;border:1.5px solid var(--border-strong);background:var(--surface);display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px;transition:all 0.15s;font-size:11px;color:transparent;}
+  .randomiser-row.active .rand-checkbox{background:var(--teal);border-color:var(--teal);color:#fff;}
+  .rand-label{flex:1;}
+  .rand-title{font-size:13px;font-weight:500;color:var(--text);margin-bottom:2px;}
+  .rand-desc{font-size:12px;color:var(--text-faint);line-height:1.4;}
+  .rand-count-row{display:flex;align-items:center;gap:10px;margin-top:10px;padding-top:10px;border-top:1px solid rgba(29,158,117,0.15);}
+  .rand-count-row label{font-size:12px;color:var(--teal-dark);font-weight:500;}
+  .rand-count-btns{display:flex;align-items:center;gap:6px;}
+  .rand-count-btn{width:28px;height:28px;border-radius:var(--radius-sm);border:1px solid var(--border-strong);background:var(--surface);color:var(--text);font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-family:'DM Sans',sans-serif;transition:all 0.15s;line-height:1;}
+  .rand-count-btn:hover{background:var(--teal-light);border-color:var(--teal);color:var(--teal-dark);}
+  .rand-count-val{font-size:16px;font-weight:500;color:var(--teal-dark);min-width:24px;text-align:center;}
+  .rand-count-hint{font-size:11px;color:var(--text-faint);}
+  .start-btn{display:block;width:100%;padding:16px;background:var(--teal);color:#fff;border:none;border-radius:var(--radius);font-size:16px;font-weight:500;font-family:'DM Sans',sans-serif;cursor:pointer;transition:all 0.2s;margin:1rem 0 2rem;box-shadow:0 4px 14px rgba(29,158,117,0.3);letter-spacing:0.01em;}
+  .start-btn:hover:not(:disabled){background:var(--teal-dark);transform:translateY(-1px);}
+  .start-btn:disabled{background:var(--surface2);color:var(--text-faint);cursor:not-allowed;box-shadow:none;}
+
+  /* PRACTICE */
+  #screen-practice{min-height:100vh;padding-bottom:3rem;}
+  .practice-header{position:sticky;top:0;z-index:10;background:rgba(249,248,245,0.92);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);padding:12px 0;margin-bottom:1.25rem;border-bottom:1px solid var(--border);}
+  .practice-header-inner{max-width:680px;margin:0 auto;padding:0 1rem;display:flex;align-items:center;gap:10px;}
+  .back-btn{background:var(--surface);border:1px solid var(--border-strong);border-radius:var(--radius-sm);padding:7px 14px;font-size:13px;color:var(--text-muted);cursor:pointer;font-family:'DM Sans',sans-serif;transition:all 0.15s;white-space:nowrap;}
+  .back-btn:hover{background:var(--surface2);color:var(--text);}
+  .progress-wrap{flex:1;}
+  .progress-meta{display:flex;justify-content:space-between;font-size:11px;color:var(--text-faint);margin-bottom:5px;}
+  .progress-track{height:4px;background:var(--surface2);border-radius:var(--radius-pill);overflow:hidden;}
+  .progress-fill{height:100%;background:var(--teal);border-radius:var(--radius-pill);transition:width 0.5s cubic-bezier(0.4,0,0.2,1);}
+  .q-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:1.5rem;margin-bottom:1rem;box-shadow:var(--shadow);position:relative;overflow:hidden;}
+  .q-card-accent{position:absolute;top:0;left:0;right:0;height:4px;border-radius:var(--radius) var(--radius) 0 0;}
+  .q-meta-row{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin-bottom:1.25rem;}
+  .q-topic-pill{font-size:11px;font-weight:500;padding:4px 10px;border-radius:var(--radius-pill);background:var(--teal-light);color:var(--teal-dark);}
+  .q-type-pill{font-size:11px;padding:4px 10px;border-radius:var(--radius-pill);}
+  .q-pos{font-size:11px;color:var(--text-faint);margin-left:auto;}
+  .q-text{font-family:'DM Serif Display',serif;font-size:clamp(18px,4vw,22px);line-height:1.5;color:var(--text);}
+
+  /* ASSIST BLOCKS */
+  .assist-block{margin-bottom:1rem;}
+  .locked-notice{display:flex;align-items:center;gap:10px;padding:12px 14px;background:var(--surface2);border-radius:var(--radius-sm);font-size:13px;color:var(--text-muted);}
+  .lock-ico{font-size:16px;flex-shrink:0;}
+  .guide-countdown-wrap{display:flex;align-items:center;gap:10px;flex:1;}
+  .countdown-ring{position:relative;width:32px;height:32px;flex-shrink:0;}
+  .ring-bg{fill:none;stroke:var(--border-strong);stroke-width:2.5;}
+  .ring-fill{fill:none;stroke:var(--amber);stroke-width:2.5;stroke-linecap:round;transform:rotate(-90deg);transform-origin:50% 50%;transition:stroke-dashoffset 0.9s linear;}
+  .countdown-num{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:500;color:var(--amber-dark);}
+  .unlock-toggle-btn{background:none;border:none;font-size:13px;cursor:pointer;font-family:'DM Sans',sans-serif;padding:0;display:flex;align-items:center;gap:6px;margin-bottom:8px;transition:color 0.15s;}
+  .guide-toggle{color:var(--amber-dark);}
+  .guide-toggle:hover{color:var(--amber);}
+  .hints-toggle{color:var(--teal);}
+  .hints-toggle:hover{color:var(--teal-dark);}
+  .u-arrow{display:inline-block;transition:transform 0.2s;font-size:10px;}
+  .u-arrow.open{transform:rotate(90deg);}
+  .guide-panel{background:var(--amber-light);border:1px solid var(--amber);border-radius:var(--radius);padding:1rem 1.25rem;margin-bottom:8px;animation:slideDown 0.2s ease;}
+  .guide-panel-label{font-size:10px;font-weight:500;letter-spacing:0.08em;text-transform:uppercase;color:var(--amber-dark);margin-bottom:10px;}
+  .guide-panel ol{padding-left:18px;}
+  .guide-panel ol li{font-size:13.5px;color:var(--amber-dark);padding:4px 0;line-height:1.55;}
+  .hints-panel{background:var(--teal-light);border:1px solid var(--teal-mid);border-radius:var(--radius);padding:1rem 1.25rem;margin-bottom:8px;animation:slideDown 0.2s ease;}
+  .hints-panel-label{font-size:10px;font-weight:500;letter-spacing:0.08em;text-transform:uppercase;color:var(--teal-dark);margin-bottom:10px;}
+  .hints-panel ul{list-style:none;padding:0;}
+  .hints-panel ul li{font-size:13.5px;color:var(--teal-deep);padding:5px 0 5px 18px;position:relative;line-height:1.55;border-bottom:1px solid rgba(29,158,117,0.12);}
+  .hints-panel ul li:last-child{border-bottom:none;}
+  .hints-panel ul li::before{content:'→';position:absolute;left:0;color:var(--teal);font-size:12px;top:6px;}
+
+  /* STOPWATCH */
+  .stopwatch-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:1.25rem 1.5rem;margin-bottom:1rem;box-shadow:var(--shadow-sm);}
+  .sw-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;}
+  .sw-label{font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-faint);display:flex;align-items:center;gap:7px;}
+  .sw-indicator{width:8px;height:8px;border-radius:50%;background:var(--border-strong);transition:background 0.3s;}
+  .sw-indicator.running{background:var(--red);animation:pulse 1s ease-in-out infinite;}
+  @keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:0.5;transform:scale(0.85)}}
+  .sw-target-select{font-size:12px;padding:4px 10px;border-radius:var(--radius-sm);border:1px solid var(--border-strong);background:var(--surface2);color:var(--text-muted);font-family:'DM Sans',sans-serif;cursor:pointer;}
+  .sw-display{font-family:'DM Serif Display',serif;font-size:clamp(52px,12vw,72px);letter-spacing:2px;line-height:1;text-align:center;color:var(--text);margin-bottom:1rem;transition:color 0.3s;}
+  .sw-display.caution{color:var(--amber);}
+  .sw-display.warning{color:var(--red);}
+  .target-bar-wrap{margin-top:10px;display:none;}
+  .target-bar-wrap.visible{display:block;}
+  .target-bar-track{height:5px;background:var(--surface2);border-radius:var(--radius-pill);overflow:hidden;margin-top:4px;}
+  .target-bar-fill{height:100%;border-radius:var(--radius-pill);background:var(--teal);transition:width 0.3s linear,background 0.3s;max-width:100%;}
+  .target-bar-label{font-size:11px;color:var(--text-faint);display:flex;justify-content:space-between;}
+  .sw-btn-row{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:14px;}
+  .sw-btn{padding:11px 8px;border-radius:var(--radius-sm);font-size:14px;font-weight:500;font-family:'DM Sans',sans-serif;cursor:pointer;transition:all 0.15s;border:1px solid;text-align:center;}
+  .sw-btn.go{background:var(--teal);color:#fff;border-color:var(--teal-dark);box-shadow:0 2px 8px rgba(29,158,117,0.25);}
+  .sw-btn.go:hover{background:var(--teal-dark);}
+  .sw-btn.reset{background:var(--red-light);color:var(--red-dark);border-color:#F09595;}
+  .sw-btn.reset:hover{background:#F7C1C1;}
+
+  /* SELF-EVAL */
+  .selfeval-card{background:var(--surface);border:1.5px solid var(--purple);border-radius:var(--radius);padding:1.25rem 1.5rem;margin-bottom:1rem;box-shadow:var(--shadow);animation:slideDown 0.25s ease;}
+  .selfeval-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;}
+  .selfeval-title{font-size:13px;font-weight:500;color:var(--purple-dark);display:flex;align-items:center;gap:7px;}
+  .selfeval-skip{font-size:12px;color:var(--text-faint);background:none;border:none;cursor:pointer;font-family:'DM Sans',sans-serif;text-decoration:underline;text-underline-offset:2px;}
+  .selfeval-skip:hover{color:var(--text-muted);}
+  .eval-question{margin-bottom:1.1rem;}
+  .eval-q-label{font-size:12px;font-weight:500;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:8px;}
+  .eval-options{display:flex;flex-direction:column;gap:5px;}
+  .eval-opt{display:flex;align-items:flex-start;gap:9px;padding:9px 12px;border:1px solid var(--border);border-radius:var(--radius-sm);cursor:pointer;transition:all 0.15s;background:var(--surface);user-select:none;}
+  .eval-opt:hover{border-color:var(--purple);background:var(--purple-light);}
+  .eval-opt.selected{border-color:var(--purple);background:var(--purple-light);}
+  .eval-opt-dot{width:16px;height:16px;border-radius:50%;border:1.5px solid var(--border-strong);flex-shrink:0;margin-top:2px;transition:all 0.15s;display:flex;align-items:center;justify-content:center;}
+  .eval-opt.selected .eval-opt-dot{background:var(--purple);border-color:var(--purple);}
+  .eval-opt.selected .eval-opt-dot::after{content:'';width:6px;height:6px;border-radius:50%;background:#fff;display:block;}
+  .eval-opt-band{font-size:10px;font-weight:500;color:var(--purple);margin-right:2px;flex-shrink:0;margin-top:3px;min-width:18px;}
+  .eval-opt-text{font-size:13px;color:var(--text);line-height:1.45;}
+  .eval-opt.selected .eval-opt-text{color:var(--purple-dark);}
+  .eval-divider{height:1px;background:var(--border);margin:1rem 0;}
+  .eval-submit-row{display:flex;align-items:center;gap:10px;}
+  .eval-submit-btn{flex:1;padding:12px;background:var(--purple);color:#fff;border:none;border-radius:var(--radius-sm);font-size:14px;font-weight:500;font-family:'DM Sans',sans-serif;cursor:pointer;transition:all 0.15s;}
+  .eval-submit-btn:hover{background:var(--purple-dark);}
+  .eval-submit-btn:disabled{background:var(--surface2);color:var(--text-faint);cursor:not-allowed;}
+  .eval-result{background:var(--purple-light);border:1px solid var(--purple);border-radius:var(--radius);padding:1rem 1.25rem;margin-bottom:1rem;animation:slideDown 0.2s ease;}
+  .eval-result-title{font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:0.07em;color:var(--purple-dark);margin-bottom:8px;}
+  .eval-result-row{display:flex;align-items:flex-start;gap:10px;margin-bottom:6px;}
+  .eval-result-row:last-child{margin-bottom:0;}
+  .eval-result-label{font-size:12px;color:var(--text-muted);min-width:90px;flex-shrink:0;padding-top:2px;}
+  .eval-band-pill{font-size:11px;font-weight:500;padding:3px 10px;border-radius:var(--radius-pill);color:#fff;flex-shrink:0;}
+  .eval-band-1{background:#9e9d98;}
+  .eval-band-2{background:var(--amber-dark);}
+  .eval-band-3{background:var(--teal);}
+  .eval-band-4{background:var(--purple);}
+  .eval-result-desc{font-size:12px;color:var(--purple-dark);line-height:1.4;}
+
+  /* NAV */
+  .nav-section{margin-top:1rem;}
+  .shuffle-row{text-align:center;margin-bottom:10px;}
+  .shuffle-link{font-size:12px;color:var(--text-faint);background:none;border:none;cursor:pointer;font-family:'DM Sans',sans-serif;text-decoration:underline;text-underline-offset:2px;transition:color 0.15s;}
+  .shuffle-link:hover{color:var(--teal);}
+  .nav-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+  .nav-btn{padding:14px;border-radius:var(--radius);font-size:14px;font-weight:500;font-family:'DM Sans',sans-serif;cursor:pointer;transition:all 0.15s;border:1px solid var(--border-strong);background:var(--surface);color:var(--text);text-align:center;}
+  .nav-btn:hover{background:var(--surface2);}
+  .nav-btn.next{background:var(--teal);color:#fff;border-color:var(--teal-dark);box-shadow:0 3px 10px rgba(29,158,117,0.25);}
+  .nav-btn.next:hover{background:var(--teal-dark);transform:translateY(-1px);}
+
+  /* DONE */
+  #screen-done{min-height:100vh;align-items:center;}
+  .done-inner{width:100%;text-align:center;padding:3rem 0;}
+  .done-icon{width:72px;height:72px;background:var(--teal-light);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 1.5rem;font-size:32px;}
+  .done-title{font-family:'DM Serif Display',serif;font-size:36px;color:var(--text);margin-bottom:8px;}
+  .done-sub{font-size:15px;color:var(--text-muted);margin-bottom:2rem;}
+  .stat-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:2rem;}
+  .stat-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:1.25rem 1rem;box-shadow:var(--shadow-sm);}
+  .stat-val{font-family:'DM Serif Display',serif;font-size:36px;color:var(--text);line-height:1;margin-bottom:5px;}
+  .stat-lbl{font-size:12px;color:var(--text-faint);}
+  .done-actions{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+  .done-btn{padding:14px;border-radius:var(--radius);font-size:14px;font-weight:500;font-family:'DM Sans',sans-serif;cursor:pointer;border:1px solid var(--border-strong);transition:all 0.15s;}
+  .done-btn.primary{background:var(--teal);color:#fff;border-color:var(--teal-dark);box-shadow:0 3px 10px rgba(29,158,117,0.25);}
+  .done-btn.primary:hover{background:var(--teal-dark);transform:translateY(-1px);}
+  .done-btn.secondary{background:var(--surface);color:var(--text);}
+  .done-btn.secondary:hover{background:var(--surface2);}
+  @media(max-width:480px){
+    .topic-grid{grid-template-columns:1fr 1fr;}
+    .stat-grid{grid-template-columns:1fr 1fr;}
+    .stat-grid .stat-card:last-child{grid-column:span 2;}
+    .how-it-works{grid-template-columns:1fr;}
+  }
+</style>
+</head>
+<body>
+
+<!-- SCREEN 1: WELCOME -->
+<div class="screen active" id="screen-welcome">
+  <div class="page-wrap">
+    <nav class="welcome-nav">
+      <span class="app-logo">LisanLatihan</span>
+      <span class="class-tag">Jabatan Bahasa-Bahasa Asia Tenggara &amp; Kemanusiaan<br>Madrasah Aljunied Al-Islamiah</span>
+    </nav>
+    <div class="welcome-hero">
+      <p class="hero-eyebrow">O-Level Bahasa Melayu · Lisan</p>
+      <h1 class="hero-title">Berlatih.<br><em>Bertutur.</em></h1>
+      <p class="hero-sub">Pilih tema, jawab soalan secara lisan, dan nilai kemajuan diri sendiri — persediaan untuk peperiksaan yang sebenar.</p>
+    </div>
+    <div class="how-it-works">
+      <div class="how-card"><div class="how-icon">🎯</div><div class="how-title">Cuba sendiri</div><div class="how-desc">Jawab soalan tanpa bantuan dahulu</div></div>
+      <div class="how-card"><div class="how-icon">💡</div><div class="how-title">Soalan panduan</div><div class="how-desc">Buka selepas 30 saat jika tersangkut</div></div>
+      <div class="how-card"><div class="how-icon">🪞</div><div class="how-title">Nilai diri</div><div class="how-desc">Refleksi sebelum lihat isi penting</div></div>
+    </div>
+    <p class="section-label">Pilih tema anda</p>
+    <div class="select-actions">
+      <button class="ghost-btn" onclick="selectAll()">Pilih semua</button>
+      <button class="ghost-btn" onclick="clearAll()">Kosongkan</button>
+    </div>
+    <div class="topic-grid" id="topic-grid"></div>
+    <div class="randomiser-row" id="rand-row" onclick="toggleRandomiser()">
+      <div class="rand-checkbox" id="rand-check">✓</div>
+      <div class="rand-label">
+        <div class="rand-title">🎲 Pilihkan tema secara rawak</div>
+        <div class="rand-desc">Biar apl yang memilih tema untuk anda — lebih mencabar!</div>
+        <div class="rand-count-row" id="rand-count-row" style="display:none;" onclick="event.stopPropagation()">
+          <label>Berapa tema?</label>
+          <div class="rand-count-btns">
+            <button class="rand-count-btn" onclick="changeRandCount(-1)">−</button>
+            <span class="rand-count-val" id="rand-count-val">3</span>
+            <button class="rand-count-btn" onclick="changeRandCount(1)">+</button>
+          </div>
+          <span class="rand-count-hint" id="rand-count-hint">= 15 soalan</span>
+        </div>
+      </div>
+    </div>
+    <div class="selection-status" id="sel-status">Pilih satu atau lebih tema untuk mulakan</div>
+    <button class="start-btn" id="start-btn" onclick="startPractice()" disabled>Mulakan latihan →</button>
+  </div>
+</div>
+
+<!-- SCREEN 2: PRACTICE -->
+<div class="screen" id="screen-practice">
+  <div class="practice-header">
+    <div class="practice-header-inner">
+      <button class="back-btn" onclick="goHome()">← Tema</button>
+      <div class="progress-wrap">
+        <div class="progress-meta">
+          <span id="prog-label">Soalan 1</span>
+          <span id="prog-frac">1 / 5</span>
+        </div>
+        <div class="progress-track"><div class="progress-fill" id="prog-fill"></div></div>
+      </div>
+    </div>
+  </div>
+  <div class="page-wrap">
+    <div class="q-card" id="q-card">
+      <div class="q-card-accent" id="q-accent"></div>
+      <div class="q-meta-row">
+        <span class="q-topic-pill" id="q-topic-pill"></span>
+        <span class="q-type-pill" id="q-type-pill"></span>
+        <span class="q-pos" id="q-pos"></span>
+      </div>
+      <p class="q-text" id="q-text"></p>
+    </div>
+
+    <!-- Guiding Questions -->
+    <div class="assist-block" id="guide-block">
+      <div class="locked-notice" id="guide-locked">
+        <span class="lock-ico">🔒</span>
+        <div class="guide-countdown-wrap">
+          <div class="countdown-ring">
+            <svg width="32" height="32" viewBox="0 0 32 32">
+              <circle class="ring-bg" cx="16" cy="16" r="13"/>
+              <circle class="ring-fill" id="ring-fill" cx="16" cy="16" r="13" stroke-dasharray="81.68" stroke-dashoffset="0"/>
+            </svg>
+            <div class="countdown-num" id="guide-countdown">30</div>
+          </div>
+          <span>Soalan panduan akan dibuka dalam <strong id="guide-countdown2" style="color:var(--amber-dark)">30</strong> saat — cuba sendiri dahulu!</span>
+        </div>
+      </div>
+      <button class="unlock-toggle-btn guide-toggle" id="guide-btn" style="display:none;" onclick="toggleGuide()">
+        <span class="u-arrow" id="guide-arrow">▶</span> Tersangkut? Lihat soalan panduan
+      </button>
+      <div class="guide-panel" id="guide-panel" style="display:none;">
+        <div class="guide-panel-label">Soalan panduan — jika tersangkut</div>
+        <ol id="guide-list"></ol>
+      </div>
+    </div>
+
+    <!-- Stopwatch -->
+    <div class="stopwatch-card">
+      <div class="sw-header">
+        <div class="sw-label"><span class="sw-indicator" id="sw-dot"></span>Jam randik</div>
+        <select class="sw-target-select" id="sw-target">
+          <option value="0">Tiada sasaran</option>
+          <option value="60" selected>Sasaran: 1 min</option>
+          <option value="90">Sasaran: 1:30</option>
+          <option value="120">Sasaran: 2 min</option>
+          <option value="180">Sasaran: 3 min</option>
+        </select>
+      </div>
+      <div class="sw-display" id="sw-display">0:00.0</div>
+      <div class="target-bar-wrap" id="target-bar-wrap">
+        <div class="target-bar-label"><span>0s</span><span id="target-bar-end">60s</span></div>
+        <div class="target-bar-track"><div class="target-bar-fill" id="target-bar-fill"></div></div>
+      </div>
+      <div class="sw-btn-row">
+        <button class="sw-btn go" id="sw-go-btn" onclick="swToggle()">Mula</button>
+        <button class="sw-btn reset" onclick="swReset()">Selesai — set semula</button>
+      </div>
+    </div>
+
+    <!-- Self-Eval -->
+    <div id="selfeval-card" style="display:none;">
+      <div class="selfeval-card">
+        <div class="selfeval-header">
+          <div class="selfeval-title">🪞 Bagaimana jawapan anda?</div>
+          <button class="selfeval-skip" onclick="skipEval()">Langkau →</button>
+        </div>
+        <div class="eval-question">
+          <div class="eval-q-label">Perkembangan isi</div>
+          <div class="eval-options">
+            <div class="eval-opt" onclick="selectOpt(1,1)" id="eq1-o1"><div class="eval-opt-dot"></div><span class="eval-opt-band">B1</span><span class="eval-opt-text">Saya menyatakan pendirian tetapi tiada sebab yang jelas</span></div>
+            <div class="eval-opt" onclick="selectOpt(1,2)" id="eq1-o2"><div class="eval-opt-dot"></div><span class="eval-opt-band">B2</span><span class="eval-opt-text">Saya menyatakan pendirian dan satu sebab, tetapi tiada contoh</span></div>
+            <div class="eval-opt" onclick="selectOpt(1,3)" id="eq1-o3"><div class="eval-opt-dot"></div><span class="eval-opt-band">B3</span><span class="eval-opt-text">Saya menyatakan pendirian, sebab, dan contoh yang konkrit</span></div>
+            <div class="eval-opt" onclick="selectOpt(1,4)" id="eq1-o4"><div class="eval-opt-dot"></div><span class="eval-opt-band">B4</span><span class="eval-opt-text">Saya menyatakan pendirian, sebab, contoh, dan mengakui sudut pandangan lain</span></div>
+          </div>
+        </div>
+        <div class="eval-divider"></div>
+        <div class="eval-question">
+          <div class="eval-q-label">Kelancaran &amp; keyakinan</div>
+          <div class="eval-options">
+            <div class="eval-opt" onclick="selectOpt(2,1)" id="eq2-o1"><div class="eval-opt-dot"></div><span class="eval-opt-band">B1</span><span class="eval-opt-text">Saya kehabisan idea dan berhenti awal</span></div>
+            <div class="eval-opt" onclick="selectOpt(2,2)" id="eq2-o2"><div class="eval-opt-dot"></div><span class="eval-opt-band">B2</span><span class="eval-opt-text">Saya ada idea tetapi sukar untuk menyatakannya dengan jelas</span></div>
+            <div class="eval-opt" onclick="selectOpt(2,3)" id="eq2-o3"><div class="eval-opt-dot"></div><span class="eval-opt-band">B3</span><span class="eval-opt-text">Saya menyatakan idea dengan jelas tetapi ada keraguan di beberapa tempat</span></div>
+            <div class="eval-opt" onclick="selectOpt(2,4)" id="eq2-o4"><div class="eval-opt-dot"></div><span class="eval-opt-band">B4</span><span class="eval-opt-text">Saya bertutur dengan lancar dan yakin sepanjang masa</span></div>
+          </div>
+        </div>
+        <div class="eval-divider"></div>
+        <div class="eval-submit-row">
+          <button class="eval-submit-btn" id="eval-submit-btn" onclick="submitEval()" disabled>Lihat hasil →</button>
+        </div>
+      </div>
+    </div>
+    <div id="eval-result-card" style="display:none;"></div>
+
+    <!-- Talking Points -->
+    <div class="assist-block" id="hints-block">
+      <div class="locked-notice" id="hints-locked">
+        <span class="lock-ico">🔒</span>
+        <span>Isi penting akan dibuka setelah anda menetapkan semula jam randik — cuba jawab dahulu.</span>
+      </div>
+      <button class="unlock-toggle-btn hints-toggle" id="hints-btn" style="display:none;" onclick="toggleHints()">
+        <span class="u-arrow" id="hint-arrow">▶</span> Lihat isi penting
+      </button>
+      <div class="hints-panel" id="hints-panel" style="display:none;">
+        <div class="hints-panel-label">Isi penting yang dicadangkan</div>
+        <ul id="hints-list"></ul>
+      </div>
+    </div>
+
+    <div class="nav-section">
+      <div class="shuffle-row">
+        <button class="shuffle-link" onclick="shuffleRemaining()">↺ Kocok soalan yang tinggal</button>
+      </div>
+      <div class="nav-row">
+        <button class="nav-btn" id="prev-btn" onclick="prevQ()">← Sebelum</button>
+        <button class="nav-btn next" id="next-btn" onclick="nextQ()">Seterusnya →</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SCREEN 3: DONE -->
+<div class="screen" id="screen-done">
+  <div class="page-wrap">
+    <div class="done-inner">
+      <div class="done-icon">🎤</div>
+      <h2 class="done-title">Tahniah!</h2>
+      <p class="done-sub">Anda telah menamatkan sesi latihan ini. Teruskan berlatih!</p>
+      <div class="stat-grid">
+        <div class="stat-card"><div class="stat-val" id="stat-qs">0</div><div class="stat-lbl">Soalan dijawab</div></div>
+        <div class="stat-card"><div class="stat-val" id="stat-topics">0</div><div class="stat-lbl">Tema diliputi</div></div>
+        <div class="stat-card"><div class="stat-val" id="stat-evals">0</div><div class="stat-lbl">Penilaian diri</div></div>
+      </div>
+      <div class="done-actions">
+        <button class="done-btn secondary" onclick="restartSame()">↺ Tema yang sama</button>
+        <button class="done-btn primary" onclick="goHome()">← Tema baharu</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const TOPICS = [
+  // ── TEMA 1: JATI DIRI ──
+  { num:1, theme:"Jati Diri", title:"Bahasa Melayu & identiti bangsa",
+    questions:[
+      { type:"Pendapat", q:"Adakah bahasa Melayu masih relevan sebagai lambang jati diri orang Melayu di Singapura pada hari ini? Berikan pandangan anda.",
+        guide:["Apakah peranan bahasa dalam membentuk identiti sesebuah bangsa?","Bagaimana penggunaan bahasa Melayu dalam kehidupan harian anda berbeza dengan generasi ibu bapa anda?","Apakah yang boleh dilakukan untuk memastikan bahasa Melayu terus hidup dalam kalangan generasi muda?"],
+        hint:["Akui bahawa bahasa Melayu kekal penting sebagai bahasa ibunda dan simbol warisan budaya.","Cabaran: pengaruh bahasa Inggeris yang semakin dominan dalam pendidikan dan pekerjaan.","Cadangkan: program seperti Bulan Bahasa dan penggunaan bahasa Melayu di rumah dapat memperkukuhkan jati diri."]},
+      { type:"Sebab-Akibat", q:"Apakah kesan jangka panjang jika generasi muda Melayu di Singapura tidak fasih berbahasa Melayu?",
+        guide:["Apakah yang dimaksudkan dengan 'fasih' dalam konteks bahasa ibunda?","Bagaimana kehilangan kemahiran bahasa boleh mempengaruhi hubungan kekeluargaan?","Apakah hubungan antara bahasa dan pemahaman budaya?"],
+        hint:["Hubungan antara generasi menjadi renggang apabila cucu tidak dapat berkomunikasi dengan datuk nenek.","Budaya dan tradisi sukar diwarisi tanpa pemahaman bahasa yang mendalam.","Identiti bangsa menjadi kabur dan terhakis secara perlahan-lahan."]},
+      { type:"Peribadi", q:"Ceritakan satu pengalaman yang membuatkan anda bangga dengan identiti Melayu-Islam anda.",
+        guide:["Apakah aspek budaya Melayu-Islam yang paling bermakna bagi anda?","Bagaimana pengalaman itu mengubah cara anda memandang diri sendiri?","Apakah nilai yang anda pelajari daripada pengalaman tersebut?"],
+        hint:["Spesifik: sebutkan acara, tempat, atau orang yang terlibat.","Hubungkan dengan nilai Islam seperti kerendahan hati, ilmu, atau khidmat masyarakat.","Refleksikan bagaimana pengalaman itu mempengaruhi tindakan anda selepas itu."]},
+      { type:"Cadangan", q:"Apakah langkah-langkah yang boleh diambil oleh sekolah untuk memupuk jati diri yang kukuh dalam kalangan pelajar Melayu?",
+        guide:["Apakah peranan guru dalam membentuk jati diri pelajar?","Selain akademik, apakah aktiviti yang dapat memperkukuhkan identiti budaya?","Bagaimana reka bentuk kurikulum boleh memasukkan elemen budaya secara bermakna?"],
+        hint:["Program mentor antara generasi: pelajar belajar terus daripada tokoh masyarakat.","Pelajaran sastera dan seni Melayu yang lebih mendalam di dalam kelas.","Projek komuniti yang melibatkan masjid, pertubuhan Melayu, dan keluarga."]},
+      { type:"Penilaian", q:"Ada yang berpendapat bahawa orang Melayu boleh mengekalkan jati diri mereka tanpa mahir berbahasa Melayu. Setujukah anda?",
+        guide:["Apakah elemen lain yang membentuk jati diri selain bahasa?","Bolehkah seseorang menghayati budaya tanpa memahami bahasanya?","Apakah contoh dalam sejarah di mana bahasa hilang tetapi budaya kekal, atau sebaliknya?"],
+        hint:["Ada merit: amalan agama, nilai kekeluargaan, dan makanan budaya boleh kekal tanpa kemahiran bahasa tinggi.","Walau bagaimanapun, bahasa adalah wadah utama untuk mewarisi sastera, peribahasa, dan hikmat budaya.","Kesimpulan yang seimbang: bahasa dan budaya saling memperkukuh antara satu sama lain."]}
+    ]
+  },
+  { num:2, theme:"Jati Diri", title:"Agama & kehidupan seharian",
+    questions:[
+      { type:"Pendapat", q:"Sejauh manakah agama membentuk cara hidup dan nilai seseorang remaja Muslim di Singapura?",
+        guide:["Apakah nilai Islam yang paling mempengaruhi keputusan harian anda?","Bagaimana agama membantu anda menghadapi tekanan hidup sebagai pelajar?","Adakah terdapat cabaran dalam mengamalkan agama dalam persekitaran moden?"],
+        hint:["Agama memberikan panduan moral yang jelas dalam membuat keputusan harian.","Ibadah seperti solat membantu membina disiplin diri dan ketenangan jiwa.","Cabaran: persekitaran sosial dan media sosial kadang-kala bertentangan dengan nilai agama."]},
+      { type:"Sebab-Akibat", q:"Bagaimana pengabaian nilai-nilai agama dalam kalangan belia boleh mempengaruhi masyarakat secara keseluruhan?",
+        guide:["Apakah nilai agama yang paling penting dalam konteks masyarakat?","Bagaimana tingkah laku individu boleh memberi kesan kepada komuniti?","Apakah contoh nyata yang menunjukkan kaitan antara nilai agama dan kohesi sosial?"],
+        hint:["Kemerosotan nilai boleh membawa kepada masalah sosial seperti vandalisme, penyalahgunaan dadah, dan keganasan.","Masyarakat yang kukuh dibina atas asas nilai bersama yang merentasi agama.","Agama mengajar tanggungjawab sosial — kehilangan nilai ini melemahkan semangat bergotong-royong."]},
+      { type:"Peribadi", q:"Pernahkah anda berhadapan dengan situasi di mana nilai agama anda dicabar? Bagaimana anda mengatasinya?",
+        guide:["Apakah jenis cabaran yang sering dihadapi oleh remaja Muslim di sekolah atau dalam masyarakat?","Kepada siapa anda berpaling untuk mendapatkan bimbingan?","Apakah yang anda pelajari daripada pengalaman itu?"],
+        hint:["Jawab dengan jujur tetapi berhemah — tunjukkan proses pemikiran dan refleksi diri.","Sebutkan sumber sokongan: keluarga, ustaz, rakan sebaya yang positif.","Hubungkan dengan pertumbuhan peribadi: cabaran menjadikan anda lebih matang dan teguh."]},
+      { type:"Cadangan", q:"Bagaimana remaja Muslim boleh mengamalkan nilai agama sambil tetap aktif berinteraksi dengan rakan-rakan daripada latar belakang berbeza?",
+        guide:["Apakah nilai Islam yang sebenarnya menggalakkan hubungan baik dengan semua orang?","Bagaimana anda boleh berkongsi nilai anda tanpa memaksa orang lain?","Apakah aktiviti bersama yang membolehkan interaksi positif merentasi agama?"],
+        hint:["Islam mengajarkan hormat-menghormati dan baik sangka kepada semua orang.","Bersikap terbuka dalam perbualan tetapi tetap teguh pada pendirian — hormati tanpa kompromi.","Libatkan diri dalam aktiviti sivil, sukan, dan seni yang menyatukan, bukan memisahkan."]},
+      { type:"Penilaian", q:"Seorang rakan berpendapat bahawa agama adalah urusan peribadi dan tidak perlu ditunjukkan secara terbuka. Bagaimana anda merespons?",
+        guide:["Apakah perbezaan antara mengamalkan agama secara peribadi dan mengamalkannya secara awam?","Adakah terdapat aspek agama yang secara semula jadi bersifat sosial dan komuniti?","Bagaimana anda boleh menghormati pandangan rakan anda sambil berkongsi perspektif anda?"],
+        hint:["Akui bahawa amalan peribadi memang ada tempatnya — solat, doa, dan tafakur adalah sangat peribadi.","Walau bagaimanapun, agama juga mempunyai dimensi sosial: zakat, gotong-royong, dan khidmat masyarakat.","Kesimpulan: agama tidak perlu dipamerkan, tetapi nilai-nilainya harus tercermin dalam tindakan harian."]}
+    ]
+  },
+
+  // ── TEMA 2: NILAI ──
+  { num:3, theme:"Nilai", title:"Nilai kekeluargaan & hubungan antara generasi",
+    questions:[
+      { type:"Pendapat", q:"Adakah nilai hormat kepada orang tua semakin pudar dalam kalangan generasi muda Singapura? Berikan pandangan anda.",
+        guide:["Apakah tanda-tanda yang menunjukkan nilai hormat masih wujud atau semakin berkurang?","Apakah faktor yang menyebabkan berlakunya perubahan dalam nilai ini?","Bagaimana anda sendiri menunjukkan rasa hormat kepada orang yang lebih tua?"],
+        hint:["Ada bukti positif: ramai belia masih menjaga ibu bapa dan datuk nenek mereka.","Cabaran: gaya hidup sibuk, teknologi, dan nilai individualistik moden mengurangkan masa bersama keluarga.","Penyelesaian: komunikasi terbuka antara generasi dan aktiviti keluarga yang dirancang dengan sengaja."]},
+      { type:"Sebab-Akibat", q:"Apakah kesan kepada masyarakat apabila nilai kekeluargaan diabaikan demi kerjaya dan kejayaan material?",
+        guide:["Apakah yang dimaksudkan dengan 'nilai kekeluargaan' dalam konteks Melayu-Islam?","Bagaimana keseimbangan antara kerjaya dan keluarga mempengaruhi kesihatan mental?","Apakah contoh dalam masyarakat di mana kecacatan nilai keluarga membawa kepada masalah sosial?"],
+        hint:["Kadar penceraian meningkat apabila pasangan mengutamakan kerjaya melebihi hubungan.","Anak-anak yang kurang perhatian ibu bapa lebih terdedah kepada pengaruh negatif rakan sebaya.","Warga tua yang diabaikan mengalami kesepian dan kemerosotan kesihatan mental."]},
+      { type:"Peribadi", q:"Apakah nilai yang paling penting yang anda pelajari daripada keluarga anda? Bagaimana nilai itu mempengaruhi tindakan anda?",
+        guide:["Siapakah dalam keluarga anda yang paling banyak mempengaruhi nilai anda?","Bolehkah anda berikan contoh konkrit bagaimana nilai itu membentuk keputusan anda?","Adakah nilai ini berbeza dengan nilai rakan-rakan anda?"],
+        hint:["Spesifik dan ikhlas: nilai seperti sabar, jujur, atau bertanggungjawab lebih meyakinkan daripada jawapan umum.","Gunakan cerita atau peristiwa nyata untuk menghidupkan jawapan anda.","Tunjukkan refleksi diri: bagaimana anda akan meneruskan nilai ini kepada generasi akan datang."]},
+      { type:"Cadangan", q:"Apakah yang boleh dilakukan oleh kerajaan dan masyarakat untuk memperkukuhkan nilai kekeluargaan di Singapura?",
+        guide:["Apakah dasar kerajaan yang sedia ada untuk menyokong institusi keluarga?","Apakah peranan komuniti, masjid, dan pertubuhan dalam memperkuat ikatan keluarga?","Bagaimana reka bentuk ruang awam boleh menggalakkan interaksi keluarga?"],
+        hint:["Dasar cuti bersalin dan paterti yang lebih panjang membolehkan ikatan awal antara ibu bapa dan anak.","Program kaunseling pra-perkahwinan oleh ROMM dan masjid membantu pasangan muda.","Aktiviti komuniti seperti gotong-royong dan majlis kenduri mengeratkan hubungan kejiranan."]},
+      { type:"Penilaian", q:"Ada yang berkata bahawa keluarga nuklear lebih baik daripada keluarga luas dalam konteks kehidupan moden. Setujukah anda?",
+        guide:["Apakah kelebihan dan kekurangan setiap jenis struktur keluarga?","Bagaimana keluarga luas masih relevan dalam budaya Melayu-Islam?","Apakah cabaran praktikal yang dihadapi oleh keluarga luas di Singapura?"],
+        hint:["Keluarga nuklear memberi privasi dan kebebasan tetapi mengurangkan sokongan komunal.","Keluarga luas menyediakan jaringan sokongan emosi, kewangan, dan pengasuhan anak yang kuat.","Kesimpulan: kedua-dua model mempunyai kelebihannya — yang penting ialah kualiti hubungan, bukan strukturnya."]}
+    ]
+  },
+  { num:4, theme:"Nilai", title:"Nilai murni dalam era digital",
+    questions:[
+      { type:"Pendapat", q:"Adakah media sosial membantu atau menghalang perkembangan nilai murni dalam kalangan remaja? Berikan hujah yang seimbang.",
+        guide:["Apakah nilai murni yang paling mudah terjejas oleh penggunaan media sosial?","Adakah media sosial boleh digunakan sebagai platform untuk menyebarkan nilai yang baik?","Bagaimana anda sendiri menggunakan media sosial secara bertanggungjawab?"],
+        hint:["Halangan: budaya perbandingan, sensasi, dan pengesahan palsu melemahkan harga diri dan kejujuran.","Pembantu: platform seperti YouTube dan Instagram digunakan untuk menyebarkan ilmu agama dan inspirasi.","Kunci: celik digital dan penggunaan yang sedar adalah penentu utama, bukan platform itu sendiri."]},
+      { type:"Sebab-Akibat", q:"Bagaimana budaya 'likes' dan pengesahan dalam talian boleh mempengaruhi nilai diri dan ketulinan seseorang remaja?",
+        guide:["Apakah perbezaan antara harga diri yang sebenar dan pengesahan luaran?","Bagaimana ketagihan pengesahan boleh mempengaruhi keputusan dalam kehidupan nyata?","Apakah langkah yang boleh diambil untuk membina harga diri yang tidak bergantung kepada pendapat orang lain?"],
+        hint:["Remaja yang bergantung kepada 'likes' cenderung membuat keputusan berdasarkan populariti, bukan prinsip.","Ketulinan berkurang apabila seseorang membentangkan imej palsu untuk mendapat pengesahan.","Nilai Islam mengajar kita bahawa penilaian Allah lebih penting daripada penilaian manusia."]},
+      { type:"Peribadi", q:"Pernahkah anda terpaksa membuat pilihan antara apa yang popular di media sosial dengan apa yang anda percaya betul? Bagaimana anda membuat keputusan?",
+        guide:["Apakah jenis tekanan sosial yang anda pernah hadapi secara dalam talian?","Apakah prinsip atau nilai yang membantu anda membuat keputusan?","Apakah perasaan anda selepas membuat pilihan tersebut?"],
+        hint:["Jujur dan reflektif — pengguji menghargai keaslian, bukan jawapan yang sempurna.","Tunjukkan proses pemikiran: bagaimana anda menilai situasi sebelum bertindak.","Hubungkan dengan nilai peribadi atau agama yang menjadi panduan anda."]},
+      { type:"Cadangan", q:"Apakah yang boleh dilakukan oleh ibu bapa dan guru untuk mendidik remaja supaya menggunakan teknologi dengan beretika?",
+        guide:["Apakah pendekatan yang paling berkesan: kawalan atau pendidikan?","Bagaimana ibu bapa boleh menjadi model yang baik dalam penggunaan teknologi?","Apakah pelajaran etika digital yang patut dimasukkan dalam kurikulum sekolah?"],
+        hint:["Perbincangan terbuka di rumah tentang risiko dan tanggungjawab lebih berkesan daripada larangan mutlak.","Sekolah boleh mengajar literasi digital: mengenal pasti maklumat palsu, menghormati privasi, dan empati dalam talian.","Ibu bapa perlu menjadi teladan — kurangkan masa skrin sendiri sebelum meminta anak berbuat demikian."]},
+      { type:"Penilaian", q:"Seorang rakan berpendapat bahawa 'keyboard warriors' yang menyebarkan kebencian dalam talian tidak perlu diambil serius kerana ia hanya 'di dunia maya'. Bersetujukah anda?",
+        guide:["Apakah kesan sebenar kata-kata negatif dalam talian terhadap individu?","Adakah terdapat perbezaan antara kebebasan bersuara dan ucapan membenci?","Apakah tanggungjawab kita sebagai pengguna media sosial?"],
+        hint:["Ucapan kebencian dalam talian menyebabkan kemurungan, kebimbangan, dan bahkan kecemasan yang serius.","Dalam Islam, menjaga lidah (dan jari!) daripada menyakiti orang lain adalah kewajipan.","Undang-undang Singapura seperti POFMA dan POHA menunjukkan bahawa ucapan dalam talian mempunyai akibat nyata."]}
+    ]
+  },
+
+  // ── TEMA 3: ISU NASIONAL ──
+  { num:5, theme:"Isu Nasional", title:"Perpaduan kaum & keharmonian sosial",
+    questions:[
+      { type:"Pendapat", q:"Adakah model masyarakat berbilang kaum Singapura berjaya? Berikan pandangan kritikal anda.",
+        guide:["Apakah pencapaian konkrit model ini yang boleh anda sebutkan?","Adakah terdapat bidang di mana perpaduan masih perlu diperbaiki?","Bagaimana peranan setiap individu dalam mengekalkan keharmonian?"],
+        hint:["Pencapaian: dasar perumahan HDB, perayaan bersama, dan sistem pendidikan yang inklusif.","Cabaran: perkauman tersembunyi masih wujud dalam pilihan rakan dan perkahwinan campur yang terhad.","Setiap rakyat bertanggungjawab untuk mempraktikkan toleransi dan empati, bukan hanya mengharapkan dasar kerajaan."]},
+      { type:"Sebab-Akibat", q:"Apakah akibatnya jika masyarakat Singapura gagal mengekalkan keharmonian antara kaum dalam era media sosial?",
+        guide:["Bagaimana media sosial boleh menjadi pemangkin kepada ketegangan kaum?","Apakah peristiwa sejarah yang menunjukkan akibat kehilangan perpaduan kaum?","Apakah mekanisme yang ada untuk mencegah dan menangani konflik kaum?"],
+        hint:["Rusuhan kaum 1964 adalah peringatan sejarah bahawa perpaduan tidak boleh dipandang remeh.","Media sosial mempercepat penyebaran maklumat salah dan hasutan yang boleh mencetuskan ketegangan.","Institusi seperti IRCC dan undang-undang MRHA memainkan peranan penting dalam pencegahan dan penyelesaian konflik."]},
+      { type:"Peribadi", q:"Ceritakan satu pengalaman yang menunjukkan betapa pentingnya perpaduan kaum dalam kehidupan seharian anda.",
+        guide:["Bilakah kali pertama anda benar-benar menyedari kepelbagaian kaum di Singapura?","Adakah anda pernah belajar sesuatu yang berharga daripada rakan berbangsa lain?","Bagaimana pengalaman itu mengubah perspektif anda?"],
+        hint:["Gunakan pengalaman yang spesifik — peristiwa di sekolah, kejiranan, atau tempat awam.","Tunjukkan empati dan keikhlasan dalam menceritakan pengalaman anda.","Hubungkan dengan nilai yang lebih besar: rasa hormat, belas ihsan, dan tanggungjawab bersama."]},
+      { type:"Cadangan", q:"Apakah yang boleh dilakukan oleh belia Singapura untuk secara aktif mempromosikan perpaduan kaum?",
+        guide:["Apakah peranan belia berbanding kerajaan dalam mengekalkan keharmonian?","Apakah platform atau ruang yang boleh digunakan oleh belia untuk berhubung merentasi kaum?","Bagaimana pendidikan boleh memainkan peranan yang lebih besar?"],
+        hint:["Program pertukaran antara sekolah agama dan sekolah kebangsaan membina pemahaman bersama.","Projek seni, muzik, dan masakan merentasi budaya mewujudkan perkongsian yang autentik.","Media sosial yang digunakan dengan bertanggungjawab boleh menyebarkan mesej perpaduan dengan cepat."]},
+      { type:"Penilaian", q:"Ada yang berpendapat bahawa polisi DRC (Diutamakan Rakyat dalam Pengambilan Pekerja) tidak mencukupi untuk memastikan keadilan ekonomi bagi semua kaum. Adakah anda bersetuju?",
+        guide:["Apakah tujuan utama polisi DRC dan bagaimana ia berfungsi?","Adakah terdapat bukti yang menunjukkan polisi ini berkesan atau tidak?","Apakah langkah-langkah lain yang boleh melengkapi polisi ini?"],
+        hint:["Polisi DRC bertujuan memastikan majikan mempertimbangkan rakyat Singapura tanpa diskriminasi kaum.","Cabatan: diskriminasi tersembunyi sukar dibuktikan dan tidak selalu ditangkap oleh undang-undang.","Penyelesaian lebih menyeluruh melibatkan pendidikan, mentor, dan budaya pekerjaan yang inklusif."]}
+    ]
+  },
+  { num:6, theme:"Isu Nasional", title:"Cabaran penduduk & penuaan masyarakat",
+    questions:[
+      { type:"Pendapat", q:"Adakah Singapura bersedia menghadapi cabaran masyarakat yang semakin menua? Huraikan.",
+        guide:["Apakah infrastruktur yang sudah ada untuk menyokong warga tua di Singapura?","Apakah jurang yang masih wujud dalam penjagaan warga emas?","Bagaimana sikap masyarakat terhadap warga tua perlu berubah?"],
+        hint:["Kesiapan fizikal: kemudahan penjagaan, Silver Support Scheme, dan kemudahan yang mesra OKU.","Kesiapan sosial: stigma terhadap penjagaan warga tua di rumah penjagaan masih kuat dalam budaya Melayu.","Cadangan: polisi kerja yang fleksibel untuk membolehkan anak-anak menjaga ibu bapa dengan lebih baik."]},
+      { type:"Sebab-Akibat", q:"Bagaimana kadar kelahiran yang rendah di Singapura boleh memberi kesan kepada ekonomi dan sosial negara dalam jangka panjang?",
+        guide:["Apakah faktor yang menyebabkan kadar kelahiran Singapura merendah?","Bagaimana kekurangan tenaga kerja muda boleh mempengaruhi pertumbuhan ekonomi?","Apakah penyelesaian yang telah dicuba dan kejayaannya?"],
+        hint:["Nisbah pergantungan yang tinggi bermaksud lebih sedikit pekerja menyokong lebih ramai pesara.","Kemasukan pekerja asing menutup jurang tenaga kerja tetapi menimbulkan isu integrasi sosial.","Baby Bonus dan sokongan penjagaan anak telah diperkenalkan tetapi kesannya masih terhad."]},
+      { type:"Peribadi", q:"Bagaimana anda merancang untuk menjaga ibu bapa dan datuk nenek anda apabila mereka semakin tua?",
+        guide:["Apakah nilai budaya Melayu yang membimbing cara anda berfikir tentang tanggungjawab ini?","Apakah cabaran praktikal yang anda jangkakan?","Bagaimana anda akan mengimbangi tanggungjawab keluarga dengan kerjaya?"],
+        hint:["Nilai Islam menekankan berbakti kepada ibu bapa sebagai ibadah yang tinggi.","Akui cabaran praktikal: kewangan, masa, dan ruang kediaman adalah kekangan nyata.","Tunjukkan komitmen yang realistik dan bukannya janji yang terlalu ideal."]},
+      { type:"Cadangan", q:"Apakah polisi yang boleh dilaksanakan kerajaan untuk menggalakkan keluarga Singapura mempunyai lebih ramai anak?",
+        guide:["Mengapakah pasangan muda keberatan untuk mempunyai ramai anak?","Apakah negara lain yang berjaya meningkatkan kadar kelahiran dan apakah strategi mereka?","Adakah masalah ini tentang kewangan semata-mata atau ada faktor lain?"],
+        hint:["Subsidi penjagaan anak dan pendidikan prasekolah yang berpatutan mengurangkan beban kewangan.","Budaya kerja yang lebih mesra keluarga — kurangkan budaya lembur dan sokong kerja dari rumah.","Perumahan yang mampu milik lebih awal membolehkan pasangan muda membina keluarga lebih cepat."]},
+      { type:"Penilaian", q:"Seorang pelajar berpendapat bahawa ibu bapa yang menghantar warga tua ke rumah penjagaan adalah tidak bertanggungjawab. Adakah anda bersetuju?",
+        guide:["Apakah situasi yang mungkin memaksa seseorang membuat keputusan sedemikian?","Bagaimana kita boleh menilai keputusan orang lain dengan adil tanpa mengetahui konteks penuh mereka?","Apakah perbezaan antara menghantar ke rumah penjagaan kerana tidak peduli berbanding kerana keperluan sebenar?"],
+        hint:["Tidak semua keluarga mempunyai kapasiti untuk memberikan penjagaan perubatan yang diperlukan di rumah.","Yang penting adalah kualiti perhatian dan kasih sayang, bukan semata-mata lokasi tempat tinggal.","Hukum yang tergesa-gesa tanpa memahami situasi mencerminkan kurang empati, bukan nilai yang tinggi."]}
+    ]
+  },
+
+  // ── TEMA 4: BELIA ──
+  { num:7, theme:"Belia", title:"Tekanan akademik & kesihatan mental belia",
+    questions:[
+      { type:"Pendapat", q:"Adakah sistem pendidikan Singapura memberikan terlalu banyak tekanan kepada pelajar? Berikan pandangan anda.",
+        guide:["Apakah jenis tekanan akademik yang anda sendiri rasai?","Adakah tekanan akademik sentiasa negatif atau adakah manfaatnya?","Apakah perubahan yang anda ingin lihat dalam sistem pendidikan?"],
+        hint:["Tekanan memang wujud tetapi Singapura juga telah mengurangkan peperiksaan besar dengan menghapuskan PSLE streaming.","Tekanan yang sihat membina disiplin dan daya tahan — tetapi tekanan yang melampau memusnahkan kesihatan mental.","Sistem sokongan pelajar di sekolah perlu diperkukuhkan agar pelajar tidak berasa keseorangan."]},
+      { type:"Sebab-Akibat", q:"Apakah kesan jangka panjang tekanan akademik yang berlebihan terhadap perkembangan holistik seseorang pelajar?",
+        guide:["Apakah aspek perkembangan yang sering diabaikan apabila fokus hanya kepada akademik?","Bagaimana tekanan pada usia muda boleh mempengaruhi kesihatan mental pada masa dewasa?","Apakah kemahiran hidup yang tidak dapat dipelajari dalam bilik darjah?"],
+        hint:["Kemahiran sosial, kreativiti, dan daya tahan emosi tidak berkembang apabila hidup hanya diisi dengan ulang kaji.","Kemurungan dan kebimbangan dalam kalangan pelajar semakin meningkat — ini bukan kebetulan.","Kejayaan jangka panjang memerlukan kecerdasan emosi dan kemahiran interpersonal, bukan hanya keputusan peperiksaan."]},
+      { type:"Peribadi", q:"Bagaimana anda menguruskan tekanan akademik dan pada masa yang sama menjaga kesihatan mental anda?",
+        guide:["Apakah strategi daya tindak yang anda gunakan?","Adakah terdapat seseorang yang membantu anda ketika anda tertekan?","Apakah yang anda lakukan untuk mengimbangi akademik dengan masa untuk diri sendiri?"],
+        hint:["Jawab secara jujur dan reflektif — pengguji menghargai keaslian.","Sebutkan strategi yang konkrit: sukan, membaca, solat, berbual dengan keluarga.","Akui bahawa ia tidak selalu mudah — menunjukkan kematangan emosi adalah kelebihan."]},
+      { type:"Cadangan", q:"Apakah yang boleh dilakukan oleh sekolah untuk lebih baik menyokong kesihatan mental pelajar?",
+        guide:["Apakah perkhidmatan sokongan kesihatan mental yang sudah ada di sekolah?","Bagaimana stigma terhadap mendapatkan bantuan kesihatan mental boleh dikurangkan?","Apakah peranan rakan sebaya dalam menyokong kesihatan mental satu sama lain?"],
+        hint:["Program kaunseling yang lebih mudah diakses dan tidak menstigma pelajar yang mendapatkan bantuan.","Kurikulum pendidikan emosi yang mengajar pelajar cara mengenal dan mengurus perasaan mereka.","Kelas yang lebih santai, ujian yang lebih sedikit, dan lebih banyak peluang untuk aktiviti bukan akademik."]},
+      { type:"Penilaian", q:"Ada yang berpendapat bahawa remaja hari ini lebih lemah dan tidak tahan lasak berbanding generasi sebelumnya. Adakah anda bersetuju?",
+        guide:["Apakah bukti yang menyokong dan menentang pandangan ini?","Adakah perbandingan antara generasi ini adil memandangkan konteks sosial yang berbeza?","Apakah faktor yang mempengaruhi daya tahan seseorang individu?"],
+        hint:["Tidak adil membandingkan tanpa mempertimbangkan konteks: tekanan hari ini berbeza bentuknya, bukan lebih ringan.","Media sosial menambah lapisan tekanan baharu yang tidak pernah dihadapi oleh generasi terdahulu.","Daya tahan boleh dibina — sistem sokongan yang baik adalah lebih penting daripada menghukum belia kerana 'lemah'."]}
+    ]
+  },
+  { num:8, theme:"Belia", title:"Kepimpinan & sumbangan belia kepada masyarakat",
+    questions:[
+      { type:"Pendapat", q:"Adakah belia Singapura mengambil tanggungjawab yang mencukupi dalam memberi sumbangan kepada masyarakat? Berikan pandangan anda.",
+        guide:["Apakah contoh sumbangan belia yang anda tahu?","Apakah halangan yang mencegah lebih ramai belia terlibat aktif?","Apakah perbezaan antara sukarelawan kerana terpaksa dan kerana ikhlas?"],
+        hint:["Terdapat belia yang aktif: program mentoring, sukarelawan komuniti, dan inisiatif alam sekitar.","Halangan: kekangan masa akademik, kurang kesedaran tentang peluang, dan sikap menunggu arahan.","Penyelesaian: sekolah harus memberi lebih banyak masa dan platform untuk belia memimpin projek sosial mereka sendiri."]},
+      { type:"Sebab-Akibat", q:"Bagaimana penglibatan belia dalam kepimpinan komuniti dapat membentuk masyarakat yang lebih kukuh?",
+        guide:["Apakah kemahiran yang dipelajari melalui kepimpinan komuniti?","Bagaimana kepimpinan awal membentuk watak dan nilai seseorang?","Apakah manfaat jangka panjang kepada masyarakat daripada belia yang terlibat aktif?"],
+        hint:["Kepimpinan membina empati, tanggungjawab, dan kemahiran menyelesaikan masalah.","Belia yang terlibat awal lebih cenderung menjadi warganegara yang aktif pada masa dewasa.","Masyarakat yang kuat memerlukan pemimpin masa hadapan yang sudah terlatih hari ini."]},
+      { type:"Peribadi", q:"Ceritakan satu projek atau aktiviti di mana anda memimpin atau menyumbang kepada masyarakat. Apakah yang anda pelajari?",
+        guide:["Apakah cabaran yang anda hadapi semasa memimpin atau menyumbang?","Bagaimana pengalaman itu mengubah cara anda melihat tanggungjawab sosial?","Apa yang anda akan lakukan berbeza jika anda boleh memulakan semula?"],
+        hint:["Spesifik: sebutkan aktiviti, peranan anda, dan impak yang anda lihat.","Refleksikan pertumbuhan peribadi — apa yang anda pelajari tentang diri sendiri?","Tunjukkan komitmen berterusan, bukan sekadar aktiviti sekali sahaja."]},
+      { type:"Cadangan", q:"Bagaimana pertubuhan belia Melayu seperti MESRA dan Mendaki boleh lebih berkesan dalam melibatkan generasi muda?",
+        guide:["Apakah program yang sudah ada dan adakah ia relevan kepada belia masa kini?","Bagaimana pertubuhan ini boleh menggunakan teknologi untuk menjangkau lebih ramai belia?","Apakah yang belia mahukan dari pertubuhan komuniti mereka?"],
+        hint:["Program yang dipimpin oleh belia sendiri lebih menarik berbanding program yang direka oleh orang dewasa.","Platform digital dan media sosial boleh memperluas jangkauan program komuniti.","Fokus kepada isu yang relevan kepada belia: pekerjaan, kesihatan mental, dan identiti."]},
+      { type:"Penilaian", q:"Seorang guru berpendapat bahawa belia harus menumpukan kepada pelajaran dahulu dan menangguhkan penglibatan komuniti sehingga selepas tamat pengajian. Adakah anda bersetuju?",
+        guide:["Adakah penglibatan komuniti dan akademik saling bertentangan atau saling melengkapi?","Apakah kemahiran yang hanya boleh dipelajari melalui pengalaman nyata di luar bilik darjah?","Bagaimana anda boleh mengimbangi kedua-duanya?"],
+        hint:["Penglibatan komuniti mengajar kemahiran yang tidak terdapat dalam silibus — empati, kepimpinan, dan tanggungjawab.","Pelajar yang aktif dalam komuniti sering lebih bermotivasi dalam pelajaran kerana mereka nampak tujuan yang lebih besar.","Keseimbangan adalah kunci: penglibatan yang terancang tidak perlu mengganggu akademik."]}
+    ]
+  },
+
+  // ── TEMA 5: TEKNOLOGI ──
+  { num:9, theme:"Teknologi", title:"Kecerdasan buatan & masa depan pekerjaan",
+    questions:[
+      { type:"Pendapat", q:"Adakah kecerdasan buatan (AI) merupakan ancaman atau peluang kepada pekerja Melayu-Singapura? Berikan pandangan anda.",
+        guide:["Apakah jenis pekerjaan yang paling terancam oleh automasi?","Apakah peluang baharu yang dicipta oleh AI?","Bagaimana orang Melayu boleh menyediakan diri untuk era AI?"],
+        hint:["Ancaman nyata: pekerjaan rutin seperti pengiraan, pemprosesan data, dan kerja kilang mudah diautomasikan.","Peluang: AI mencipta bidang baharu dalam analitik data, pengaturcaraan, dan pengurusan sistem AI.","Persediaan: pembelajaran berterusan (SkillsFuture) dan kemahiran yang tidak boleh diautomasikan seperti kreativiti dan empati."]},
+      { type:"Sebab-Akibat", q:"Apakah kesan sosial jika automasi menyebabkan kadar pengangguran yang tinggi dalam kalangan pekerja berpendidikan rendah?",
+        guide:["Siapakah yang paling terdedah kepada kehilangan kerja akibat automasi?","Bagaimana pengangguran boleh mempengaruhi kesihatan mental dan kohesi sosial?","Apakah peranan kerajaan dalam melindungi pekerja yang terjejas?"],
+        hint:["Jurang pendapatan melebar apabila mereka yang mahir teknologi mendapat manfaat tetapi pekerja rendah kemahiran terkebelakang.","Pengangguran jangka panjang boleh membawa kepada masalah sosial: kemurungan, jenayah, dan ketidakstabilan keluarga.","Kerajaan perlu menyediakan jaring keselamatan sosial dan program pelatihan semula yang berkesan."]},
+      { type:"Peribadi", q:"Bagaimana anda menyediakan diri untuk dunia pekerjaan yang semakin dipengaruhi oleh teknologi dan AI?",
+        guide:["Apakah kemahiran yang anda sedang bina sekarang untuk masa depan?","Adakah anda pernah menggunakan AI dalam pembelajaran anda? Bagaimana?","Apakah kerjaya yang anda minati dan bagaimana teknologi akan mempengaruhinya?"],
+        hint:["Spesifik: sebutkan kemahiran teknikal atau bukan teknikal yang anda sedang usahakan.","Tunjukkan kesedaran bahawa pembelajaran berterusan adalah keperluan, bukan pilihan.","Hubungkan dengan nilai peribadi: apakah jenis sumbangan yang anda ingin buat kepada masyarakat melalui kerjaya anda?"]},
+      { type:"Cadangan", q:"Apakah yang boleh dilakukan oleh sekolah agama seperti Madrasah untuk memastikan pelajarnya bersedia menghadapi era digital?",
+        guide:["Apakah cabaran khusus yang dihadapi oleh pelajar madrasah berbanding sekolah kebangsaan dalam era digital?","Bagaimana pendidikan agama boleh disepadukan dengan kemahiran digital?","Apakah model madrasah dari negara lain yang boleh dijadikan inspirasi?"],
+        hint:["Kurikulum STEM yang disepadukan dengan nilai Islam menghasilkan graduan yang holistik.","Kerjasama dengan industri teknologi untuk latihan amali memberikan pendedahan kepada dunia nyata.","Platform pembelajaran dalam talian boleh memperluas akses pelajar kepada sumber global."]},
+      { type:"Penilaian", q:"Seorang ulama berpendapat bahawa kita harus berhati-hati dengan AI kerana ia boleh menggantikan peranan manusia dalam pembuatan keputusan moral. Setujukah anda?",
+        guide:["Apakah jenis keputusan yang hanya sesuai dibuat oleh manusia?","Adakah AI mempunyai 'nilai' atau ia hanya mengikuti arahan?","Bagaimana Islam memandang penggunaan teknologi dalam kehidupan?"],
+        hint:["AI tidak mempunyai nurani, empati, atau pertimbangan kontekstual yang mendalam.","Keputusan berkaitan hukum agama, belas kasihan manusia, dan etika memerlukan hikmah manusia.","Islam tidak menolak teknologi tetapi menekankan bahawa ia harus digunakan untuk kebaikan dan tidak menggantikan akal budi manusia."]}
+    ]
+  },
+  { num:10, theme:"Teknologi", title:"Media sosial & budaya belia Melayu",
+    questions:[
+      { type:"Pendapat", q:"Adakah media sosial lebih banyak mendatangkan manfaat atau mudarat kepada identiti budaya belia Melayu? Bincangkan.",
+        guide:["Apakah cara media sosial membantu belia Melayu menyatakan identiti budaya mereka?","Apakah ancaman media sosial terhadap nilai dan budaya Melayu-Islam?","Bagaimana anda sendiri menggunakan media sosial berkaitan dengan identiti budaya anda?"],
+        hint:["Manfaat: platform untuk berkongsi seni, bahasa, dan budaya Melayu kepada khalayak yang lebih luas.","Mudarat: tekanan untuk mengikut tren barat boleh menjauhkan belia daripada nilai dan estetika tempatan.","Kunci: kesedaran dan pemilihan kandungan yang aktif menentukan sama ada media sosial membina atau memusnahkan identiti."]},
+      { type:"Sebab-Akibat", q:"Bagaimana penyebaran maklumat palsu (fake news) melalui platform seperti WhatsApp dan TikTok boleh membahayakan masyarakat Melayu Singapura?",
+        guide:["Apakah jenis maklumat palsu yang paling sering beredar dalam kalangan komuniti Melayu?","Bagaimana maklumat palsu boleh mencetuskan salah faham antara kaum atau agama?","Apakah tanggungjawab individu dalam mengesahkan maklumat sebelum berkongsi?"],
+        hint:["Maklumat palsu tentang agama, kesihatan, dan isu kaum boleh mencetuskan panik dan prasangka.","Komuniti yang lebih tua lebih mudah terpengaruh kerana kurang literasi digital.","Islam menekankan tabayyun — mengesahkan kebenaran sebelum menyebarkan sebarang maklumat."]},
+      { type:"Peribadi", q:"Pernahkah anda melihat atau mengalami kesan negatif media sosial terhadap diri sendiri atau orang di sekeliling anda? Ceritakan.",
+        guide:["Apakah jenis kesan negatif yang paling kerap anda perhatikan?","Bagaimana anda atau orang lain yang terjejas mengatasi situasi tersebut?","Apakah pelajaran yang anda petik daripada pengalaman ini?"],
+        hint:["Jujur dan reflektif — pengguji menghargai keaslian dan kesedaran kendiri.","Sebutkan pengalaman yang spesifik tanpa mendedahkan maklumat peribadi orang lain secara berlebihan.","Tunjukkan pertumbuhan: apakah yang anda ubah dalam tingkah laku anda selepas pengalaman itu?"]},
+      { type:"Cadangan", q:"Apakah strategi yang boleh digunakan oleh belia Melayu untuk menggunakan media sosial sebagai alat untuk mengukuhkan, bukan melemahkan, budaya mereka?",
+        guide:["Siapakah contoh 'content creator' Melayu yang menggunakan media sosial secara positif?","Apakah jenis kandungan yang menarik perhatian belia sambil mengekalkan nilai budaya?","Bagaimana komuniti dalam talian boleh menyokong pertumbuhan seni dan budaya Melayu?"],
+        hint:["Cipta kandungan dalam bahasa Melayu — setiap siaran dalam bahasa ibunda adalah sumbangan kepada kelangsungannya.","Kongsi ilmu agama, seni tradisional, dan kisah kejayaan komuniti yang menginspirasi.","Gunakan platform untuk menghubungkan belia dengan tokoh komuniti, seniman, dan usahawan Melayu."]},
+      { type:"Penilaian", q:"Ada yang berpendapat bahawa kerajaan perlu mengawal kandungan media sosial dengan lebih ketat untuk melindungi nilai-nilai masyarakat. Adakah anda bersetuju?",
+        guide:["Apakah had antara kawalan yang wajar dan penapisan yang berlebihan?","Apakah undang-undang yang sudah ada di Singapura berkaitan kandungan media sosial?","Siapakah yang bertanggungjawab untuk menetapkan 'nilai masyarakat' yang perlu dilindungi?"],
+        hint:["Undang-undang seperti POFMA dan Content Code sudah memberikan rangka kerja untuk mengawal kandungan berbahaya.","Kawalan yang berlebihan boleh mengurangkan kebebasan bersuara dan kreativiti belia.","Tanggungjawab tidak harus jatuh kepada kerajaan sahaja — literasi digital individu adalah pertahanan terbaik."]}
+    ]
+  }
+];
+
+const TYPE_STYLES = {
+  "Pendapat":     {bg:"#E6F1FB",color:"#185FA5",accent:"#378ADD"},
+  "Peribadi":     {bg:"#FAEEDA",color:"#854F0B",accent:"#EF9F27"},
+  "Sebab-Akibat": {bg:"#FAECE7",color:"#993C1D",accent:"#D85A30"},
+  "Cadangan":     {bg:"#E1F5EE",color:"#0F6E56",accent:"#1D9E75"},
+  "Penilaian":    {bg:"#EEEDFE",color:"#3C3489",accent:"#7F77DD"}
+};
+
+const EVAL_BANDS = {
+  development:{
+    1:{pill:"B1",cls:"eval-band-1",msg:"Cuba sentiasa nyatakan sebab di sebalik pendirian anda — ia menjadikan jawapan lebih meyakinkan."},
+    2:{pill:"B2",cls:"eval-band-2",msg:"Bagus! Kali berikutnya, tambahkan contoh nyata untuk menguatkan sebab yang anda berikan."},
+    3:{pill:"B3",cls:"eval-band-3",msg:"Jawapan yang kukuh. Untuk capai Band 4, cuba akui sudut pandangan lain sebelum menarik kesimpulan."},
+    4:{pill:"B4",cls:"eval-band-4",msg:"Cemerlang! Anda menunjukkan perbincangan yang seimbang dan matang — teruskan!"}
+  },
+  fluency:{
+    1:{pill:"B1",cls:"eval-band-1",msg:"Cuba gunakan rangka 'Di satu pihak… Namun… Contohnya… Kesimpulannya…' sebagai panduan sebelum menjawab."},
+    2:{pill:"B2",cls:"eval-band-2",msg:"Idea anda ada — latih menyatakannya dengan kuat setiap hari supaya ia menjadi tabiat semula jadi."},
+    3:{pill:"B3",cls:"eval-band-3",msg:"Kelancaran yang baik. Kurangkan jeda dengan melatih kata transisi seperti 'Tambahan pula…' dan 'Ini menunjukkan bahawa…'"},
+    4:{pill:"B4",cls:"eval-band-4",msg:"Kelancaran yang luar biasa. Fokus sekarang kepada kepelbagaian perbendaharaan kata untuk memaksimumkan markah."}
+  }
+};
+
+const GUIDE_UNLOCK_MS = 30000;
+const RING_C = 2 * Math.PI * 13;
+let selectedTopics=[], queue=[], currentIdx=0;
+let hintsVisible=false, guideVisible=false, guideUnlocked=false, hintsUnlocked=false;
+let totalAnswered=0, totalEvals=0, sessionTopicCount=0;
+let evalAnswers={1:0,2:0};
+let randMode=false, randCount=3;
+let swRunning=false, swStart=0, swOffset=0, swElapsed=0, swRAF=null;
+let guideTimer=null;
+
+// ── BUILD GRID ──
+function buildGrid(){
+  const g=document.getElementById("topic-grid"); g.innerHTML="";
+  TOPICS.forEach((t,i)=>{
+    const tile=document.createElement("div");
+    tile.className="topic-tile"; tile.id="tile-"+i;
+    tile.innerHTML=`<div class="tile-check">✓</div><div class="tile-num">${t.theme}</div><div class="tile-name">${t.title}</div>`;
+    tile.onclick=()=>{if(randMode)return;toggleTopic(i,tile);};
+    g.appendChild(tile);
+  });
+}
+function toggleTopic(i,tile){
+  const idx=selectedTopics.indexOf(i);
+  if(idx>-1){selectedTopics.splice(idx,1);tile.classList.remove("selected");}
+  else{selectedTopics.push(i);tile.classList.add("selected");}
+  updateSelUI();
+}
+function selectAll(){if(randMode)return;selectedTopics=TOPICS.map((_,i)=>i);document.querySelectorAll(".topic-tile").forEach(t=>t.classList.add("selected"));updateSelUI();}
+function clearAll(){if(randMode)return;selectedTopics=[];document.querySelectorAll(".topic-tile").forEach(t=>t.classList.remove("selected"));updateSelUI();}
+function toggleRandomiser(){
+  randMode=!randMode;
+  document.getElementById("rand-row").classList.toggle("active",randMode);
+  document.getElementById("rand-count-row").style.display=randMode?"flex":"none";
+  const grid=document.getElementById("topic-grid");
+  grid.style.opacity=randMode?"0.35":"1";
+  grid.style.pointerEvents=randMode?"none":"auto";
+  if(randMode){selectedTopics=[];document.querySelectorAll(".topic-tile").forEach(t=>t.classList.remove("selected"));}
+  updateSelUI();
+}
+function changeRandCount(d){
+  randCount=Math.min(10,Math.max(1,randCount+d));
+  document.getElementById("rand-count-val").textContent=randCount;
+  document.getElementById("rand-count-hint").textContent=`= ${randCount*5} soalan`;
+  updateSelUI();
+}
+function updateSelUI(){
+  const btn=document.getElementById("start-btn"),status=document.getElementById("sel-status");
+  if(randMode){btn.disabled=false;status.innerHTML=`<strong>${randCount} tema rawak</strong> akan dipilih &nbsp;·&nbsp; <strong>${randCount*5} soalan</strong>`;btn.textContent="Pilih & mulakan →";}
+  else if(!selectedTopics.length){btn.disabled=true;status.innerHTML="Pilih satu atau lebih tema untuk mulakan";btn.textContent="Mulakan latihan →";}
+  else{btn.disabled=false;const qc=selectedTopics.reduce((a,i)=>a+TOPICS[i].questions.length,0);status.innerHTML=`<strong>${selectedTopics.length} tema</strong> dipilih &nbsp;·&nbsp; <strong>${qc} soalan</strong>`;btn.textContent="Mulakan latihan →";}
+}
+
+// ── START ──
+function startPractice(){
+  let topicsToUse;
+  if(randMode){
+    const shuffled=TOPICS.map((_,i)=>i).sort(()=>Math.random()-0.5);
+    topicsToUse=shuffled.slice(0,randCount);
+    document.querySelectorAll(".topic-tile").forEach(t=>t.classList.remove("selected"));
+    topicsToUse.forEach(i=>document.getElementById("tile-"+i).classList.add("selected"));
+  } else {topicsToUse=selectedTopics;}
+  queue=[];
+  topicsToUse.forEach(ti=>TOPICS[ti].questions.forEach((q,qi)=>queue.push({topicIdx:ti,qIdx:qi,q})));
+  if(randMode)for(let i=queue.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[queue[i],queue[j]]=[queue[j],queue[i]];}
+  currentIdx=0;totalAnswered=0;totalEvals=0;sessionTopicCount=topicsToUse.length;
+  showScreen("screen-practice");loadQ();
+}
+
+// ── LOAD Q ──
+function loadQ(){
+  const item=queue[currentIdx],t=TOPICS[item.topicIdx],q=item.q;
+  const style=TYPE_STYLES[q.type]||TYPE_STYLES["Pendapat"];
+  document.getElementById("q-accent").style.background=style.accent;
+  document.getElementById("q-topic-pill").textContent=t.theme+": "+t.title;
+  const tp=document.getElementById("q-type-pill");tp.textContent=q.type;tp.style.background=style.bg;tp.style.color=style.color;
+  document.getElementById("q-pos").textContent=(currentIdx+1)+" / "+queue.length;
+  document.getElementById("q-text").textContent=q.q;
+  document.getElementById("guide-list").innerHTML=q.guide.map(g=>`<li>${g}</li>`).join("");
+  document.getElementById("hints-list").innerHTML=q.hint.map(h=>`<li>${h}</li>`).join("");
+  const pct=((currentIdx+1)/queue.length)*100;
+  document.getElementById("prog-fill").style.width=pct+"%";
+  document.getElementById("prog-label").textContent="Soalan "+(currentIdx+1);
+  document.getElementById("prog-frac").textContent=(currentIdx+1)+" / "+queue.length;
+  document.getElementById("prev-btn").style.opacity=currentIdx===0?"0.4":"1";
+  document.getElementById("next-btn").textContent=currentIdx===queue.length-1?"Tamat ✓":"Seterusnya →";
+  resetUnlockStates();
+  swReset(true);
+  document.getElementById("selfeval-card").style.display="none";
+  document.getElementById("eval-result-card").style.display="none";
+  document.getElementById("eval-result-card").innerHTML="";
+}
+function resetUnlockStates(){
+  guideUnlocked=false;hintsUnlocked=false;guideVisible=false;hintsVisible=false;
+  clearInterval(guideTimer);
+  document.getElementById("guide-locked").style.display="flex";
+  document.getElementById("guide-btn").style.display="none";
+  document.getElementById("guide-panel").style.display="none";
+  document.getElementById("guide-arrow").className="u-arrow";
+  document.getElementById("guide-countdown").textContent="30";
+  document.getElementById("guide-countdown2").textContent="30";
+  document.getElementById("ring-fill").style.strokeDashoffset="0";
+  document.getElementById("hints-locked").style.display="flex";
+  document.getElementById("hints-btn").style.display="none";
+  document.getElementById("hints-panel").style.display="none";
+  document.getElementById("hint-arrow").className="u-arrow";
+}
+function startGuideCountdown(){
+  if(guideUnlocked)return;
+  let elapsed=0;
+  guideTimer=setInterval(()=>{
+    elapsed+=100;
+    const remaining=Math.max(0,Math.ceil((GUIDE_UNLOCK_MS-elapsed)/1000));
+    document.getElementById("guide-countdown").textContent=remaining;
+    document.getElementById("guide-countdown2").textContent=remaining;
+    const offset=RING_C*(1-(elapsed/GUIDE_UNLOCK_MS));
+    document.getElementById("ring-fill").style.strokeDashoffset=Math.max(0,offset);
+    if(elapsed>=GUIDE_UNLOCK_MS){clearInterval(guideTimer);unlockGuide();}
+  },100);
+}
+function unlockGuide(){
+  if(guideUnlocked)return;
+  guideUnlocked=true;
+  document.getElementById("guide-locked").style.display="none";
+  document.getElementById("guide-btn").style.display="flex";
+}
+function checkGuideUnlock(){if(swElapsed>=GUIDE_UNLOCK_MS&&!guideUnlocked)unlockGuide();}
+function toggleGuide(){
+  guideVisible=!guideVisible;
+  document.getElementById("guide-panel").style.display=guideVisible?"block":"none";
+  document.getElementById("guide-arrow").className="u-arrow"+(guideVisible?" open":"");
+  document.getElementById("guide-btn").innerHTML=`<span class="u-arrow${guideVisible?" open":""}" id="guide-arrow">${guideVisible?"▼":"▶"}</span> ${guideVisible?"Sembunyikan soalan panduan":"Tersangkut? Lihat soalan panduan"}`;
+}
+function unlockHints(){
+  if(hintsUnlocked)return;
+  hintsUnlocked=true;
+  document.getElementById("hints-locked").style.display="none";
+  document.getElementById("hints-btn").style.display="flex";
+}
+function toggleHints(){
+  hintsVisible=!hintsVisible;
+  document.getElementById("hints-panel").style.display=hintsVisible?"block":"none";
+  document.getElementById("hints-btn").innerHTML=`<span class="u-arrow${hintsVisible?" open":""}" id="hint-arrow">${hintsVisible?"▼":"▶"}</span> ${hintsVisible?"Sembunyikan isi penting":"Lihat isi penting"}`;
+}
+
+// ── STOPWATCH ──
+function swTick(){
+  if(!swRunning)return;
+  swElapsed=swOffset+(performance.now()-swStart);
+  renderSW();
+  if(swElapsed>=GUIDE_UNLOCK_MS&&!guideUnlocked){clearInterval(guideTimer);unlockGuide();}
+  swRAF=requestAnimationFrame(swTick);
+}
+function swToggle(){
+  if(swRunning){
+    swRunning=false;swOffset=swElapsed;cancelAnimationFrame(swRAF);
+    document.getElementById("sw-go-btn").textContent="Sambung";
+    document.getElementById("sw-dot").classList.remove("running");
+  } else {
+    if(swElapsed===0)startGuideCountdown();
+    swRunning=true;swStart=performance.now();swRAF=requestAnimationFrame(swTick);
+    document.getElementById("sw-go-btn").textContent="Jeda";
+    document.getElementById("sw-dot").classList.add("running");
+  }
+}
+function swReset(skipUnlock){
+  const hadTime=swElapsed>500;
+  swRunning=false;swElapsed=0;swOffset=0;swStart=0;
+  cancelAnimationFrame(swRAF);clearInterval(guideTimer);
+  document.getElementById("sw-go-btn").textContent="Mula";
+  document.getElementById("sw-dot").classList.remove("running");
+  document.getElementById("sw-display").textContent="0:00.0";
+  document.getElementById("sw-display").className="sw-display";
+  updateTargetBar(0);
+  if(!skipUnlock&&hadTime)showSelfEval();
+}
+function renderSW(){
+  const ms=swElapsed,mins=Math.floor(ms/60000),secs=Math.floor((ms%60000)/1000),tenths=Math.floor((ms%1000)/100);
+  const disp=document.getElementById("sw-display");
+  disp.textContent=mins+":"+String(secs).padStart(2,"0")+"."+tenths;
+  const target=parseInt(document.getElementById("sw-target").value)||0;
+  if(target>0){const el=ms/1000;if(el>=target)disp.className="sw-display warning";else if(el>=target*0.8)disp.className="sw-display caution";else disp.className="sw-display";updateTargetBar(el/target);}
+  else{disp.className="sw-display";updateTargetBar(0);}
+}
+function updateTargetBar(frac){
+  const target=parseInt(document.getElementById("sw-target").value)||0;
+  const wrap=document.getElementById("target-bar-wrap");
+  if(!target){wrap.classList.remove("visible");return;}
+  wrap.classList.add("visible");document.getElementById("target-bar-end").textContent=target+"s";
+  const fill=document.getElementById("target-bar-fill");
+  fill.style.width=Math.min(frac*100,100)+"%";
+  fill.style.background=frac>=1?"#E24B4A":frac>=0.8?"#EF9F27":"#1D9E75";
+}
+document.getElementById("sw-target").addEventListener("change",()=>{
+  const target=parseInt(document.getElementById("sw-target").value)||0;
+  const wrap=document.getElementById("target-bar-wrap");
+  if(!target)wrap.classList.remove("visible");
+  else{wrap.classList.add("visible");document.getElementById("target-bar-end").textContent=target+"s";}
+  updateTargetBar(swElapsed/1000/(target||1));
+});
+
+// ── SELF-EVAL ──
+function showSelfEval(){
+  evalAnswers={1:0,2:0};
+  [1,2,3,4].forEach(n=>{document.getElementById("eq1-o"+n).classList.remove("selected");document.getElementById("eq2-o"+n).classList.remove("selected");});
+  document.getElementById("eval-submit-btn").disabled=true;
+  document.getElementById("selfeval-card").style.display="block";
+  document.getElementById("eval-result-card").style.display="none";
+  document.getElementById("eval-result-card").innerHTML="";
+  setTimeout(()=>window.scrollTo({top:document.getElementById("selfeval-card").offsetTop-80,behavior:"smooth"}),50);
+}
+function selectOpt(q,val){
+  evalAnswers[q]=val;
+  [1,2,3,4].forEach(n=>document.getElementById("eq"+q+"-o"+n).classList.remove("selected"));
+  document.getElementById("eq"+q+"-o"+val).classList.add("selected");
+  document.getElementById("eval-submit-btn").disabled=!(evalAnswers[1]&&evalAnswers[2]);
+}
+function submitEval(){
+  totalEvals++;
+  const d=evalAnswers[1],f=evalAnswers[2];
+  const db=EVAL_BANDS.development[d],fb=EVAL_BANDS.fluency[f];
+  const resultEl=document.getElementById("eval-result-card");
+  resultEl.innerHTML=`<div class="eval-result"><div class="eval-result-title">Penilaian diri anda</div><div class="eval-result-row"><span class="eval-result-label">Perkembangan isi</span><span class="eval-band-pill ${db.cls}">${db.pill}</span><span class="eval-result-desc">${db.msg}</span></div><div class="eval-result-row"><span class="eval-result-label">Kelancaran</span><span class="eval-band-pill ${fb.cls}">${fb.pill}</span><span class="eval-result-desc">${fb.msg}</span></div></div>`;
+  resultEl.style.display="block";
+  document.getElementById("selfeval-card").style.display="none";
+  unlockHints();
+  setTimeout(()=>window.scrollTo({top:resultEl.offsetTop-80,behavior:"smooth"}),50);
+}
+function skipEval(){
+  document.getElementById("selfeval-card").style.display="none";
+  document.getElementById("eval-result-card").style.display="none";
+  unlockHints();
+}
+
+// ── NAV ──
+function nextQ(){totalAnswered++;if(currentIdx<queue.length-1){currentIdx++;loadQ();window.scrollTo({top:0,behavior:"smooth"});}else{showDone();}}
+function prevQ(){if(currentIdx>0){currentIdx--;loadQ();window.scrollTo({top:0,behavior:"smooth"});}}
+function shuffleRemaining(){
+  const rem=queue.slice(currentIdx);
+  for(let i=rem.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[rem[i],rem[j]]=[rem[j],rem[i]];}
+  queue.splice(currentIdx,queue.length-currentIdx,...rem);loadQ();
+}
+function showDone(){document.getElementById("stat-qs").textContent=totalAnswered;document.getElementById("stat-topics").textContent=sessionTopicCount;document.getElementById("stat-evals").textContent=totalEvals;showScreen("screen-done");}
+function restartSame(){startPractice();}
+function goHome(){
+  swReset(true);clearInterval(guideTimer);
+  randMode=false;
+  document.getElementById("rand-row").classList.remove("active");
+  document.getElementById("rand-count-row").style.display="none";
+  document.getElementById("topic-grid").style.opacity="1";
+  document.getElementById("topic-grid").style.pointerEvents="auto";
+  showScreen("screen-welcome");
+}
+function showScreen(id){document.querySelectorAll(".screen").forEach(s=>s.classList.remove("active"));document.getElementById(id).classList.add("active");window.scrollTo(0,0);}
+
+buildGrid();
+</script>
+</body>
+</html>
