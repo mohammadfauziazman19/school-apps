@@ -1,0 +1,1452 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Oral Pair Practice — S4 Ikhlas 2026</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --teal: #1D9E75;
+    --teal-light: #E1F5EE;
+    --teal-mid: #5DCAA5;
+    --teal-dark: #0F6E56;
+    --teal-deep: #085041;
+    --amber: #EF9F27;
+    --amber-light: #FAEEDA;
+    --amber-dark: #854F0B;
+    --coral: #D85A30;
+    --coral-light: #FAECE7;
+    --coral-dark: #993C1D;
+    --blue: #378ADD;
+    --blue-light: #E6F1FB;
+    --blue-dark: #185FA5;
+    --purple: #7F77DD;
+    --purple-light: #EEEDFE;
+    --purple-dark: #3C3489;
+    --red: #E24B4A;
+    --red-light: #FCEBEB;
+    --red-dark: #A32D2D;
+    --bg: #f9f8f5;
+    --surface: #ffffff;
+    --surface2: #f2f0eb;
+    --border: rgba(0,0,0,0.1);
+    --border-strong: rgba(0,0,0,0.18);
+    --text: #1a1a18;
+    --text-muted: #6b6a65;
+    --text-faint: #9e9d98;
+    --radius: 12px;
+    --radius-sm: 8px;
+    --radius-pill: 99px;
+    --shadow-sm: 0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.05);
+    --shadow: 0 4px 12px rgba(0,0,0,0.08), 0 2px 4px rgba(0,0,0,0.05);
+    --shadow-lg: 0 8px 32px rgba(0,0,0,0.1), 0 2px 8px rgba(0,0,0,0.06);
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    line-height: 1.6;
+  }
+
+  /* ── SCREEN SYSTEM ── */
+  .screen { display: none; animation: fadeIn 0.3s ease; }
+  .screen.active { display: block; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+
+  /* ── LAYOUT ── */
+  .page-wrap {
+    max-width: 680px;
+    margin: 0 auto;
+    padding: 0 1rem;
+  }
+
+  /* ══════════════════════════════════
+     SCREEN 1 — WELCOME
+  ══════════════════════════════════ */
+  #screen-welcome {
+    min-height: 100vh;
+  }
+
+  .welcome-nav {
+    padding: 1.5rem 0 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .app-logo {
+    font-family: 'DM Serif Display', serif;
+    font-size: 15px;
+    color: var(--teal);
+    letter-spacing: -0.01em;
+  }
+
+  .class-tag {
+    font-size: 11px;
+    background: var(--teal-light);
+    color: var(--teal-dark);
+    padding: 4px 10px;
+    border-radius: var(--radius-pill);
+    font-weight: 500;
+  }
+
+  .welcome-hero {
+    padding: 3rem 0 2rem;
+    text-align: center;
+  }
+
+  .hero-eyebrow {
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--teal);
+    margin-bottom: 12px;
+  }
+
+  .hero-title {
+    font-family: 'DM Serif Display', serif;
+    font-size: clamp(36px, 8vw, 52px);
+    line-height: 1.1;
+    color: var(--text);
+    margin-bottom: 16px;
+  }
+
+  .hero-title em {
+    font-style: italic;
+    color: var(--teal);
+  }
+
+  .hero-sub {
+    font-size: 15px;
+    color: var(--text-muted);
+    max-width: 360px;
+    margin: 0 auto;
+    line-height: 1.6;
+  }
+
+  .section-label {
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-faint);
+    margin-bottom: 10px;
+    margin-top: 2rem;
+  }
+
+  /* TOPIC GRID */
+  .topic-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 8px;
+    margin-bottom: 1rem;
+  }
+
+  .topic-tile {
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius);
+    padding: 14px 12px;
+    cursor: pointer;
+    background: var(--surface);
+    transition: all 0.18s;
+    user-select: none;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .topic-tile::after {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    background: var(--teal);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.2s ease;
+  }
+
+  .topic-tile:hover {
+    border-color: var(--teal-mid);
+    background: var(--teal-light);
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-sm);
+  }
+
+  .topic-tile.selected {
+    border-color: var(--teal);
+    background: var(--teal-light);
+    box-shadow: var(--shadow-sm);
+  }
+
+  .topic-tile.selected::after {
+    transform: scaleX(1);
+  }
+
+  .tile-check {
+    position: absolute;
+    top: 10px; right: 10px;
+    width: 18px; height: 18px;
+    border-radius: 50%;
+    border: 1.5px solid var(--border);
+    background: var(--surface);
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.15s;
+    font-size: 10px;
+    color: transparent;
+  }
+
+  .topic-tile.selected .tile-check {
+    background: var(--teal);
+    border-color: var(--teal);
+    color: white;
+  }
+
+  .tile-num {
+    font-size: 10px;
+    font-weight: 500;
+    color: var(--teal);
+    margin-bottom: 5px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .tile-name {
+    font-size: 12px;
+    color: var(--text);
+    line-height: 1.4;
+    font-weight: 500;
+    margin-bottom: 3px;
+    padding-right: 16px;
+  }
+
+  .tile-theme {
+    font-size: 11px;
+    color: var(--text-faint);
+  }
+
+  .selection-status {
+    font-size: 13px;
+    color: var(--text-muted);
+    text-align: center;
+    padding: 10px;
+    min-height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .selection-status strong {
+    color: var(--teal);
+    font-weight: 500;
+  }
+
+  /* SELECT ALL ROW */
+  .select-actions {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 10px;
+    align-items: center;
+  }
+
+  .ghost-btn {
+    font-size: 12px;
+    padding: 5px 12px;
+    border-radius: var(--radius-pill);
+    border: 1px solid var(--border-strong);
+    background: var(--surface);
+    color: var(--text-muted);
+    cursor: pointer;
+    font-family: 'DM Sans', sans-serif;
+    transition: all 0.15s;
+  }
+
+  .ghost-btn:hover {
+    background: var(--surface2);
+    color: var(--text);
+  }
+
+  .start-btn {
+    display: block;
+    width: 100%;
+    padding: 16px;
+    background: var(--teal);
+    color: #fff;
+    border: none;
+    border-radius: var(--radius);
+    font-size: 16px;
+    font-weight: 500;
+    font-family: 'DM Sans', sans-serif;
+    cursor: pointer;
+    transition: all 0.2s;
+    margin: 1rem 0 2rem;
+    box-shadow: 0 4px 14px rgba(29,158,117,0.3);
+    letter-spacing: 0.01em;
+  }
+
+  .start-btn:hover:not(:disabled) {
+    background: var(--teal-dark);
+    transform: translateY(-1px);
+    box-shadow: 0 6px 18px rgba(29,158,117,0.35);
+  }
+
+  .start-btn:active:not(:disabled) {
+    transform: translateY(0);
+  }
+
+  .start-btn:disabled {
+    background: var(--surface2);
+    color: var(--text-faint);
+    cursor: not-allowed;
+    box-shadow: none;
+  }
+
+  /* ══════════════════════════════════
+     SCREEN 2 — PRACTICE
+  ══════════════════════════════════ */
+  #screen-practice {
+    min-height: 100vh;
+    padding-bottom: 3rem;
+  }
+
+  .practice-header {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background: rgba(249,248,245,0.92);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    padding: 12px 0;
+    margin-bottom: 1.25rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .practice-header-inner {
+    max-width: 680px;
+    margin: 0 auto;
+    padding: 0 1rem;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .back-btn {
+    background: var(--surface);
+    border: 1px solid var(--border-strong);
+    border-radius: var(--radius-sm);
+    padding: 7px 14px;
+    font-size: 13px;
+    color: var(--text-muted);
+    cursor: pointer;
+    font-family: 'DM Sans', sans-serif;
+    transition: all 0.15s;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    white-space: nowrap;
+  }
+
+  .back-btn:hover {
+    background: var(--surface2);
+    color: var(--text);
+  }
+
+  .progress-wrap {
+    flex: 1;
+  }
+
+  .progress-meta {
+    display: flex;
+    justify-content: space-between;
+    font-size: 11px;
+    color: var(--text-faint);
+    margin-bottom: 5px;
+  }
+
+  .progress-track {
+    height: 4px;
+    background: var(--surface2);
+    border-radius: var(--radius-pill);
+    overflow: hidden;
+  }
+
+  .progress-fill {
+    height: 100%;
+    background: var(--teal);
+    border-radius: var(--radius-pill);
+    transition: width 0.5s cubic-bezier(0.4,0,0.2,1);
+  }
+
+  /* QUESTION CARD */
+  .q-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1.5rem 1.5rem 1.25rem;
+    margin-bottom: 1rem;
+    box-shadow: var(--shadow);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .q-card-accent {
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 4px;
+    border-radius: var(--radius) var(--radius) 0 0;
+  }
+
+  .q-meta-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 1.25rem;
+  }
+
+  .q-topic-pill {
+    font-size: 11px;
+    font-weight: 500;
+    padding: 4px 10px;
+    border-radius: var(--radius-pill);
+    background: var(--teal-light);
+    color: var(--teal-dark);
+  }
+
+  .q-type-pill {
+    font-size: 11px;
+    padding: 4px 10px;
+    border-radius: var(--radius-pill);
+  }
+
+  .q-pos {
+    font-size: 11px;
+    color: var(--text-faint);
+    margin-left: auto;
+  }
+
+  .q-text {
+    font-family: 'DM Serif Display', serif;
+    font-size: clamp(18px, 4vw, 22px);
+    line-height: 1.45;
+    color: var(--text);
+  }
+
+  /* HINTS */
+  .hints-toggle-btn {
+    background: none;
+    border: none;
+    font-size: 13px;
+    color: var(--teal);
+    cursor: pointer;
+    font-family: 'DM Sans', sans-serif;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 10px;
+    transition: color 0.15s;
+  }
+
+  .hints-toggle-btn:hover { color: var(--teal-dark); }
+
+  .hint-arrow {
+    display: inline-block;
+    transition: transform 0.2s;
+    font-size: 10px;
+  }
+
+  .hint-arrow.open { transform: rotate(90deg); }
+
+  .hints-panel {
+    background: var(--teal-light);
+    border: 1px solid var(--teal-mid);
+    border-radius: var(--radius);
+    padding: 1rem 1.25rem;
+    margin-bottom: 1rem;
+    animation: slideDown 0.2s ease;
+  }
+
+  @keyframes slideDown {
+    from { opacity: 0; transform: translateY(-6px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .hints-panel-label {
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--teal-dark);
+    margin-bottom: 10px;
+  }
+
+  .hints-panel ul {
+    list-style: none;
+    padding: 0;
+  }
+
+  .hints-panel ul li {
+    font-size: 13.5px;
+    color: var(--teal-deep);
+    padding: 5px 0 5px 18px;
+    position: relative;
+    line-height: 1.55;
+    border-bottom: 1px solid rgba(29,158,117,0.12);
+  }
+
+  .hints-panel ul li:last-child { border-bottom: none; }
+
+  .hints-panel ul li::before {
+    content: '→';
+    position: absolute;
+    left: 0;
+    color: var(--teal);
+    font-size: 12px;
+    top: 6px;
+  }
+
+  /* STOPWATCH */
+  .stopwatch-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1.25rem 1.5rem;
+    margin-bottom: 1rem;
+    box-shadow: var(--shadow-sm);
+  }
+
+  .sw-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+  }
+
+  .sw-label {
+    font-size: 11px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--text-faint);
+    display: flex;
+    align-items: center;
+    gap: 7px;
+  }
+
+  .sw-indicator {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: var(--border-strong);
+    transition: background 0.3s;
+  }
+
+  .sw-indicator.running {
+    background: var(--red);
+    animation: pulse 1s ease-in-out infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50%       { opacity: 0.5; transform: scale(0.85); }
+  }
+
+  .sw-target-select {
+    font-size: 12px;
+    padding: 4px 10px;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--border-strong);
+    background: var(--surface2);
+    color: var(--text-muted);
+    font-family: 'DM Sans', sans-serif;
+    cursor: pointer;
+  }
+
+  .sw-display {
+    font-family: 'DM Serif Display', serif;
+    font-size: clamp(52px, 12vw, 72px);
+    letter-spacing: 2px;
+    line-height: 1;
+    text-align: center;
+    color: var(--text);
+    margin-bottom: 1rem;
+    transition: color 0.3s;
+  }
+
+  .sw-display.caution { color: var(--amber); }
+  .sw-display.warning { color: var(--red); }
+
+  .sw-btn-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 8px;
+    margin-bottom: 10px;
+  }
+
+  .sw-btn {
+    padding: 11px 8px;
+    border-radius: var(--radius-sm);
+    font-size: 14px;
+    font-weight: 500;
+    font-family: 'DM Sans', sans-serif;
+    cursor: pointer;
+    transition: all 0.15s;
+    border: 1px solid;
+    text-align: center;
+  }
+
+  .sw-btn.go {
+    background: var(--teal);
+    color: #fff;
+    border-color: var(--teal-dark);
+    box-shadow: 0 2px 8px rgba(29,158,117,0.25);
+  }
+
+  .sw-btn.go:hover { background: var(--teal-dark); }
+
+  .sw-btn.lap {
+    background: var(--surface2);
+    color: var(--text-muted);
+    border-color: var(--border-strong);
+  }
+
+  .sw-btn.lap:hover:not(:disabled) { background: var(--blue-light); color: var(--blue-dark); }
+  .sw-btn.lap:disabled { opacity: 0.4; cursor: not-allowed; }
+
+  .sw-btn.reset {
+    background: var(--red-light);
+    color: var(--red-dark);
+    border-color: #F09595;
+  }
+
+  .sw-btn.reset:hover { background: #F7C1C1; }
+
+  .lap-log {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+    min-height: 0;
+    transition: min-height 0.2s;
+  }
+
+  .lap-badge {
+    font-size: 11px;
+    padding: 3px 9px;
+    background: var(--teal-light);
+    color: var(--teal-dark);
+    border-radius: var(--radius-pill);
+    font-weight: 500;
+  }
+
+  /* TARGET BAR */
+  .target-bar-wrap {
+    margin-top: 10px;
+    display: none;
+  }
+
+  .target-bar-wrap.visible { display: block; }
+
+  .target-bar-track {
+    height: 5px;
+    background: var(--surface2);
+    border-radius: var(--radius-pill);
+    overflow: hidden;
+    margin-top: 4px;
+  }
+
+  .target-bar-fill {
+    height: 100%;
+    border-radius: var(--radius-pill);
+    background: var(--teal);
+    transition: width 0.3s linear, background 0.3s;
+    max-width: 100%;
+  }
+
+  .target-bar-label {
+    font-size: 11px;
+    color: var(--text-faint);
+    display: flex;
+    justify-content: space-between;
+  }
+
+  /* NAV */
+  .nav-section {
+    margin-top: 1rem;
+  }
+
+  .shuffle-row {
+    text-align: center;
+    margin-bottom: 10px;
+  }
+
+  .shuffle-link {
+    font-size: 12px;
+    color: var(--text-faint);
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-family: 'DM Sans', sans-serif;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+    transition: color 0.15s;
+  }
+
+  .shuffle-link:hover { color: var(--teal); }
+
+  .nav-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+
+  .nav-btn {
+    padding: 14px;
+    border-radius: var(--radius);
+    font-size: 14px;
+    font-weight: 500;
+    font-family: 'DM Sans', sans-serif;
+    cursor: pointer;
+    transition: all 0.15s;
+    border: 1px solid var(--border-strong);
+    background: var(--surface);
+    color: var(--text);
+    text-align: center;
+  }
+
+  .nav-btn:hover { background: var(--surface2); }
+
+  .nav-btn.next {
+    background: var(--teal);
+    color: #fff;
+    border-color: var(--teal-dark);
+    box-shadow: 0 3px 10px rgba(29,158,117,0.25);
+  }
+
+  .nav-btn.next:hover {
+    background: var(--teal-dark);
+    transform: translateY(-1px);
+    box-shadow: 0 5px 14px rgba(29,158,117,0.3);
+  }
+
+  /* ══════════════════════════════════
+     SCREEN 3 — DONE
+  ══════════════════════════════════ */
+  #screen-done {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+  }
+
+  #screen-done.active { display: flex; }
+
+  .done-inner {
+    width: 100%;
+    text-align: center;
+    padding: 3rem 0;
+  }
+
+  .done-icon {
+    width: 72px; height: 72px;
+    background: var(--teal-light);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    margin: 0 auto 1.5rem;
+    font-size: 32px;
+  }
+
+  .done-title {
+    font-family: 'DM Serif Display', serif;
+    font-size: 36px;
+    color: var(--text);
+    margin-bottom: 8px;
+  }
+
+  .done-sub {
+    font-size: 15px;
+    color: var(--text-muted);
+    margin-bottom: 2rem;
+  }
+
+  .stat-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 2rem;
+  }
+
+  .stat-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1.25rem 1rem;
+    box-shadow: var(--shadow-sm);
+  }
+
+  .stat-val {
+    font-family: 'DM Serif Display', serif;
+    font-size: 36px;
+    color: var(--text);
+    line-height: 1;
+    margin-bottom: 5px;
+  }
+
+  .stat-lbl {
+    font-size: 12px;
+    color: var(--text-faint);
+  }
+
+  .done-actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+
+  .done-btn {
+    padding: 14px;
+    border-radius: var(--radius);
+    font-size: 14px;
+    font-weight: 500;
+    font-family: 'DM Sans', sans-serif;
+    cursor: pointer;
+    border: 1px solid var(--border-strong);
+    transition: all 0.15s;
+  }
+
+  .done-btn.primary {
+    background: var(--teal);
+    color: #fff;
+    border-color: var(--teal-dark);
+    box-shadow: 0 3px 10px rgba(29,158,117,0.25);
+  }
+
+  .done-btn.primary:hover {
+    background: var(--teal-dark);
+    transform: translateY(-1px);
+  }
+
+  .done-btn.secondary {
+    background: var(--surface);
+    color: var(--text);
+  }
+
+  .done-btn.secondary:hover { background: var(--surface2); }
+
+  /* RESPONSIVE */
+  @media (max-width: 480px) {
+    .topic-grid { grid-template-columns: 1fr 1fr; }
+    .stat-grid { grid-template-columns: 1fr 1fr; }
+    .stat-grid .stat-card:last-child { grid-column: span 2; }
+    .sw-btn-row { grid-template-columns: 1fr 1fr; }
+    .sw-btn.reset { grid-column: span 2; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ══════ SCREEN 1: WELCOME ══════ -->
+<div class="screen active" id="screen-welcome">
+  <div class="page-wrap">
+    <nav class="welcome-nav">
+      <span class="app-logo">OralPractice</span>
+      <span class="class-tag">S4 Ikhlas · 2026</span>
+    </nav>
+
+    <div class="welcome-hero">
+      <p class="hero-eyebrow">O-Level English · Spoken Interaction</p>
+      <h1 class="hero-title">Pair up.<br><em>Speak up.</em></h1>
+      <p class="hero-sub">Pick topics, take turns asking questions, and time each other's responses — just like the real exam.</p>
+    </div>
+
+    <p class="section-label">Choose your topics</p>
+
+    <div class="select-actions">
+      <button class="ghost-btn" onclick="selectAll()">Select all</button>
+      <button class="ghost-btn" onclick="clearAll()">Clear</button>
+    </div>
+
+    <div class="topic-grid" id="topic-grid"></div>
+
+    <div class="selection-status" id="sel-status">Select one or more topics to begin</div>
+
+    <button class="start-btn" id="start-btn" onclick="startPractice()" disabled>
+      Start practice →
+    </button>
+  </div>
+</div>
+
+<!-- ══════ SCREEN 2: PRACTICE ══════ -->
+<div class="screen" id="screen-practice">
+  <div class="practice-header">
+    <div class="practice-header-inner">
+      <button class="back-btn" onclick="goHome()">← Topics</button>
+      <div class="progress-wrap">
+        <div class="progress-meta">
+          <span id="prog-label">Question 1</span>
+          <span id="prog-frac">1 / 5</span>
+        </div>
+        <div class="progress-track">
+          <div class="progress-fill" id="prog-fill"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="page-wrap">
+    <!-- Question Card -->
+    <div class="q-card" id="q-card">
+      <div class="q-card-accent" id="q-accent"></div>
+      <div class="q-meta-row">
+        <span class="q-topic-pill" id="q-topic-pill"></span>
+        <span class="q-type-pill" id="q-type-pill"></span>
+        <span class="q-pos" id="q-pos"></span>
+      </div>
+      <p class="q-text" id="q-text"></p>
+    </div>
+
+    <!-- Hints -->
+    <button class="hints-toggle-btn" id="hints-btn" onclick="toggleHints()">
+      <span class="hint-arrow" id="hint-arrow">▶</span>
+      Show talking points
+    </button>
+    <div class="hints-panel" id="hints-panel" style="display:none;">
+      <div class="hints-panel-label">Suggested talking points</div>
+      <ul id="hints-list"></ul>
+    </div>
+
+    <!-- Stopwatch -->
+    <div class="stopwatch-card">
+      <div class="sw-header">
+        <div class="sw-label">
+          <span class="sw-indicator" id="sw-dot"></span>
+          Stopwatch
+        </div>
+        <select class="sw-target-select" id="sw-target">
+          <option value="0">No target</option>
+          <option value="60" selected>Target: 1 min</option>
+          <option value="90">Target: 1:30</option>
+          <option value="120">Target: 2 min</option>
+          <option value="180">Target: 3 min</option>
+        </select>
+      </div>
+
+      <div class="sw-display" id="sw-display">0:00.0</div>
+
+      <div class="target-bar-wrap" id="target-bar-wrap">
+        <div class="target-bar-label">
+          <span>0s</span>
+          <span id="target-bar-end">60s</span>
+        </div>
+        <div class="target-bar-track">
+          <div class="target-bar-fill" id="target-bar-fill"></div>
+        </div>
+      </div>
+
+      <div class="sw-btn-row" style="margin-top:14px;">
+        <button class="sw-btn go" id="sw-go-btn" onclick="swToggle()">Start</button>
+        <button class="sw-btn lap" id="sw-lap-btn" onclick="swLap()" disabled>Lap</button>
+        <button class="sw-btn reset" onclick="swReset()">Reset</button>
+      </div>
+
+      <div class="lap-log" id="lap-log"></div>
+    </div>
+
+    <!-- Navigation -->
+    <div class="nav-section">
+      <div class="shuffle-row">
+        <button class="shuffle-link" onclick="shuffleRemaining()">↺ Shuffle remaining questions</button>
+      </div>
+      <div class="nav-row">
+        <button class="nav-btn" id="prev-btn" onclick="prevQ()">← Previous</button>
+        <button class="nav-btn next" id="next-btn" onclick="nextQ()">Next →</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════ SCREEN 3: DONE ══════ -->
+<div class="screen" id="screen-done">
+  <div class="page-wrap">
+    <div class="done-inner">
+      <div class="done-icon">🎤</div>
+      <h2 class="done-title">Round complete!</h2>
+      <p class="done-sub">Great work — here's a summary of this session.</p>
+
+      <div class="stat-grid">
+        <div class="stat-card">
+          <div class="stat-val" id="stat-qs">0</div>
+          <div class="stat-lbl">Questions attempted</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-val" id="stat-topics">0</div>
+          <div class="stat-lbl">Topics covered</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-val" id="stat-laps">0</div>
+          <div class="stat-lbl">Laps recorded</div>
+        </div>
+      </div>
+
+      <div class="done-actions">
+        <button class="done-btn secondary" onclick="restartSame()">↺ Same topics again</button>
+        <button class="done-btn primary" onclick="goHome()">← New topics</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const TOPICS = [
+  { num:1, theme:"Technology & Environment", title:"High-tech farming & robots in nature",
+    questions:[
+      { type:"Opinion", q:"Do you think high-tech urban farming is a realistic long-term solution for food security in Singapore?",
+        hint:["Acknowledge Singapore's land constraints and the logic of vertical farming.","Counter: high setup costs and reliance on skilled workers make it inaccessible for small producers.","Suggest a balanced view — government subsidies or partnerships could offset costs."] },
+      { type:"Cause & Effect", q:"How might the increased use of robots in nature reserves actually harm the very environment they are meant to protect?",
+        hint:["Noise pollution can disrupt animal behaviour and breeding cycles.","Equipment failure in remote areas could cause physical damage to habitats.","Over-reliance on data may reduce on-ground conservation effort."] },
+      { type:"Personal", q:"Have you or anyone you know benefited from technology used in food production or environmental care? Tell me more.",
+        hint:["Relate to community gardens, smart sensors, or school composting programmes.","If no direct experience, speak about what you have observed or read about."] },
+      { type:"Suggest", q:"What measures should the Singapore government take to ensure farming technology does not widen the gap between large corporations and small local farmers?",
+        hint:["Grants or subsidies for small-scale farmers to adopt technology.","Shared-use facilities managed by agencies like the Singapore Food Agency.","Training programmes to upskill workers."] },
+      { type:"Evaluate", q:"A classmate argues robots should fully replace human park rangers. Do you agree? Why or why not?",
+        hint:["Efficiency argument is valid for coverage and data collection.","Human rangers bring judgment, community trust, and ability to respond to unexpected situations.","A hybrid model is more convincing."] }
+    ]
+  },
+  { num:2, theme:"Technology & Environment", title:"Technology's impact on the environment",
+    questions:[
+      { type:"Opinion", q:"Do you think the benefits of technology for the environment outweigh its carbon footprint?",
+        hint:["Benefits: precision agriculture, pollution sensors, renewable energy management.","Costs: e-waste, data centre energy use, manufacturing emissions.","Encourage a nuanced answer rather than a one-sided view."] },
+      { type:"Suggest", q:"How can schools in Singapore use technology to educate students about environmental responsibility more effectively?",
+        hint:["Digital dashboards showing the school's energy and water usage in real time.","Gamified apps that reward eco-friendly behaviour.","Virtual field trips to endangered ecosystems."] },
+      { type:"Personal", q:"In your daily life, do you use any technology that helps you be more environmentally conscious? Describe it.",
+        hint:["Apps that track carbon footprint, recycling apps, smart home devices.","If none, reflect on whether such tools would change your behaviour."] },
+      { type:"Cause & Effect", q:"What could be the long-term consequences if developing countries adopt outdated, polluting technologies simply because they are cheaper?",
+        hint:["Worsened air and water quality.","Technological debt makes the transition to clean energy harder later.","Global climate targets become unachievable."] },
+      { type:"Evaluate", q:"Some people say individual actions like recycling are pointless unless large corporations change first. Do you agree?",
+        hint:["Individual action matters for building collective culture and awareness.","Structural change from corporations and governments has far greater scale.","Both are needed — a persuasive answer avoids dismissing either."] }
+    ]
+  },
+  { num:3, theme:"Community Engagement", title:"Volunteering and community hubs",
+    questions:[
+      { type:"Opinion", q:"Should volunteering be made compulsory in Singapore secondary schools as part of the curriculum?",
+        hint:["Pro: builds empathy, social cohesion, and civic identity.","Con: forced volunteering may breed resentment and lose its intrinsic value.","Consider structured opt-in programmes as a middle ground."] },
+      { type:"Personal", q:"Describe a time when you helped someone in your community. What did you learn from the experience?",
+        hint:["Be specific: who, what, where.","Reflect on how it changed your perspective.","Link to a broader community benefit if possible."] },
+      { type:"Suggest", q:"What can the government do to encourage more young Singaporeans to volunteer regularly, not just during CCAs?",
+        hint:["Recognition incentives such as scholarship consideration.","Flexible, short-commitment micro-volunteering opportunities via apps.","Campaigns that reframe volunteering as a social norm."] },
+      { type:"Cause & Effect", q:"How does the design of community hubs like Our Tampines Hub affect social bonds between residents?",
+        hint:["Co-location of services creates natural daily interaction.","Shared spaces reduce isolation, especially for elderly residents.","Risk: if amenities are too commercial, organic community interaction is reduced."] },
+      { type:"Evaluate", q:"A student says that helping others online — fundraising or sharing resources on social media — counts as genuine community engagement. Would you agree?",
+        hint:["Online action can raise awareness and funds at scale.","It lacks the physical presence and relational depth of in-person volunteering.","Encourage a both/and rather than either/or answer."] }
+    ]
+  },
+  { num:4, theme:"Cultural Diversity", title:"Preserving culture and SG60 identity",
+    questions:[
+      { type:"Opinion", q:"Do you think younger Singaporeans are doing enough to preserve their cultural heritage? Explain.",
+        hint:["Acknowledge growing interest in heritage trails, Singlish pride, and cultural festivals.","Counter: practices like kompang and traditional crafts are fading.","Stress the role of intentional education, not passive exposure."] },
+      { type:"Personal", q:"Tell me about a cultural tradition or practice in your family that is important to you and why.",
+        hint:["Be specific — a festival, a food, a ritual, or a language practice.","Explain its significance and whether it has changed over generations."] },
+      { type:"Suggest", q:"How can Singapore prevent its cultural heritage from becoming merely a tourist attraction rather than a living part of daily life?",
+        hint:["Integrate heritage into everyday spaces, not just designated zones.","Support indigenous practitioners and craftsmen financially.","Ensure festivals are celebrated by the community, not just performed for visitors."] },
+      { type:"Cause & Effect", q:"What are the consequences of western cultural influence — spread through social media — on the cultural identity of Singaporean youth?",
+        hint:["Adoption of western fashion, language, and values.","Erosion of intergenerational cultural transmission.","Positive side: global citizenship and cross-cultural fluency."] },
+      { type:"Evaluate", q:"SG60 was celebrated with the theme 'We First'. Is a sense of collective national identity stronger or weaker among Singaporeans today compared to previous generations?",
+        hint:["Consider: global mobility and online filter bubbles may fragment identity.","Counter: NS, common spaces, and Singlish still bind Singaporeans together.","Use evidence from current affairs if possible."] }
+    ]
+  },
+  { num:5, theme:"Social Media & Youths", title:"Social media use among teenagers",
+    questions:[
+      { type:"Opinion", q:"Do you think the benefits of social media for teenagers outweigh its risks? Give a balanced view.",
+        hint:["Benefits: connection, information, creative expression, career opportunities.","Risks: cyberbullying, explicit content, mental health impact, misinformation.","A strong answer acknowledges both and suggests responsible use."] },
+      { type:"Personal", q:"How do you personally manage your screen time on social media? Do you think your approach is healthy?",
+        hint:["Be honest and reflective.","Mention any specific habits or tools you use.","Acknowledge challenges without being defensive."] },
+      { type:"Cause & Effect", q:"How does cyberbullying on social media affect the mental health and academic performance of teenagers?",
+        hint:["Anxiety, depression, and social withdrawal.","Reduced concentration and motivation in school.","Fear of judgment may discourage participation in class."] },
+      { type:"Suggest", q:"What role should schools play in teaching students to use social media responsibly?",
+        hint:["Digital literacy lessons on identifying misinformation.","Discussions about privacy, consent, and online ethics.","Counselling support for victims of cyberbullying."] },
+      { type:"Evaluate", q:"A friend says consuming content on social media counts as staying informed about the world. Would you agree or disagree?",
+        hint:["Agree: social media can surface news quickly and democratise information.","Disagree: algorithms create echo chambers and much content is unverified.","Tech-literacy is the real answer — knowing how to evaluate sources matters."] }
+    ]
+  },
+  { num:6, theme:"Youths & Mental Health", title:"Mental health awareness and support",
+    questions:[
+      { type:"Opinion", q:"Do you think Singapore does enough to support the mental health of young people? Why or why not?",
+        hint:["Acknowledge: school counsellors, the Resilience Collective, IMH services.","Gap: stigma remains and wait times for professional help can be long.","Suggest earlier intervention and more peer support training."] },
+      { type:"Personal", q:"Have you ever felt overwhelmed by stress from school, family, or social pressure? How did you deal with it?",
+        hint:["Be honest but not overly personal.","Talk about healthy coping strategies: exercise, talking to someone, journalling.","Reflect on what you wish you had known earlier."] },
+      { type:"Cause & Effect", q:"How does poor mental health among students affect their relationships with family and friends, beyond just their academic results?",
+        hint:["Withdrawal from social activities.","Increased conflict due to irritability or poor communication.","Parents may not recognise the symptoms, causing family tension."] },
+      { type:"Suggest", q:"What are three practical ways a school could create a more mentally healthy environment for students?",
+        hint:["Regular check-ins between form teachers and students.","Timetabled unstructured time with no academic pressure.","Peer support programmes and mental health literacy in CCE."] },
+      { type:"Evaluate", q:"Some say social media spreads helpful mental health awareness, while others say it makes mental health worse. Which view is more convincing to you?",
+        hint:["Both are valid — acknowledge the complexity.","Harmful: comparison culture, toxic positivity, unqualified advice.","Helpful: destigmatisation, access to resources, sense of community."] }
+    ]
+  },
+  { num:7, theme:"SG — How We Have Evolved", title:"Heritage preservation in modern Singapore",
+    questions:[
+      { type:"Opinion", q:"Should Singapore prioritise preserving old buildings and kampungs, even if it slows down urban development?",
+        hint:["Heritage gives Singapore cultural identity and tourism value.","Rapid development has already destroyed many irreplaceable sites.","Consider selective preservation with adaptive reuse."] },
+      { type:"Personal", q:"Which heritage site in Singapore means the most to you personally, and why?",
+        hint:["Be specific and explain the personal or cultural connection.","Mention what it represents — history, identity, community memory.","Reflect on what might be lost if it no longer existed."] },
+      { type:"Cause & Effect", q:"What might happen to Singapore's cultural identity if heritage areas become fully commercialised for tourism?",
+        hint:["Authentic cultural practices are replaced by staged performances for visitors.","Locals lose connection to the space and stop visiting.","Cultural identity becomes a product rather than a living tradition."] },
+      { type:"Suggest", q:"How can Singapore make heritage more meaningful for young people who may find museums and heritage trails boring?",
+        hint:["Gamified augmented reality tours.","Oral history projects involving youth interviewing elders.","Pop-up immersive experiences like the HeritageFest theatrical bumboat journey."] },
+      { type:"Evaluate", q:"A classmate says Singapore's rapid modernisation is proof of success and we should not look backwards. Do you agree?",
+        hint:["Modernisation has lifted living standards significantly.","However, progress without roots creates social disconnection.","Argue for forward-looking heritage — learning from the past to build the future."] }
+    ]
+  },
+  { num:8, theme:"Sustainability", title:"Green architecture and urban sustainability",
+    questions:[
+      { type:"Opinion", q:"Can green architecture like rooftop gardens genuinely solve the urban heat island problem in Singapore?",
+        hint:["Green roofs do lower surface temperatures measurably.","However, they are expensive and difficult to scale across older HDB estates.","Combined strategies — green buildings plus reduced car use — are more convincing."] },
+      { type:"Personal", q:"Have you visited any green building in Singapore, like Jewel Changi or Gardens by the Bay? What did you observe?",
+        hint:["Describe the sensory experience — cool air, natural light, water features.","Reflect on whether it felt genuinely sustainable or more like a luxury attraction.","Connect to the concept of biophilic design."] },
+      { type:"Cause & Effect", q:"What happens if Singapore's green architecture becomes a marketing tool for luxury development rather than a genuine sustainability strategy?",
+        hint:["Greenwashing: buildings labelled sustainable without meaningful impact.","Green amenities become exclusive to wealthy neighbourhoods.","Public trust in sustainability initiatives erodes."] },
+      { type:"Suggest", q:"How can the government ensure sustainability measures benefit all Singaporeans, not just those in wealthier areas?",
+        hint:["Mandate green features in all new HDB developments.","Retrofit older public housing with energy-saving technology.","Community green spaces in heartland towns, not just the CBD."] },
+      { type:"Evaluate", q:"A student raised the concern that attracting tourists to Gardens by the Bay increases aviation emissions. How serious is this concern?",
+        hint:["Valid point — tourism has a large carbon footprint, especially air travel.","Aviation emissions are a separate policy area from urban greening.","Evaluate proportionality — local benefits may still justify the green infrastructure."] }
+    ]
+  },
+  { num:9, theme:"AI & Future Education", title:"Artificial intelligence in schools",
+    questions:[
+      { type:"Opinion", q:"Are AI tools like automated marking systems more of a help or a threat to how teachers and students build relationships?",
+        hint:["Help: frees up teacher time for deeper, more meaningful conversations.","Threat: reduces the human feedback that motivates and contextualises learning.","AI should augment, not replace, the teacher's relational role."] },
+      { type:"Personal", q:"Have you used any AI tool for learning — like NotebookLM or ChatGPT? How has it helped or hindered you?",
+        hint:["Be specific about the task — summarising, explaining concepts, generating questions.","Reflect critically: did it help you understand, or just give you an answer?","Mention any moment where you noticed its limitations."] },
+      { type:"Cause & Effect", q:"What are the long-term risks if students become overly dependent on AI for information and answers from a young age?",
+        hint:["Reduced ability to tolerate ambiguity and think critically.","Weakened reading and research skills.","Loss of productive struggle, which is where deep learning happens."] },
+      { type:"Suggest", q:"How should schools redesign assessments to ensure AI tools do not make it easy to cheat without understanding?",
+        hint:["Shift towards oral examinations and process-based assessments.","Require students to explain their reasoning, not just produce a final product.","Use AI-detection tools alongside authentic task design."] },
+      { type:"Evaluate", q:"A student says AI will make teachers unnecessary within 20 years. How would you respond?",
+        hint:["AI can deliver content and assess knowledge, but cannot replace human mentorship.","Teaching involves emotional attunement, cultural sensitivity, and moral guidance.","History shows technology replaces tasks, not teachers."] }
+    ]
+  },
+  { num:10, theme:"Recreation & Technology", title:"How technology shapes leisure",
+    questions:[
+      { type:"Opinion", q:"Should online gaming be considered a legitimate recreational activity with the same social value as outdoor sports?",
+        hint:["Gaming develops teamwork, problem-solving, and global social connections.","Outdoor sports develop physical health, spatial awareness, and community bonding.","Argue for balance rather than a hierarchy."] },
+      { type:"Personal", q:"How has technology changed the way you spend your free time compared to how your parents did at your age?",
+        hint:["Compare: streaming vs TV, gaming vs outdoor play, online vs neighbourhood friendships.","Reflect: is your recreational life richer, or more isolated?","Avoid framing it as simply better or worse."] },
+      { type:"Cause & Effect", q:"How does the addictive design of apps like TikTok affect the recreational choices and attention spans of teenagers?",
+        hint:["Shortens attention span and reduces tolerance for slow-paced hobbies.","Displaces activities requiring sustained effort, like reading or learning an instrument.","Passive consumption crowds out active, creative recreation."] },
+      { type:"Suggest", q:"What can parents and schools do to help teenagers maintain a healthy balance between screen-based and physical recreation?",
+        hint:["Structured outdoor activities that are genuinely enjoyable, not punitive.","Family screen-free time as a social norm, not a restriction.","Schools providing a variety of CCA options that accommodate different interests."] },
+      { type:"Evaluate", q:"Fitness technology like the Apple Watch and Strava is said to make exercise more engaging. Is this a genuine long-term solution to youth inactivity, or just a trend?",
+        hint:["Fitness tech works well for already-motivated users but may not reach sedentary youth.","Gamification creates extrinsic motivation that can fade over time.","Long-term physical activity habits are built through social and cultural norms, not just apps."] }
+    ]
+  }
+];
+
+const TYPE_STYLES = {
+  "Opinion":      { bg:"#E6F1FB", color:"#185FA5", accent:"#378ADD" },
+  "Personal":     { bg:"#FAEEDA", color:"#854F0B", accent:"#EF9F27" },
+  "Cause & Effect":{ bg:"#FAECE7", color:"#993C1D", accent:"#D85A30" },
+  "Suggest":      { bg:"#E1F5EE", color:"#0F6E56", accent:"#1D9E75" },
+  "Evaluate":     { bg:"#EEEDFE", color:"#3C3489", accent:"#7F77DD" }
+};
+
+// STATE
+let selectedTopics = [];
+let queue = [];
+let currentIdx = 0;
+let hintsVisible = false;
+let totalAnswered = 0;
+let totalLaps = 0;
+let sessionTopicCount = 0;
+let lapTimes = [];
+
+// STOPWATCH STATE
+let swRunning = false;
+let swStart = 0;
+let swOffset = 0;
+let swElapsed = 0;
+let swRAF = null;
+
+// ── BUILD WELCOME GRID ──
+function buildGrid() {
+  const grid = document.getElementById("topic-grid");
+  grid.innerHTML = "";
+  TOPICS.forEach((t, i) => {
+    const tile = document.createElement("div");
+    tile.className = "topic-tile";
+    tile.id = "tile-" + i;
+    tile.innerHTML = `
+      <div class="tile-check">✓</div>
+      <div class="tile-num">Topic ${t.num}</div>
+      <div class="tile-name">${t.title}</div>
+      <div class="tile-theme">${t.theme}</div>
+    `;
+    tile.onclick = () => toggleTopic(i, tile);
+    grid.appendChild(tile);
+  });
+}
+
+function toggleTopic(i, tile) {
+  const idx = selectedTopics.indexOf(i);
+  if (idx > -1) {
+    selectedTopics.splice(idx, 1);
+    tile.classList.remove("selected");
+  } else {
+    selectedTopics.push(i);
+    tile.classList.add("selected");
+  }
+  updateSelectionUI();
+}
+
+function selectAll() {
+  selectedTopics = TOPICS.map((_, i) => i);
+  document.querySelectorAll(".topic-tile").forEach(t => t.classList.add("selected"));
+  updateSelectionUI();
+}
+
+function clearAll() {
+  selectedTopics = [];
+  document.querySelectorAll(".topic-tile").forEach(t => t.classList.remove("selected"));
+  updateSelectionUI();
+}
+
+function updateSelectionUI() {
+  const btn = document.getElementById("start-btn");
+  const status = document.getElementById("sel-status");
+  if (selectedTopics.length === 0) {
+    btn.disabled = true;
+    status.innerHTML = "Select one or more topics to begin";
+  } else {
+    btn.disabled = false;
+    const qCount = selectedTopics.reduce((a, i) => a + TOPICS[i].questions.length, 0);
+    status.innerHTML = `<strong>${selectedTopics.length} topic${selectedTopics.length > 1 ? "s" : ""}</strong> selected &nbsp;·&nbsp; <strong>${qCount} questions</strong> total`;
+  }
+}
+
+// ── START PRACTICE ──
+function startPractice() {
+  queue = [];
+  selectedTopics.forEach(ti => {
+    TOPICS[ti].questions.forEach((q, qi) => {
+      queue.push({ topicIdx: ti, qIdx: qi, q });
+    });
+  });
+  currentIdx = 0;
+  totalAnswered = 0;
+  totalLaps = 0;
+  sessionTopicCount = selectedTopics.length;
+  lapTimes = [];
+  showScreen("screen-practice");
+  loadQ();
+}
+
+// ── LOAD QUESTION ──
+function loadQ() {
+  const item = queue[currentIdx];
+  const t = TOPICS[item.topicIdx];
+  const q = item.q;
+  const style = TYPE_STYLES[q.type] || TYPE_STYLES["Opinion"];
+
+  document.getElementById("q-accent").style.background = style.accent;
+  document.getElementById("q-topic-pill").textContent = `Topic ${t.num}: ${t.theme}`;
+
+  const typePill = document.getElementById("q-type-pill");
+  typePill.textContent = q.type;
+  typePill.style.background = style.bg;
+  typePill.style.color = style.color;
+
+  document.getElementById("q-pos").textContent = `${currentIdx + 1} of ${queue.length}`;
+  document.getElementById("q-text").textContent = q.q;
+
+  // Hints
+  const ul = document.getElementById("hints-list");
+  ul.innerHTML = q.hint.map(h => `<li>${h}</li>`).join("");
+  hintsVisible = false;
+  document.getElementById("hints-panel").style.display = "none";
+  document.getElementById("hints-btn").innerHTML = '<span class="hint-arrow" id="hint-arrow">▶</span> Show talking points';
+
+  // Progress
+  const pct = ((currentIdx + 1) / queue.length) * 100;
+  document.getElementById("prog-fill").style.width = pct + "%";
+  document.getElementById("prog-label").textContent = `Question ${currentIdx + 1}`;
+  document.getElementById("prog-frac").textContent = `${currentIdx + 1} / ${queue.length}`;
+
+  // Prev button
+  document.getElementById("prev-btn").style.opacity = currentIdx === 0 ? "0.4" : "1";
+  document.getElementById("next-btn").textContent = currentIdx === queue.length - 1 ? "Finish ✓" : "Next →";
+
+  // Reset stopwatch
+  swReset();
+  lapTimes = [];
+  renderLaps();
+}
+
+// ── HINTS ──
+function toggleHints() {
+  hintsVisible = !hintsVisible;
+  document.getElementById("hints-panel").style.display = hintsVisible ? "block" : "none";
+  const btn = document.getElementById("hints-btn");
+  btn.innerHTML = `<span class="hint-arrow${hintsVisible ? " open" : ""}" id="hint-arrow">${hintsVisible ? "▼" : "▶"}</span> ${hintsVisible ? "Hide" : "Show"} talking points`;
+}
+
+// ── NAV ──
+function nextQ() {
+  totalAnswered++;
+  if (currentIdx < queue.length - 1) {
+    currentIdx++;
+    loadQ();
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  } else {
+    showDone();
+  }
+}
+
+function prevQ() {
+  if (currentIdx > 0) {
+    currentIdx--;
+    loadQ();
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+}
+
+function shuffleRemaining() {
+  const remaining = queue.slice(currentIdx);
+  for (let i = remaining.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [remaining[i], remaining[j]] = [remaining[j], remaining[i]];
+  }
+  queue.splice(currentIdx, queue.length - currentIdx, ...remaining);
+  loadQ();
+}
+
+// ── STOPWATCH ──
+function swTick() {
+  if (!swRunning) return;
+  swElapsed = swOffset + (performance.now() - swStart);
+  renderSW();
+  swRAF = requestAnimationFrame(swTick);
+}
+
+function swToggle() {
+  if (swRunning) {
+    swRunning = false;
+    swOffset = swElapsed;
+    cancelAnimationFrame(swRAF);
+    document.getElementById("sw-go-btn").textContent = "Resume";
+    document.getElementById("sw-dot").classList.remove("running");
+    document.getElementById("sw-lap-btn").disabled = true;
+  } else {
+    swRunning = true;
+    swStart = performance.now();
+    swRAF = requestAnimationFrame(swTick);
+    document.getElementById("sw-go-btn").textContent = "Pause";
+    document.getElementById("sw-dot").classList.add("running");
+    document.getElementById("sw-lap-btn").disabled = false;
+  }
+}
+
+function swReset() {
+  swRunning = false;
+  swElapsed = 0;
+  swOffset = 0;
+  swStart = 0;
+  cancelAnimationFrame(swRAF);
+  document.getElementById("sw-go-btn").textContent = "Start";
+  document.getElementById("sw-lap-btn").disabled = true;
+  document.getElementById("sw-dot").classList.remove("running");
+  document.getElementById("sw-display").textContent = "0:00.0";
+  document.getElementById("sw-display").className = "sw-display";
+  updateTargetBar(0);
+}
+
+function swLap() {
+  lapTimes.push(swElapsed);
+  totalLaps++;
+  renderLaps();
+}
+
+function renderSW() {
+  const ms = swElapsed;
+  const mins = Math.floor(ms / 60000);
+  const secs = Math.floor((ms % 60000) / 1000);
+  const tenths = Math.floor((ms % 1000) / 100);
+  const disp = document.getElementById("sw-display");
+  disp.textContent = mins + ":" + String(secs).padStart(2, "0") + "." + tenths;
+
+  const target = parseInt(document.getElementById("sw-target").value) || 0;
+  if (target > 0) {
+    const elapsed = ms / 1000;
+    if (elapsed >= target) disp.className = "sw-display warning";
+    else if (elapsed >= target * 0.8) disp.className = "sw-display caution";
+    else disp.className = "sw-display";
+    updateTargetBar(elapsed / target);
+  } else {
+    disp.className = "sw-display";
+    updateTargetBar(0);
+  }
+}
+
+function updateTargetBar(frac) {
+  const target = parseInt(document.getElementById("sw-target").value) || 0;
+  const wrap = document.getElementById("target-bar-wrap");
+  if (target === 0) { wrap.classList.remove("visible"); return; }
+  wrap.classList.add("visible");
+  document.getElementById("target-bar-end").textContent = target + "s";
+  const fill = document.getElementById("target-bar-fill");
+  const pct = Math.min(frac * 100, 100);
+  fill.style.width = pct + "%";
+  if (frac >= 1) fill.style.background = "#E24B4A";
+  else if (frac >= 0.8) fill.style.background = "#EF9F27";
+  else fill.style.background = "#1D9E75";
+}
+
+document.getElementById("sw-target").addEventListener("change", () => {
+  const target = parseInt(document.getElementById("sw-target").value) || 0;
+  const wrap = document.getElementById("target-bar-wrap");
+  if (target === 0) wrap.classList.remove("visible");
+  else { wrap.classList.add("visible"); document.getElementById("target-bar-end").textContent = target + "s"; }
+  updateTargetBar(swElapsed / 1000 / (target || 1));
+});
+
+function renderLaps() {
+  const log = document.getElementById("lap-log");
+  log.innerHTML = lapTimes.map((t, i) => {
+    const mins = Math.floor(t / 60000);
+    const secs = Math.floor((t % 60000) / 1000);
+    const tenths = Math.floor((t % 1000) / 100);
+    return `<span class="lap-badge">Lap ${i + 1}: ${mins}:${String(secs).padStart(2, "0")}.${tenths}</span>`;
+  }).join("");
+}
+
+// ── DONE ──
+function showDone() {
+  document.getElementById("stat-qs").textContent = totalAnswered;
+  document.getElementById("stat-topics").textContent = sessionTopicCount;
+  document.getElementById("stat-laps").textContent = totalLaps;
+  showScreen("screen-done");
+}
+
+function restartSame() {
+  startPractice();
+}
+
+function goHome() {
+  swReset();
+  showScreen("screen-welcome");
+}
+
+function showScreen(id) {
+  document.querySelectorAll(".screen").forEach(s => s.classList.remove("active"));
+  document.getElementById(id).classList.add("active");
+  window.scrollTo(0, 0);
+}
+
+// ── INIT ──
+buildGrid();
+</script>
+</body>
+</html>
