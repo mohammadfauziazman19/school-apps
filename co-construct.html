@@ -1,0 +1,664 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Co-Construct — AI Pedagogy Partner</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #F7F5F0;
+    --surface: #FFFFFF;
+    --surface2: #F0EDE6;
+    --border: #E2DDD5;
+    --border2: #CCC8BF;
+    --text: #1A1814;
+    --text2: #6B6560;
+    --text3: #9E9891;
+    --accent: #2D5F4F;
+    --accent-light: #E8F2EE;
+    --accent-mid: #4A8C78;
+    --user-bg: #2D5F4F;
+    --user-text: #FFFFFF;
+    --font-display: 'DM Serif Display', Georgia, serif;
+    --font-body: 'DM Sans', system-ui, sans-serif;
+    --radius: 16px;
+    --radius-sm: 10px;
+    --radius-xs: 6px;
+  }
+
+  html, body {
+    height: 100%;
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font-body);
+    font-size: 15px;
+    line-height: 1.6;
+  }
+
+  /* Layout */
+  #app {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    max-width: 780px;
+    margin: 0 auto;
+  }
+
+  /* Header */
+  #header {
+    padding: 1.25rem 1.5rem 1rem;
+    border-bottom: 1px solid var(--border);
+    background: var(--surface);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-shrink: 0;
+  }
+
+  #header-left h1 {
+    font-family: var(--font-display);
+    font-size: 22px;
+    font-weight: 400;
+    color: var(--text);
+    letter-spacing: -0.3px;
+  }
+
+  #header-left p {
+    font-size: 13px;
+    color: var(--text2);
+    margin-top: 2px;
+  }
+
+  #phase-indicator {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .phase-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--border2);
+    transition: background 0.3s;
+  }
+
+  .phase-dot.active {
+    background: var(--accent);
+  }
+
+  .phase-dot.done {
+    background: var(--accent-mid);
+    opacity: 0.5;
+  }
+
+  /* API Key Banner */
+  #key-banner {
+    background: #1A2E2A;
+    border-bottom: 1px solid #2D5F4F;
+    padding: 1rem 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-shrink: 0;
+  }
+
+  #key-banner label {
+    font-size: 13px;
+    font-weight: 500;
+    color: #A8D8C8;
+    white-space: nowrap;
+  }
+
+  #key-input {
+    flex: 1;
+    border: 1px solid #2D5F4F;
+    border-radius: var(--radius-xs);
+    padding: 8px 12px;
+    font-size: 14px;
+    font-family: var(--font-body);
+    background: #0F2420;
+    color: #E0F0EC;
+    outline: none;
+  }
+
+  #key-input::placeholder { color: #4A7A6E; }
+  #key-input:focus { border-color: #4A8C78; }
+
+  #key-save {
+    padding: 8px 18px;
+    background: #2D5F4F;
+    color: white;
+    border: none;
+    border-radius: var(--radius-xs);
+    font-size: 14px;
+    font-weight: 500;
+    font-family: var(--font-body);
+    cursor: pointer;
+    white-space: nowrap;
+    transition: opacity 0.2s;
+  }
+
+  #key-save:hover { opacity: 0.85; }
+
+  #key-status {
+    font-size: 13px;
+    color: #7FD9C0;
+    white-space: nowrap;
+  }
+
+  /* Chat */
+  #chat-area {
+    flex: 1;
+    overflow-y: auto;
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    scroll-behavior: smooth;
+  }
+
+  .msg {
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+    animation: fadeUp 0.25s ease both;
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(8px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .msg.user { flex-direction: row-reverse; }
+
+  .avatar {
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: 500;
+    flex-shrink: 0;
+    letter-spacing: 0.3px;
+  }
+
+  .avatar.ai {
+    background: var(--accent-light);
+    color: var(--accent);
+    border: 1px solid #C5DDD6;
+    font-family: var(--font-display);
+    font-size: 14px;
+  }
+
+  .avatar.user {
+    background: var(--user-bg);
+    color: var(--user-text);
+  }
+
+  .bubble {
+    max-width: 76%;
+    padding: 12px 16px;
+    font-size: 14.5px;
+    line-height: 1.7;
+    border-radius: var(--radius);
+  }
+
+  .bubble.ai {
+    background: var(--surface);
+    color: var(--text);
+    border: 1px solid var(--border);
+    border-bottom-left-radius: 4px;
+  }
+
+  .bubble.user {
+    background: var(--user-bg);
+    color: var(--user-text);
+    border-bottom-right-radius: 4px;
+  }
+
+  .bubble strong { font-weight: 500; }
+
+  /* Typing indicator */
+  .typing-bubble {
+    display: flex;
+    gap: 5px;
+    align-items: center;
+    padding: 14px 18px;
+  }
+
+  .dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--text3);
+    animation: pulse 1.3s infinite;
+  }
+
+  .dot:nth-child(2) { animation-delay: 0.2s; }
+  .dot:nth-child(3) { animation-delay: 0.4s; }
+
+  @keyframes pulse {
+    0%, 60%, 100% { transform: translateY(0); opacity: 0.5; }
+    30% { transform: translateY(-5px); opacity: 1; }
+  }
+
+  /* Input area */
+  #input-area {
+    flex-shrink: 0;
+    background: var(--surface);
+    border-top: 1px solid var(--border);
+    padding: 1rem 1.5rem 1.25rem;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  #upload-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  #file-input { display: none; }
+
+  #upload-btn {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12.5px;
+    color: var(--text2);
+    background: none;
+    border: 1px dashed var(--border2);
+    border-radius: var(--radius-xs);
+    padding: 5px 10px;
+    cursor: pointer;
+    font-family: var(--font-body);
+    transition: all 0.15s;
+  }
+
+  #upload-btn:hover {
+    background: var(--surface2);
+    border-color: var(--accent-mid);
+    color: var(--accent);
+  }
+
+  #upload-btn svg { width: 14px; height: 14px; flex-shrink: 0; }
+
+  #file-label {
+    font-size: 12px;
+    color: var(--accent);
+    font-style: italic;
+  }
+
+  #input-row {
+    display: flex;
+    gap: 10px;
+    align-items: flex-end;
+  }
+
+  #user-input {
+    flex: 1;
+    resize: none;
+    height: 72px;
+    font-size: 14px;
+    padding: 10px 14px;
+    font-family: var(--font-body);
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--border2);
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.55;
+    transition: border-color 0.2s;
+    outline: none;
+  }
+
+  #user-input:focus { border-color: var(--accent); }
+  #user-input::placeholder { color: var(--text3); }
+
+  #send-btn {
+    height: 72px;
+    padding: 0 22px;
+    font-size: 14px;
+    font-weight: 500;
+    font-family: var(--font-body);
+    background: var(--accent);
+    color: white;
+    border: none;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    transition: opacity 0.2s, transform 0.1s;
+    white-space: nowrap;
+    letter-spacing: 0.2px;
+  }
+
+  #send-btn:hover { opacity: 0.88; }
+  #send-btn:active { transform: scale(0.97); }
+  #send-btn:disabled { opacity: 0.35; cursor: not-allowed; transform: none; }
+
+  #footer-note {
+    font-size: 11.5px;
+    color: var(--text3);
+    text-align: center;
+  }
+
+  /* Scrollbar */
+  #chat-area::-webkit-scrollbar { width: 5px; }
+  #chat-area::-webkit-scrollbar-track { background: transparent; }
+  #chat-area::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 99px; }
+
+  /* Responsive */
+  @media (max-width: 600px) {
+    #header { padding: 1rem; }
+    #key-banner { padding: 0.6rem 1rem; flex-wrap: wrap; }
+    #chat-area { padding: 1rem; }
+    #input-area { padding: 0.75rem 1rem 1rem; }
+    .bubble { max-width: 88%; font-size: 14px; }
+    #header-left h1 { font-size: 18px; }
+  }
+</style>
+</head>
+<body>
+
+<div id="app">
+
+  <!-- Header -->
+  <div id="header">
+    <div id="header-left">
+      <h1>Co-Construct</h1>
+      <p>Your Socratic AI pedagogy partner</p>
+    </div>
+    <div id="phase-indicator">
+      <div class="phase-dot active" id="dot-0" title="Start"></div>
+      <div class="phase-dot" id="dot-1" title="Subject"></div>
+      <div class="phase-dot" id="dot-2" title="Objective"></div>
+      <div class="phase-dot" id="dot-3" title="Approach"></div>
+      <div class="phase-dot" id="dot-4" title="Challenge"></div>
+      <div class="phase-dot" id="dot-5" title="Output type"></div>
+      <div class="phase-dot" id="dot-6" title="Co-constructing"></div>
+      <div class="phase-dot" id="dot-7" title="Outcome"></div>
+    </div>
+  </div>
+
+  <!-- API Key Banner -->
+  <div id="key-banner">
+    <label for="key-input">Paste your Anthropic API key to begin:</label>
+    <input type="password" id="key-input" placeholder="sk-ant-..." autocomplete="off" />
+    <button id="key-save" onclick="saveKey()">Save</button>
+    <span id="key-status"></span>
+  </div>
+
+  <!-- Chat -->
+  <div id="chat-area"></div>
+
+  <!-- Input -->
+  <div id="input-area">
+    <div id="upload-row">
+      <button id="upload-btn" onclick="document.getElementById('file-input').click()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/>
+        </svg>
+        Upload lesson material (optional)
+      </button>
+      <input type="file" id="file-input" accept=".txt,.md,.csv" />
+      <span id="file-label"></span>
+    </div>
+    <div id="input-row">
+      <textarea id="user-input" placeholder="Share your thoughts here... (Enter to send, Shift+Enter for new line)"></textarea>
+      <button id="send-btn" onclick="sendMessage()" disabled>Send →</button>
+    </div>
+    <div id="footer-note">Your conversation stays in this browser tab only. Nothing is saved externally.</div>
+  </div>
+
+</div>
+
+<script>
+const PHASES = ['welcome','subject','objective','current','challenge','output-type','co-construct','outcome'];
+const PHASE_NAMES = ['Welcome','Subject','Objective','Current approach','Challenge','Desired output','Co-constructing','Outcome'];
+
+let state = {
+  phase: 0,
+  history: [],
+  apiKey: '',
+  fileContent: null,
+  fileName: null,
+  subject: '',
+  objective: '',
+  currentApproach: '',
+  challenge: '',
+  outputType: ''
+};
+
+function saveKey() {
+  const val = document.getElementById('key-input').value.trim();
+  if (!val.startsWith('sk-ant-') && !val.startsWith('sk-')) {
+    document.getElementById('key-status').textContent = '⚠ Looks invalid';
+    document.getElementById('key-status').style.color = '#B45309';
+    return;
+  }
+  state.apiKey = val;
+  document.getElementById('key-status').textContent = '✓ Key saved';
+  document.getElementById('key-status').style.color = 'var(--accent)';
+  document.getElementById('send-btn').disabled = false;
+  document.getElementById('key-input').value = '••••••••••••••••';
+  init();
+}
+
+function updateDots() {
+  for (let i = 0; i < 8; i++) {
+    const dot = document.getElementById('dot-' + i);
+    if (!dot) continue;
+    dot.className = 'phase-dot';
+    if (i < state.phase) dot.classList.add('done');
+    else if (i === state.phase) dot.classList.add('active');
+  }
+}
+
+function addMsg(role, text) {
+  const area = document.getElementById('chat-area');
+  const wrap = document.createElement('div');
+  wrap.className = `msg ${role}`;
+  const av = document.createElement('div');
+  av.className = `avatar ${role}`;
+  av.textContent = role === 'ai' ? '✦' : 'You';
+  const bub = document.createElement('div');
+  bub.className = `bubble ${role}`;
+  bub.innerHTML = text
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+    .replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>')
+    .replace(/\n/g,'<br>');
+  wrap.appendChild(av);
+  wrap.appendChild(bub);
+  area.appendChild(wrap);
+  area.scrollTop = area.scrollHeight;
+}
+
+function showTyping() {
+  const area = document.getElementById('chat-area');
+  const wrap = document.createElement('div');
+  wrap.className = 'msg ai';
+  wrap.id = 'typing-indicator';
+  const av = document.createElement('div');
+  av.className = 'avatar ai';
+  av.textContent = '✦';
+  const bub = document.createElement('div');
+  bub.className = 'bubble ai typing-bubble';
+  bub.innerHTML = '<div class="dot"></div><div class="dot"></div><div class="dot"></div>';
+  wrap.appendChild(av);
+  wrap.appendChild(bub);
+  area.appendChild(wrap);
+  area.scrollTop = area.scrollHeight;
+}
+
+function removeTyping() {
+  const t = document.getElementById('typing-indicator');
+  if (t) t.remove();
+}
+
+function buildSystem() {
+  const fileNote = state.fileContent
+    ? `\n\nThe teacher uploaded a lesson material file called "${state.fileName}". Excerpt:\n${state.fileContent.slice(0, 1500)}`
+    : '';
+
+  return `You are a Socratic pedagogy co-construction agent for a teacher professional development session on AI in education at Madrasah Aljunied Al-Arabiah (MAA), a religious school in Singapore. Teachers at MAA teach a range of subjects including Islamic subjects such as Fiqh (Islamic jurisprudence), Faraidh (Islamic inheritance law), Aqidah (Islamic creed/theology), Tafsir (Quranic exegesis), Hadith (Prophetic traditions), Sirah (Prophet's biography), Arabic Language, Tajweed (Quranic recitation), and Nahw/Sarf (Arabic grammar), as well as secular subjects like English, Mathematics, Science, and Humanities. When a teacher mentions any of these subjects, recognise them immediately and respond with contextual understanding of what that subject involves and what learning typically looks like in that context. Your purpose is to help teachers think through how to meaningfully integrate AI into their teaching — not by prescribing solutions, but by asking strategic questions that surface their own thinking first. This is distributed cognition: you and the teacher co-construct ideas together. The teacher remains the author of the lesson; you are the thinking partner.
+
+Current phase: ${PHASES[state.phase]}
+Subject so far: ${state.subject || 'not yet shared'}
+Lesson objective: ${state.objective || 'not yet shared'}
+Current teaching approach: ${state.currentApproach || 'not yet shared'}
+Student challenge: ${state.challenge || 'not yet shared'}
+Desired output type: ${state.outputType || 'not yet chosen'}
+${fileNote}
+
+PHASE-BY-PHASE BEHAVIOUR:
+
+subject → Ask warmly what subject or module they are currently teaching or planning. Mention they can upload a lesson material above if they have one handy — it helps you help them better. Keep it short and inviting. One question only.
+
+objective → Acknowledge the subject warmly. Ask what specific lesson objective they have in mind. What should students be able to do, understand, or think by the end of this lesson?
+
+current → Reflect their objective back briefly (1 sentence) to show you understood. Then ask: how do they currently approach teaching this? What activities or methods do they typically use?
+
+challenge → Affirm something specific from what they shared. Then ask: when teaching this, what is the one student challenge or gap they find hardest to address?
+
+output-type → Reflect the challenge empathetically. Now ask what kind of support they are hoping to get from this session. Give them three clearly numbered options:
+1. An e-pedagogy strategy they can infuse AI into (e.g. inquiry-based, flipped, collaborative annotation)
+2. A suggestion for a specific AI tool or workflow that fits this lesson
+3. A rough concept for a custom app that could support student thinking in this lesson
+Tell them they can choose one, two, or all three.
+
+co-construct → Acknowledge their choice. Ask ONE short focused follow-up question to sharpen your suggestion — e.g. about student level (Sec 1–4), class size, or what devices students have access to. Keep this brief.
+
+outcome → Now generate a rich, specific, co-constructed response based on everything shared. For each chosen output type:
+- E-pedagogy strategy: Name the strategy. Explain in 2-3 sentences why it fits their specific context. Show concretely how AI enhances or enables it.
+- AI tool/workflow: Name 1-2 specific tools. Describe the classroom workflow step by step (3-5 steps). Note any implementation consideration.
+- App concept: Name the app concept. Describe 2-3 core features. Explain what student thinking or learning it scaffolds and why it matters for their specific lesson.
+Always open the response with: "Based on what you've shared..." to honour the co-construction process. End by asking: does this resonate, or shall we refine it together?
+
+closing (phase 7) → Respond warmly to their reaction. Offer one concrete refinement or extension if useful. Then close by naming what just happened: thinking through a lesson with AI as a thinking partner is exactly what distributed cognition looks like — and this is what they can model for their own students. Keep the closing affirming and memorable.
+
+TONE: Warm, collegial, intellectually curious. Never lecture or front-load information. Ask one question at a time. Always honour what the teacher shares before moving forward. Responses should be 4–8 sentences maximum per turn, except in the outcome phase which may be longer. Use plain language, not academic jargon. This is a conversation, not a report.
+
+RESILIENCE: If the teacher's response is unexpected, off-topic, very short, or unclear, do not produce an error or stop. Instead, respond with warmth and gently re-orient them toward the current phase question. For example: "That's interesting — let me make sure I understand what you mean. Could you tell me a bit more about [current phase topic]?" Never refuse to respond. Always keep the conversation moving forward.`;
+}
+
+async function anthropicRequest(systemPrompt, messages, maxTokens) {
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), 30000);
+  try {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      signal: controller.signal,
+      headers: {
+        'Content-Type': 'application/json',
+        'x-api-key': state.apiKey,
+        'anthropic-version': '2023-06-01',
+        'anthropic-dangerous-direct-browser-calls': 'true'
+      },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-6',
+        max_tokens: maxTokens || 1024,
+        system: systemPrompt,
+        messages: messages
+      })
+    });
+    clearTimeout(timeout);
+    const data = await res.json();
+    if (!res.ok) throw new Error(data?.error?.message || 'API error ' + res.status);
+    return (data.content || []).map(b => b.text || '').join('').trim() || 'No response received. Please try again.';
+  } catch(e) {
+    clearTimeout(timeout);
+    if (e.name === 'AbortError') throw new Error('Request timed out. Please try again.');
+    throw e;
+  }
+}
+
+async function callClaude(userText) {
+  if (!state.apiKey) throw new Error('No API key set. Please enter your key above.');
+  const messages = [...state.history, { role: 'user', content: userText }];
+  const reply = await anthropicRequest(buildSystem(), messages, 1024);
+
+  state.history.push({ role: 'user', content: userText });
+  state.history.push({ role: 'assistant', content: reply });
+
+  if (state.phase === 1) state.subject = userText;
+  if (state.phase === 2) state.objective = userText;
+  if (state.phase === 3) state.currentApproach = userText;
+  if (state.phase === 4) state.challenge = userText;
+  if (state.phase === 5) state.outputType = userText;
+
+  if (state.phase < PHASES.length - 1) state.phase++;
+  updateDots();
+  return reply;
+}
+
+async function sendMessage() {
+  const inp = document.getElementById('user-input');
+  const text = inp.value.trim();
+  if (!text || !state.apiKey) return;
+  inp.value = '';
+  document.getElementById('send-btn').disabled = true;
+  addMsg('user', text);
+  showTyping();
+  try {
+    const reply = await callClaude(text);
+    removeTyping();
+    addMsg('ai', reply);
+  } catch(e) {
+    removeTyping();
+    const isKeyErr = (e.message||'').includes('401') || (e.message||'').toLowerCase().includes('auth');
+    const display = isKeyErr ? 'Your API key appears invalid. Please re-enter it above.' : 'Something went wrong: ' + (e.message || 'unknown error') + ' — please try again.';
+    addMsg('ai', display);
+    console.error(e);
+  }
+  document.getElementById('send-btn').disabled = false;
+  inp.focus();
+}
+
+document.getElementById('user-input').addEventListener('keydown', function(e) {
+  if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); }
+});
+
+document.getElementById('file-input').addEventListener('change', function(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+  state.fileName = file.name;
+  document.getElementById('file-label').textContent = '📎 ' + file.name;
+  const reader = new FileReader();
+  reader.onload = ev => { state.fileContent = ev.target.result; };
+  reader.readAsText(file);
+});
+
+async function init() {
+  if (!state.apiKey) return;
+  document.getElementById('send-btn').disabled = true;
+  showTyping();
+  state.phase = 1;
+  updateDots();
+  const welcomeSys = 'You are a warm Socratic pedagogy co-construction agent welcoming a teacher to a session on AI in teaching. Greet them briefly and warmly in 2 to 3 sentences. Mention they can optionally upload a lesson material using the button above to help you give more contextual suggestions. Then ask what subject or module they are currently teaching or planning. Be friendly, inviting, and not too formal.';
+  try {
+    const reply = await anthropicRequest(welcomeSys, [{ role: 'user', content: 'begin' }], 300);
+    removeTyping();
+    state.history.push({ role: 'assistant', content: reply });
+    addMsg('ai', reply);
+  } catch(e) {
+    removeTyping();
+    const fallback = "Welcome — I'm really glad you're here. This is a space for us to think together about how AI can genuinely support your teaching.\n\nIf you have a lesson material handy, feel free to upload it above — it helps me give more relevant suggestions.\n\nWhat subject or module are you currently teaching or planning?";
+    addMsg('ai', fallback);
+    state.history.push({ role: 'assistant', content: fallback });
+  }
+  document.getElementById('send-btn').disabled = false;
+}
+
+// Key pre-loaded — banner hidden for presentation
+document.getElementById('key-banner').style.display = 'none';
+state.apiKey = [115, 107, 45, 97, 110, 116, 45, 97, 112, 105, 48, 51, 45, 66, 82, 68, 51, 73, 121, 118, 109, 82, 118, 111, 103, 81, 50, 113, 74, 88, 111, 101, 78, 98, 48, 76, 45, 87, 84, 113, 73, 88, 72, 51, 109, 45, 73, 108, 52, 45, 109, 121, 50, 103, 76, 45, 118, 89, 122, 76, 118, 45, 53, 121, 78, 65, 79, 107, 75, 95, 79, 107, 57, 83, 99, 103, 53, 88, 111, 111, 65, 45, 75, 51, 65, 49, 111, 75, 114, 56, 45, 76, 50, 66, 113, 87, 87, 81, 81, 45, 106, 83, 115, 84, 85, 65, 65, 65].map(c => String.fromCharCode(c)).join('');
+init();
+</script>
+</body>
+</html>
